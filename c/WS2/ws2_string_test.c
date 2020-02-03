@@ -11,7 +11,8 @@ int main()
 	const char s2[] = " world!";
 	//printf("%u", Strlen(s));
 
-	printf("%u", Strcmp(s1, s2));
+	printf("%d", Strcasecmp(s1, s2));
+	printf("\n");
 
 	return 0;
 }

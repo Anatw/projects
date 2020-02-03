@@ -1,6 +1,6 @@
 /* this file is for function declarations only. */
 
-int Strlen(char *s);
+size_t Strlen(char *s);
 
 int Strcmp(const char *s1, const char *s2);      
 

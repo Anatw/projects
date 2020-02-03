@@ -7,7 +7,7 @@
 
 /* strlen */
 /*Variable Length Parameter: Return the length of the string s. */
-
+/* WORKED WITH SANITY TEST */
 size_t Strlen(char *s)
 {
 	size_t i = 0;
@@ -21,7 +21,7 @@ size_t Strlen(char *s)
 
 /* strcmp */
 /* Compare two strings */
-
+/* WORKED WITH SANITY TEST */
 int Strcmp(const char *s1, const char *s2)
 {
 	if ((*s1 && *s2) != '\0')
@@ -38,8 +38,8 @@ int Strcmp(const char *s1, const char *s2)
 /* Strcasecmp */
 int Strcasecmp(const char *s1, const char *s2)
 {
-	char *s3 = s1;
-	char *s4 = s2;
+	char *s3 = (char *)s1;
+	char *s4 = (char *)s2;
 	while ((*s3 && *s4) != '\0')
 	{		
 		if((*s3-*s4)==32)
@@ -49,14 +49,14 @@ int Strcasecmp(const char *s1, const char *s2)
 			s4++;
 		}
 		
-		if else((*s3-*s4)==(-32))
+		else if ((*s3-*s4)==(-32))
 		{
 			*s4 -= 32;
 			s3++;
 			s4++;
 		}
 		
-		else ((*s3-*s4)==0)
+		else ((*s3-*s4)==0);
 		{
 			s3++;
 			s4++;
