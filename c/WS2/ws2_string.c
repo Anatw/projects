@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "ws2_string.h"
 #include <assert.h>
-
+#include <string.h>
 #include <stdlib.h>
 
 
@@ -36,26 +36,26 @@ int Strcmp(const char *s1, const char *s2)
 }
 
 /* Strcasecmp */
-/* working... BUT NOT AS EXPECTED */
+/* WORKED WITH SANITY TEST */
 int Strcasecmp(const char *s1, const char *s2)
 {
 	char *s3 = (char *)s1;
 	char *s4 = (char *)s2;
-	while ((*s3 && *s4) != '\0')
+	while (*s3 && *s4)
 	{		
-		if(122>*s3>97 || 122>*s4>97 && (((*s3-*s4)*(*s3-*s4)) == 32*32) )
+		if((*s3 == *s4) || (*s3 == (*s4 - 32)) || (*s3 == (*s4 + 32)))
 		{
 			s3++;
 			s4++;
 		}
 		
-		else ((*s3-*s4)==0);
+		else
 		{
-			s3++;
-			s4++;
+			return(int)(*s3-*s4);
 		}
 	}
-	return(int)(*s3-*s4);
+
+	return 0;
 }
 
 
@@ -64,7 +64,7 @@ int Strcasecmp(const char *s1, const char *s2)
 char *Strncpy(char *dest, const char *src, size_t n)
 {
 	int i = 0;
-	for (i = 0 ; i <= n && src[i] != '\0' ; i++)	
+	for (i = 0 ; i <= (int)n && src[i] != '\0' ; i++)	
 	{
 		*(dest+i) = *(src+i);
 	}
@@ -77,3 +77,63 @@ char *Strncpy(char *dest, const char *src, size_t n)
 	}
 	return dest;
 }
+
+
+
+/* strdup */
+/********************************************************************
+*  strdup copy a string from the source string to the target string.
+*  the target is created using malloc by the function itself.
+*  the user must free the memory space allocated by the function 
+*********************************************************************/
+
+char *Strdup(char source[])
+{
+	size_t len = Strlen(source);
+	char *target = malloc((len + 1) * sizeof(char));
+	while (*source)
+		{
+		*target = *source;
+		target++;
+		source++;
+		}
+	*target = '\0';
+
+	return (target - (len));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

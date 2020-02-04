@@ -1,2 +1,8 @@
-dummy.md
-*.out
+#ignore:
+*
+
+#add:
+!*.c
+!*.h
+!*gitignore
+!**/
