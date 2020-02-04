@@ -20,7 +20,7 @@ size_t Strlen(char *s)
 
 
 /* strcmp */
-/* Compare two strings */
+/* Compare two strings */history git fetch origin
 /* WORKED WITH SANITY TEST */
 int Strcmp(const char *s1, const char *s2)
 {
@@ -93,9 +93,9 @@ char *Strdup(char source[])
 	char *target = malloc((len + 1) * sizeof(char));
 	while (*source)
 		{
-		*target = *source;
-		target++;
-		source++;
+			*target = *source;
+			target++;
+			source++;
 		}
 	*target = '\0';
 
