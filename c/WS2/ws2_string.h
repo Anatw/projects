@@ -5,3 +5,5 @@ size_t Strlen(char *s);
 int Strcmp(const char *s1, const char *s2);      
 
 char *Strncpy(char *dest, const char *src, size_t n);
+
+int Strcasecmp(const char *s1, const char *s2);

@@ -36,22 +36,15 @@ int Strcmp(const char *s1, const char *s2)
 }
 
 /* Strcasecmp */
+/* working... BUT NOT AS EXPECTED */
 int Strcasecmp(const char *s1, const char *s2)
 {
 	char *s3 = (char *)s1;
 	char *s4 = (char *)s2;
 	while ((*s3 && *s4) != '\0')
 	{		
-		if((*s3-*s4)==32)
+		if(122>*s3>97 || 122>*s4>97 && (((*s3-*s4)*(*s3-*s4)) == 32*32) )
 		{
-			*s3 -= 32;
-			s3++;
-			s4++;
-		}
-		
-		else if ((*s3-*s4)==(-32))
-		{
-			*s4 -= 32;
 			s3++;
 			s4++;
 		}

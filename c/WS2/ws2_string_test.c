@@ -7,8 +7,8 @@
 int main()
 {
 	char s[] = "Hello 2 u world!";
-	const char s1[] = "Hello 2 u ";
-	const char s2[] = " world!";
+	const char s1[] = "WORld!";
+	const char s2[] = "woRldz!";
 	//printf("%u", Strlen(s));
 
 	printf("%d", Strcasecmp(s1, s2));
