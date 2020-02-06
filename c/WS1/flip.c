@@ -20,9 +20,9 @@ int flip(int x)
 	int r;
 	while(x != 0)
 	{
-	r = x % 10;
+	r = (r * 10) + (x % 10);
 	x /= 10;
 	}
 
-	return ;
+	return x;
 }

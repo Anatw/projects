@@ -7,7 +7,7 @@ char *Strncpy(char *dest, const char *src, size_t n);
 int main()
 {
 	char s1[] = "WORld!";
-	char s2[] = "woRldz!";
+	char s2[] = "old_string!";
 	
 	
 	
