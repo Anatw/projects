@@ -9,6 +9,7 @@ All functions names sart with an upper-case S (unlike the funciton in string.h).
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+anat@ubuntu:~/git/anat-wax/c/WS3$ touch 
 
 
 /* strlen */
@@ -107,7 +108,6 @@ int Strcasecmp(const char *s1, const char *s2)
 			s3++;
 			s4++;
 		}
-		
 		else
 		{
 			return(int)(*s3-*s4);
@@ -163,7 +163,6 @@ char *Strdup(char source[])
 			source++;
 		}
 		*target = '\0';
-
 		return (target - (len));
 	}
 	else
@@ -190,7 +189,7 @@ char *Strcat(char *dest, const char *src)
 		++dest;
 		++src;
 	}
-		*dest = '\0';
+	*dest = '\0';
 	return temp;
 }
 
@@ -311,9 +310,8 @@ char *Strtok(char *str, const char *delim)
 	{
 		return (0);
 	}
-
-	str = p + Strspn(p, delim);	/* str jumps over all the delemiters to the
-								next token */
+	/* str jumps over all the delemiters to the next token */
+	str = p + Strspn(p, delim);				
 	p = str + strcspn(str, delim); /* p jumps to the next delimiter */
 	if (p == str)
 	{
@@ -366,9 +364,9 @@ result.
 
 void WS2_strrev(char *str)
 {
-	int i;
-	int j;
-	char tmp;
+	int i = 0;
+	int j = 0;
+	char tmp = '\0';
 	int len = strlen(str);
 	
 	for (i = 0, j = len - 1; i < j; i++, j--)
@@ -393,7 +391,6 @@ char *add_num(const char *num1, const char *num2)
 		printf("%s\n", "calloc allocation error");
 		abort();
 	}
-	
 	num1len--;
 	num2len--;
 	
@@ -465,12 +462,11 @@ char *add_num(const char *num1, const char *num2)
 				reslen++;
 				num2len--;
 			}
-		}
+		}int number = 0;
 	}
-	
 	resault[reslen] = '\0';
 	WS2_strrev(resault);
-	
+
 	return resault;
 }
 
