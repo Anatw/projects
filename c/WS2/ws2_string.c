@@ -9,7 +9,6 @@ All functions names sart with an upper-case S (unlike the funciton in string.h).
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-anat@ubuntu:~/git/anat-wax/c/WS3$ touch 
 
 
 /* strlen */
@@ -81,13 +80,9 @@ char *Strncpy(char *dest, const char *src, size_t n)
 	}
 	*(dest+i) = '\0';
 
-	while ((n - i) > 0)
-	{
-		*(dest+i) = '\0';
-		i++;
-	}
 	return dest;
 }
+
 
 
 /* Strcasecmp */
@@ -154,7 +149,7 @@ char *Strdup(char source[])
 {
 	size_t len = Strlen(source);
 	char *target = malloc((len + 1) * sizeof(char));
-	if(*target != '\0')
+	if(target != 0)
 	{
 		while (*source)
 		{
@@ -163,7 +158,7 @@ char *Strdup(char source[])
 			source++;
 		}
 		*target = '\0';
-		return (target - (len));
+		return (target - len);
 	}
 	else
 	{
@@ -462,7 +457,7 @@ char *add_num(const char *num1, const char *num2)
 				reslen++;
 				num2len--;
 			}
-		}int number = 0;
+		}
 	}
 	resault[reslen] = '\0';
 	WS2_strrev(resault);
