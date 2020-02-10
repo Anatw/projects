@@ -23,14 +23,13 @@ int main()
 	char *token;
 	char num1[] = "102";
 	char num2[] = "103";
-	int *res;
-	int i;
-	int len;
+	
+	
     
 
 	printf("check Strlen:\n");
-	printf("%d\n", Strlen(str1));
-	printf("%d\n\n", strlen(str1));
+	printf("%s\n", Strlen(str1));
+	printf("%s\n\n", strlen(str1));
 
 	printf("check Strcpy:\n");
 	printf("%s\n", Strcpy(dest, str2));
@@ -67,7 +66,7 @@ int main()
 
 	printf("check Strspn:\n");
 	printf("%d\n", Strspn(dest, str1));
-	printf("%d\n\n", strspn(dest, str1));
+	printf("%s\n\n", strspn(dest, str1));
 
 	printf("check Strtok:\n");
 	token = Strtok(text, "-;");

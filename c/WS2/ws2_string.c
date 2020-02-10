@@ -2,13 +2,15 @@
 This file was written by anat Wax on the week starting on Fabruary 2nd 2020.
 the code review was done by Nofar Gil on February 6th.
 
-All functions names sart with an upper-case S (unlike the funciton in string.h).
+All functions `main'
+collect2: error: l names sart with an upper-case S (unlike the funciton in string.h).
 ****************************************************************************/
 #include <stdio.h>
 #include "ws2_string.h"
-#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
+
 
 
 /* strlen */
@@ -20,6 +22,7 @@ WORKED WITH SANITY TEST
 size_t Strlen(char *s)
 {
 	size_t i = 0;
+	assert(*s != '\0'); /*pointer must not be empty... */
 	while (s[i] != '\0')	
 	{
 		i++;
@@ -36,6 +39,8 @@ WORKED WITH SANITY TEST
 
 int Strcmp(const char *s1, const char *s2)
 {
+	assert(*s1 != '\0');
+	assert(*s2 != '\0');
 	if ((*s1 && *s2) != '\0')
 	{		
 		while (*s1 == *s2)
@@ -57,6 +62,8 @@ the user want to copy.
 
 char *Strcpy(char *dest, const char *src)
 {
+	assert(*dest != '\0');
+	assert(*src != '\0');
 	while(*src)	
 	{
 		*dest=*src;
@@ -74,6 +81,8 @@ char *Strcpy(char *dest, const char *src)
 char *Strncpy(char *dest, const char *src, size_t n)
 {
 	int i = 0;
+	assert(*dest != '\0');
+	assert(*src != '\0');
 	for (i = 0 ; i <= (int)n && src[i] != '\0' ; i++)	
 	{
 		*(dest+i) = *(src+i);
@@ -96,19 +105,24 @@ int Strcasecmp(const char *s1, const char *s2)
 {
 	char *s3 = (char *)s1;
 	char *s4 = (char *)s2;
-	while (*s3 && *s4)
-	{		
-		if((*s3 == *s4) || (*s3 == (*s4 - 32)) || (*s3 == (*s4 + 32)))
-		{
-			s3++;
-			s4++;
-		}
-		else
-		{
-			return(int)(*s3-*s4);
-		}
+	assert(*s1 != '\0');
+	assert(*s2 != '\0');
+	
+	while(*s3 != '\0' || *s4 != '\0')
+	{
+		*s3 = tolower(*s3);
+		*s4 = tolower(*s4);
 	}
-
+	if(*s3 == *s4)
+	{
+		s3++;
+		s4++;
+	}
+	else
+	{
+		return(int)(*s3-*s4);
+	}
+	
 	return 0;
 }
 
@@ -121,6 +135,7 @@ returns a pointer for thr first appearencr of the entered character.
 
 char *Strchr(char *str, int character)
 {
+	assert(*str != '\0');
 	while(*str)
 	{
 		if(*str == character)
@@ -178,6 +193,9 @@ char *Strcat(char *dest, const char *src)
 {
 	char *temp = dest;
 	dest = dest + ((int)Strlen(dest));
+	assert(*dest != '\0');
+	assert(*src != '\0');
+	
 	while(*src)
 	{
 		*dest = *src;
@@ -196,6 +214,9 @@ char *Strncat(char *dest, const char *src, size_t n)
 {	
 	int counter = 0;
 	char *temp = dest;
+	assert(*dest != '\0');
+	assert(*src != '\0');
+	
 	dest = dest + ((int)strlen(dest));
 
 	while(*src && counter < (int)n)
@@ -220,6 +241,8 @@ char *Strstr(const char *string, const char *search_str)
 	int counter = 0;
 	const char *start_string = search_str;
 	char *start = NULL;
+	assert(*string != '\0');
+	assert(*search_str != '\0');
 	
 	while(*string)
 	{
@@ -261,6 +284,9 @@ char Strspn(const char *s, const char *accept)
 {
 	size_t counter = 0;
 	const char *accept_start = accept;
+	assert(*s != '\0');
+	assert(*accept != '\0');
+	
 	for (; *s ; ++s)
 	{
 		int isfound = 0 ; /*boolean */
@@ -297,6 +323,8 @@ the delim.
 char *Strtok(char *str, const char *delim)
 {
 	static char *p = 0;
+	assert(*str != '\0');
+	assert(*delim != '\0');
 	if(str) /* assign str to p if str is not null */
 	{
 		p = str;
@@ -333,6 +361,7 @@ int IsPalindrome(const char *str)
 {
 	int length = strlen(str);
 	char *from_end = (char *)str + length - 1;
+	assert(*str != '\0');
 	
 	while (str < from_end)
 	{
@@ -363,6 +392,7 @@ void WS2_strrev(char *str)
 	int j = 0;
 	char tmp = '\0';
 	int len = strlen(str);
+	assert(*str != '\0');
 	
 	for (i = 0, j = len - 1; i < j; i++, j--)
 	{
@@ -381,6 +411,10 @@ char *add_num(const char *num1, const char *num2)
 	int num2len = strlen(num2);
 	int larg = num1len > num2len ? num1len : num2len;
 	char *resault = (char*)calloc((larg + 2) , sizeof(char));
+	
+	assert(*num1 != '\0');
+	assert(*num2 != '\0');
+	
 	if (!resault)
 	{
 		printf("%s\n", "calloc allocation error");
@@ -517,6 +551,7 @@ void RmSpaces(char *str)
 {
 	char *read = str;
 	char *write = str;
+	assert(*str != '\0');
 		
 	if(*str == ' ' || *str == '\t')
 	{
@@ -561,6 +596,8 @@ void swap_pointers_pointers(int **pp1, int **pp2)
 	int *p = *pp1;
 	*pp1 = *pp2;
 	*pp2 = p;
+	assert(**pp1 != '\0');
+	assert(**pp2 != '\0');
 }	
 
 
