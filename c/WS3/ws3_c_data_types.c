@@ -1,7 +1,9 @@
-/********************************************************************
+/****************************************************************************
 This program lists the different data types in C(according to the ICO C90),
 their names, sizes and the format specifier for each of them.
-********************************************************************/
+
+Writen by Anat Wax, February 2020. Code review was done by Lucy Volkov.
+****************************************************************************/
 #include <stdio.h>
 
 int main()

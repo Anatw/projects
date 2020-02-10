@@ -7,6 +7,8 @@
 /************************************************************************
 This program copies all the environment variables in lower case into a new
 char** buffer in lower case and prints them.
+
+Writen by Anat Wax, February 2020. Code review was done by Lucy Volkov.
 ************************************************************************/
 
 int env_length(char **environ);
@@ -16,9 +18,10 @@ void print_buffer(char **buffer);
 
 int main()
 {
-	extern char **environ; /*environ hold all ENV variables*/
-	/*buffer will later hold a copy of environ. 52 is the number of
-	cells in environ. malloc will allocate space on the heap.*/
+	extern char **environ; 	/* environ hold all ENV variables */
+	
+	/* buffer will later hold a copy of environ. 52 is the number of
+	cells in environ. malloc will allocate space on the heap. */
 	char **buffer = malloc(sizeof(environ) * (52));
 	int environ_length = env_length(environ);
 	printf("length: %d\n\n\n\n", env_length(environ));
