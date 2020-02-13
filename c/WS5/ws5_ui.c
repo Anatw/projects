@@ -1,12 +1,14 @@
 /****************************************************************************
 this is the UI part - this is the interface between the user and the program.
-other files in this program: manager.c, manager.h, 
+other files in this program: manager.c, manager.h, functions.c, functions.h.
 this file was written by Anat Wax on February 2020.
 ****************************************************************************/
+
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
 #include "manager.h"
+#include "functions.h"
 
 /* because this main function interact with the user and recieves data from the
 user - it must recieve argc and argv */
@@ -60,6 +62,8 @@ int main(int argc, char *argv[])
     		exit_status = eventCall(input, filename);
     	}
     }
+	
+	error_handling(exit_status);
 		
 	free(input);
 	input = NULL;
