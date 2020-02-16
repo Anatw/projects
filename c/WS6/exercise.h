@@ -1,7 +1,10 @@
-/*************************************************************************
-This is the header file for exercise.c
+/*****************************************************************************
+This is the header file for exercise.c.
 
-Written by Anat Wax on February 2020. reviewed by 
+There are two more files: exercise.c (the functions's code), exercise_tests.c
+(the main function = tests).
+
+Written by Anat Wax on February 2020. Reviewed by Lior Cohen.
 *****************************************************************************/
 
 long Pow2(unsigned int x, unsigned int y);
@@ -25,6 +28,14 @@ int orBits2And6(unsigned char character);
 
 int sawpBits3And5(unsigned char character);
 
+unsigned int divisbleBy16 (unsigned int number);
 
+void swap(int *x, int *y);
 
 int setBits (int number);
+
+int setBitsNoLoop (int number);
+
+int floatInBits(float number);
+
+int bit_return(int number, int index);

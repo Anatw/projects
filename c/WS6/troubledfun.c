@@ -18,3 +18,57 @@ int ispower2b(unsigned int n)
 	}
 }	
 
+
+
+int setBitsNoLoop (int number)
+{
+	int counter = 0;
+	
+	/*Brian Kernighan's Algorithm */
+	if(number) /* unset the first set bit */
+	{
+		number = number & (number - 1);
+		++counter;
+	}
+	if
+	
+	return counter;
+}	
+	
+
+/* great function and works great BUT has forbiddens "if's" */	
+int sawpBits3And5(unsigned char character)
+{
+	int mask = 1;
+	mask = mask << 2; /* move to 3rd bit */
+	if (mask & character) /* 3 if on */
+	{
+		mask = mask << 2; /* move to 5th bit */
+		if (mask & character) 	/* if on */
+		{
+			return character;
+		}
+		else			/* is off */
+		{
+			character = character | mask;
+			mask = mask >> 2;
+			character = character ^ mask;
+		}
+	}
+	else			/* 3 is off */
+	{
+		mask = mask << 2; /* move to 5th bit */
+		if (mask & character) 	/* if on */
+		{
+			character = character ^ mask; /* turns off 5 */
+			mask = mask >> 2; /* move to 3rd bit */
+			character = character & mask; /* turn on 3 */
+		}
+		else			/* is off */
+		{
+			return character;
+		}
+	}
+	
+	return character;
+}
