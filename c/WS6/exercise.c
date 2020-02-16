@@ -4,9 +4,10 @@ filr), exercise_tests.c (the main function = tests).
 
 Written by Anat Wax on February 2020. Reviewed by Lior Cohen.
 *****************************************************************************/
-#include "exercise.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "exercise.h"
 
 
 long Pow2(unsigned int x, unsigned int y)
@@ -20,7 +21,7 @@ long Pow2(unsigned int x, unsigned int y)
 }
 
 /* ispower2 with loop: */
-int ispower2a(unsigned int n)
+int IsPower2a(unsigned int n)
 {
 	unsigned int power2 = 2; /* 2^0 = 1 */
 	
@@ -28,6 +29,7 @@ int ispower2a(unsigned int n)
 	{
 		return (1); /* n is a power of 2 */
 	}
+	
 	while (power2 <= n)
 	{
 		if (power2 == n)
@@ -47,7 +49,7 @@ int ispower2a(unsigned int n)
 
 /* ispower2 without a loop: */
 /* every number that is a power of 2 will always have only one bit on! */
-int ispower2b(unsigned int n)
+int IsPower2b(unsigned int n)
 {
 	if((n & (n-1)) == 0) /* if there was onl one bit on */
 	{
@@ -60,12 +62,12 @@ int ispower2b(unsigned int n)
 }
 
 /* 4. function add one to an int by using bitwise operations only */
-int addOne(int a)
+int AddOne(int a)
 {
 	int mask = 1;
 	
-	/* run until encounter a '0', meaning run while a and
-	 mask are both 1 */
+	/* run until encounter a '0', meaning */
+	/* run	while a and mask are both 1   */
 	while (a & mask)
 	{
 		a = a ^ mask;
@@ -78,16 +80,16 @@ int addOne(int a)
 	return a;
 }
 
-/* 5. function that recieves an array of unsigned ints and prints only he ints
-that have exactly 3 bits on */
-void countSet3Bits (unsigned int *array, int arraySize, unsigned int *result)
+/* 5. function that recieves an array of unsigned ints */
+/* and prints only he ints that have exactly 3 bits on */
+void CountSet3Bits(unsigned int *array, int arraySize, unsigned int *result)
 {
 	int index = 0;
 	int counter = 0;
 	int j = 0;
 	int cell = array[index];
 	
-	/*Brian Kernighan's Algorithm */
+	/* Brian Kernighan's Algorithm */
 	for (index = 0; index < arraySize; ++index)
 	{
 		while(cell) /* unset the first set bit */
@@ -110,19 +112,20 @@ void countSet3Bits (unsigned int *array, int arraySize, unsigned int *result)
 }	
 
 
-/* 6. byte_mirror this function rotate the revNumber and the x number so that always the number
-at possition 0 to x will be signed to the mirrored possition on revNumber. */	
-unsigned int reverseBitsA(unsigned int number)
+/* 6. byte_mirror this function rotate the revNumber and the x  */ 
+/* number so that always the number at possition 0 to x will be */
+/* signed to the mirrored possition on revNumber. 				*/	
+unsigned int ReverseBitsA(unsigned int number)
 {
-	unsigned int revNumber = 0;
+	unsigned int rev_number = 0;
 	int counter = 0;
 	while(number)
 	{
-		revNumber = revNumber << 1; /* rotating to next cell */
+		rev_number = rev_number << 1; /* rotating to next cell */
 		
 		if (number & 1)
 		{
-			revNumber =  revNumber | 1;
+			rev_number =  rev_number | 1;
 		}
 
 		number = number >> 1;
@@ -131,17 +134,17 @@ unsigned int reverseBitsA(unsigned int number)
 	
 	while(counter < 8)
 	{
-		revNumber = revNumber << 1;
+		rev_number = rev_number << 1;
 		++counter;
 	}
 	
-	return revNumber;
+	return rev_number;
 }
 
 
 /*** 7. byte_mirror NO loop */
 /* function without loop: */
-unsigned int reverseBitsB(unsigned int x)
+unsigned int ReverseBitsB(unsigned int x)
 {
 	unsigned int result[] = {0, 128, 64, 192, 32, 160, 96, 224, 16, 144, 80,
     208, 48, 176, 112, 240, 8, 136, 72, 200, 40, 168, 104, 232, 24, 152, 88, 
@@ -166,7 +169,7 @@ unsigned int reverseBitsB(unsigned int x)
 
  	
 /* 8. function that check if both bits 2 and 6 are on: */	
-int bothBits2And6(unsigned char character)
+int BothBits2And6(unsigned char character)
 {
 	int mask = 1;
 	
@@ -175,7 +178,7 @@ int bothBits2And6(unsigned char character)
 
 
 /* 9. function that check if at least one ot the bits 2 and 6 are on: */
-int orBits2And6(unsigned char character)
+int OrBits2And6(unsigned char character)
 {
 	int mask = 1;
 	
@@ -183,8 +186,8 @@ int orBits2And6(unsigned char character)
 }
 
 
- /*** 10. function thet sweap between 3 and bit 5 and return the new number */	
-int sawpBits3And5(unsigned char character)
+ /*** 10. function that sweap between 3 and bit 5 and return the new number */	
+int SawpBits3And5(unsigned char character)
 {
 	unsigned int bit3 = (character >> 3) & 1; /* get the value of bit 3 */
     unsigned int bit5 = (character >> 5) & 1; /* get the value of bit 5 */
@@ -199,9 +202,9 @@ int sawpBits3And5(unsigned char character)
 }
 	
 		
-/* 11. function that receives an unsigned int and returns the closest (smaller)
-number that is divisible by 16 without a reminder */	
-unsigned int divisbleBy16 (unsigned int number)
+/* 11. function that receives an unsigned int and returns the closest  */
+/* (smaller) number that is divisible by 16 without a reminder 		   */	
+unsigned int DivisbleBy16(unsigned int number)
 {
 	int one = 1;
 	
@@ -215,18 +218,17 @@ unsigned int divisbleBy16 (unsigned int number)
 }
 
 
-/* 12. function that swaps 2 variables without using a thid variable */
-/* int b = 7 = (0000-0111) ; 	int r = 20 = (0001-0100) ; */
-void swap(int *x, int *y)
+/* 12. function that swaps 2 variables without using a third variable */
+void Swap(int *x, int *y)
 {
-	*x = *x ^ *y;	/* 0001-0011 (19) */
-	*y = *y ^ *x;	/* 0000-0111 (7) */
-	*x = *x ^ *y;	/* 0001-0000 (16) */
+	*x = *x ^ *y;	
+	*y = *y ^ *x;	
+	*x = *x ^ *y;	
 }
 	
 	
-/* 13. function that counts the number of set bits in an intiger */	
-int setBits (int number)
+/* 13. function mall letters with _ between wothat counts the number of set bits in an intiger */	
+int SetBits(int number)
 {
 	int counter = 0;
 	
@@ -241,8 +243,9 @@ int setBits (int number)
 }	
 
 
-/*** 14. function count number of set bits in an integer - without using a loop */
-int setBitsNoLoop (int number)
+/*** 14. function count number of set bits  */ 
+/*	 in an integer - without using a loop   */
+int SetBitsNoLoop(int number)
 {
 	/* mask: 1010101010101010101010101010101 */
     number = (number & (0x55555555)) + ((number >> 1) & (0x55555555));
@@ -263,30 +266,38 @@ int setBitsNoLoop (int number)
 }
 	
 
-/* a program that recieves a float from to user, and print its bits */
-/* you must make a cast because you can't do bitwise operation on float.
-    this casting is to a pointer to int so after the casting yiu see the same
-    float number, but call it as if it was an intiger */
-int floatInBits(float number) 
+/*** a program that recieves a float from to user, and print its bits 	  	 */
+/* you must make a cast because you can't do bitwise operation on float.     */
+/* this casting is to a pointer to int so after the casting yiu see the same */
+/* float number, but call it as if it was an intiger						 */
+int FloatInBits(float number) 
 {
-	int *f_number;
+	int *p_number;
 	int index = 0;
-	f_number = (int *)&number;
+	
+	p_number = (int *)&number;
 
-	for (index = 31; index >= 0; --index)
+	for(index = 31; index >= 0; --index)
 	{
-		printf("%d",bit_return(*f_number,index));
+		printf("%d", BitReturn(*p_number,index));
 	}
 
 	return 0;
 }
 
-int bit_return(int number, int index)   
+
+int BitReturn(int number, int index)   
 {
 	int buffer = number & (1 << index);
 
-	if (buffer == 0) return 0;
-	else return 1; 
+	if(buffer == 0)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
 }
 	
 	

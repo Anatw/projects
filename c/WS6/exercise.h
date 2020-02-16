@@ -9,33 +9,33 @@ Written by Anat Wax on February 2020. Reviewed by Lior Cohen.
 
 long Pow2(unsigned int x, unsigned int y);
 
-int ispower2a(unsigned int n);
+int IsPower2a(unsigned int n);
 
-int ispower2b(unsigned int n);
+int IsPower2b(unsigned int n);
 
-int addOne(int a);
+int AddOne(int a);
 
-void countSet3Bits (unsigned int *array, int arraySize, unsigned
+void CountSet3Bits(unsigned int *array, int arraySize, unsigned
  int *result);
  
-unsigned int reverseBitsA(unsigned int x);
+unsigned int ReverseBitsA(unsigned int x);
  
-unsigned int reverseBitsB(unsigned int x);
+unsigned int ReverseBitsB(unsigned int x);
 
-int bothBits2And6(unsigned char character);
+int BothBits2And6(unsigned char character);
 
-int orBits2And6(unsigned char character);
+int OrBits2And6(unsigned char character);
 
-int sawpBits3And5(unsigned char character);
+int SawpBits3And5(unsigned char character);
 
-unsigned int divisbleBy16 (unsigned int number);
+unsigned int DivisbleBy16(unsigned int number);
 
-void swap(int *x, int *y);
+void Swap(int *x, int *y);
 
-int setBits (int number);
+int SetBits(int number);
 
-int setBitsNoLoop (int number);
+int SetBitsNoLoop(int number);
 
-int floatInBits(float number);
+int FloatInBits(float number);
 
-int bit_return(int number, int index);
+int BitReturn(int number, int index);

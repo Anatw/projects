@@ -10,14 +10,23 @@ this file was written by Anat Wax on February 2020.
 #include "manager.h"
 
 int compare(char *string, char *input);
+
 int dontcompare(char *string, char *input);
+
 int comparechar(char *string, char *input);
+
 status append(char *input, char *filename);
+
 status addtostart(char *input, char *filename);
+
 status counter(char *input, char *filename);
+
 status exitProgram(char *input, char *filename);
+
 status removefile(char *input, char *filename);
+
 void RemoveFirstChar(char *input);
+
 void error_handling(status exit_status);
 
 #endif

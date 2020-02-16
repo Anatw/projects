@@ -20,8 +20,10 @@ int main(int argc, char *argv[])
 	
 	/* '*content' is the pointer to the beggining of the user's string: */
 	char *input = NULL;
+	
 	/* '*stringLength' is the length of the users string: */
 	size_t stringLength = 0;
+	
 	/* 'exit_status' is the return status that every function returns. it is
 		of enum type 'status': */
 	status exit_status = 0; 
@@ -38,6 +40,7 @@ int main(int argc, char *argv[])
 	
 	/* checking is the new file opens correctly */
 	filepointer = fopen(filename, "a+");
+	
 	if (!filepointer)
 	{
 		printf("Error openning the file %s\n", filename);

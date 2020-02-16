@@ -58,6 +58,7 @@ status eventCall(char *input, char *filename)
 			break;
 		}
 	}
+	
 	return operatorStatus;
 }
 

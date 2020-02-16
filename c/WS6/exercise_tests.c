@@ -4,11 +4,11 @@ file), exercise.c (the functions's code).
 
 Written by Anat Wax on February 2020. Reviewed by Lior Cohen.
 *****************************************************************************/
-#include "exercise.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
+#include "exercise.h"
 
 int main()
 {
