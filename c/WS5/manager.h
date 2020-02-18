@@ -10,6 +10,7 @@ this file was written by Anat Wax on February 2020.
 /* this define "status" as an enum type of status: */
 typedef enum Status	{SUCCESS = 0, FAILURE = 1, EXIT = 2,
 					 FILENOTFOUND = 3} status;
+					 
 
 status eventCall(char *input, char *filename);
 
