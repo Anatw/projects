@@ -10,6 +10,6 @@ void Printush(element *member);
 
 void AddInt(element *member, int intFromUser);
 
-void Clear(element *member);
+void Cleanup(element *member);
 
 #endif

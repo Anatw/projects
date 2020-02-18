@@ -10,9 +10,15 @@ this file was written by Anat Wax on February 18, 2020.
 #include "main_funcs.h"
 #include "struct_funcs.h"
 
-void Clear(element *member)
+void FreeMemory(element *array, int arraySize)
 {
-	printf("I am clear\n");
+	int i = 0;
+	
+	for(i = 0; i < arraySize; ++i)
+	{
+		Cleanup(&array[i]);
+	}
+	free(array);
 }
 
 
@@ -22,17 +28,17 @@ void PrintArray(element *array, int arraySize)
 	
 	for(i = 0; i < arraySize; ++i)
 	{
-		printush(&array[i]);
+		Printush(&array[i]);
 	}
 }
 
 
-void addToArray(element *array, int arraySize)
+void AddToArray(element *array, int arraySize, int intFromUser)
 {
 	int i = 0;
 	
 	for(i = 0; i < arraySize; ++i)
 	{
-		printush(&array[i]);
+		AddInt(&array[i], intFromUser);
 	}
 }

@@ -33,4 +33,8 @@ typedef struct Element
 
 void PrintArray(element *array, int arraySize);
 
+void AddToArray(element *array, int arraySize, int intFromUser);
+
+void FreeMemory(element *member, int arraySize);
+
 #endif

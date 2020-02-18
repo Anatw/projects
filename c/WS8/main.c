@@ -14,8 +14,10 @@ this file was written by Anat Wax on February 18, 2020.
 
 int main()
 {
-	int intFromUser = 0;
+	int intFromUser = 10;
+	
 	element *array = malloc(sizeof(struct Element) * arraySize);
+	
 	array[0].element_type = FLOAT;
 	array[0].element_value.float_num = 4.2;
 	/*struct   union        member  	*/
@@ -35,6 +37,12 @@ int main()
 	array[4].element_value.float_num = 56.32;
 	
 	PrintArray(array, arraySize);
+	
+	AddToArray(array, arraySize, intFromUser);
+	
+	PrintArray(array, arraySize);
+	
+	FreeMemory(array, arraySize);
 	
 	return (0);
 }
