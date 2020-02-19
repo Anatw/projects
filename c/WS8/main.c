@@ -1,8 +1,10 @@
-/****************************************************************************
-main.c is the interface between te program and the user.
+/*******************************************************************************
+main.c is the program.
+Under it you have the main_funcs.c that run the iteration over the array.
+Under it there are the struct_funcs, called by the main_funcs.
 
-this file was written by Anat Wax on February 18, 2020.
-****************************************************************************/
+This file was written by Anat Wax on February 18, 2020. reviewer: Lusy Volkov.
+*******************************************************************************/
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,6 +37,7 @@ int main()
 	
 	array[4].element_type = FLOAT;
 	array[4].element_value.float_num = 56.32;
+	
 	
 	PrintArray(array, arraySize);
 	
