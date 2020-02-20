@@ -58,6 +58,7 @@ int Strcmp(const char *s1, const char *s2)
 These fonctions copy a string (src) into a destination string (dest).
 The n function is a saffer one, which also require he number of characters
 the user want to copy.
+
 ****************************************************************/
 
 char *Strcpy(char *dest, const char *src)
@@ -277,7 +278,7 @@ char *Strstr(const char *string, const char *search_str)
 /*****************************************************************************
 This function search for the specific characters (accept) in a string (s).
 When it reaches a letter in "accept" that it canno't locate in string - it
-quits the finction and return the number of letter from "s" that it has found.
+quits the function and return the number of letter from "s" that it has found.
 ******************************************************************************/
 
 char Strspn(const char *s, const char *accept)
@@ -402,7 +403,7 @@ void WS2_strrev(char *str)
 	}
 }
 
-
+/***		*/
 char *add_num(const char *num1, const char *num2)
 {
 	int tmp = 0;

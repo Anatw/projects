@@ -14,12 +14,22 @@ This file was written by Anat Wax on February 18, 2020. reviewer: Lusy Volkov.
 
 #define arraySize 5
 
-int main()
+int main(int argc, char *argv[])
 {
-	int intFromUser = 10;
-	
+	char *p = NULL;
 	element *array = malloc(sizeof(struct Element) * arraySize);
+	int intFromUser = 0;
 	
+	if (argc == 1) /*the user didn't supply any intiger */
+	{
+		intFromUser = 0;
+	}
+	else
+	{
+		intFromUser = (int)strtol(argv[1], &p, 10);
+	}
+	
+		
 	array[0].element_type = FLOAT;
 	array[0].element_value.float_num = 4.2;
 	/*struct   union        member  	*/
@@ -39,12 +49,15 @@ int main()
 	array[4].element_value.float_num = 56.32;
 	
 	
+	printf("This is the original array:\n");
 	PrintArray(array, arraySize);
 	
 	AddToArray(array, arraySize, intFromUser);
 	
+	printf("\n\nThis is the array after adding he intiger:\n");
 	PrintArray(array, arraySize);
 	
+	printf("\n\n");
 	FreeMemory(array, arraySize);
 	
 	return (0);

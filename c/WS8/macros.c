@@ -11,17 +11,19 @@
 /* if c is greater than a or b - return c, else - find who is bigger - a or b */
 #define MAX3(a, b, c) ((MAX2(a, b) > c) ? (MAX2(a, b)) : c)
 
-/*the next memory address minus the VAR memory address will give the VAR size*/
+/*the next memory address minus the VAR memory address will give the VAR size */
 #define SIZEOF_VAR(VAR) ((size_t)(&VAR + 1) - (size_t)(&VAR))
 
-
+/* calculate the distance in memory between the address of the next variable  */
+/* which is the same data type as TYPE (by moving the pointer to TYPE on	  */
+/* memory location ahead 													  */
 #define SIZEOF_TYPE(TYPE) (((size_t)(1 + ((TYPE *)0))) - ((size_t)((TYPE *)0)))
 
 
 int main()
 {
 	char x = 3;
-	double z;
+	double z = 0;
 	int arr[20];
 	int y = MAX2(3, 5);
 	int f = MAX3(3, 65, 15);

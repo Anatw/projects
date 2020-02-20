@@ -7,7 +7,9 @@ this file was written by Anat Wax on February 2020.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define _GNU_SOURCE
+
 #include "manager.h"
 #include "functions.h"
 

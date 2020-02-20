@@ -44,6 +44,7 @@ int IsPower2a(unsigned int n)
 	}
 	
 	return (0);
+	/* add that if n is zero, it sould also return 1 */
 }
 
 
@@ -146,7 +147,9 @@ unsigned int ReverseBitsA(unsigned int number)
 /* function without loop: */
 unsigned int ReverseBitsB(unsigned int x)
 {
-	unsigned int result[] = {0, 128, 64, 192, 32, 160, 96, 224, 16, 144, 80,
+	/* it is static so it will only go to the	*/
+	/* stack ONLY when we call the function		*/
+	static int result[] = {0, 128, 64, 192, 32, 160, 96, 224, 16, 144, 80,
     208, 48, 176, 112, 240, 8, 136, 72, 200, 40, 168, 104, 232, 24, 152, 88, 
     216, 56, 184, 120, 248, 4, 132, 68, 196, 36, 164, 100, 228, 20, 148, 84, 
     212, 52, 180, 116, 244, 12, 140, 76, 204, 44, 172, 108, 236, 28, 156, 92, 
@@ -227,7 +230,8 @@ void Swap(int *x, int *y)
 }
 	
 	
-/* 13. function mall letters with _ between wothat counts the number of set bits in an intiger */	
+/* 13. function mall letters with _ between wothat counts the   */
+/* number of set bits in an intiger 							*/	
 int SetBits(int number)
 {
 	int counter = 0;
