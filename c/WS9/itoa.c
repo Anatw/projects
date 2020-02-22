@@ -1,76 +1,95 @@
 /*******************************************************************************
-					  	 Written by Anat Wax
-						  February 20, 2020
-						Reviewer: Noffar Gil
+		  	    Written by Anat Wax
+			     February 20, 2020
+			   Reviewer: Noffar Gil
 *******************************************************************************/
 
 #include <stdio.h> /* printf() */
-#include <stdlib.h> /* atoi */
-#include <string.h> /* stlen() */
+#include <stdlib.h> /* malloc(), free(), strtol(), exit() */
 
-#define BASE (2)
-#define ASCII (48) /* ascii '0' = 48 */
+#define NEGATIVE (-1)
 
-char Itoa(int number, int base, char *stringOfInt);
+char *Itoa(int number, int base, char *string_of_int);
 void swap(char *x, char *y);
-char *reverse(char *reverseAray, int j, int index);
-int NumInInt(int intFromUser);
+char *reverse(char *reverse_array, int j, int index);
+int NumInInt(int int_num);
 
-int main()
+int main(int argc, char *argv[])
 {
-	int number = -1234;
-	int intLength = NumInInt(number);
-	char *stringOfInt = (char *)malloc((sizeof(char) * intLength) + 1);
-	int base = 2;
+	char *p = NULL;
+	int base = 1;
+	int number = 99;
+	int int_length = NumInInt(number);
+	char *string_of_int = (char *)malloc((sizeof(char) * int_length) + 1);
 	
-	Itoa(number, base, stringOfInt);
+	if(1 == argc)
+	{
+		printf("you must enter a base!\n");
+		exit(1);
+	}
+	else
+	{
+		base = (int)strtol(argv[1], &p, 10);
+	}	
 	
-	printf("the string: %s\n", stringOfInt);
+	Itoa(number, base, string_of_int);
 	
+	printf("the string: %s\n", string_of_int);
+	
+	free(string_of_int);
 	return (0);
 }
 
-char Itoa(int number, int base, char *stringOfInt)
+char *Itoa(int number, int base, char *string_of_int)
 {
 	int index = 0;
 	int modulus = 0;
+	int is_negative = 0;
+	
+	if(number < 0)
+	{
+		is_negative = NEGATIVE;
+	}
 	
 	if(0 == number)
 	{
-		*stringOfInt = '\0';
-		return *stringOfInt;
+		*string_of_int = '\0';
+		return string_of_int;
 	}
-	else if(base < 0 || 10 == base)
+
+	if((2 <= base) || (base <= 36))
 	{
-		sprintf(stringOfInt, "%d", number);
-		if(10 == base)
+		while(0 != number)
 		{
-			return *stringOfInt;
-		}
-		else
-		{
-			stringOfInt[index + 1] = '-';
-			return *stringOfInt;
+			modulus = number % base;
+			
+			if(modulus > 9)
+			{
+				string_of_int[index] = (modulus - 10) + 'A';
+				++index;
+			}
+			else
+			{
+				string_of_int[index] = modulus + '0';
+				++index;
+			}
+			number = number / base;
 		}
 	}
-	else if((2 <= base) || (base <= 36))
+	else
 	{
-		modulus = number % base;
-		
-		if(modulus < 9)
-		{
-			stringOfInt[index] = (modulus - 10) + 'A';
-		}
-		else
-		{
-			stringOfInt[index] = modulus + '0';
-		}
-		stringOfInt[index] = '\0';
+		return string_of_int;
 	}
 	
-	reverse(stringOfInt, 0, index);
+	if(NEGATIVE == is_negative)
+	{
+		*string_of_int = '-';
+	}
 	
-	return *stringOfInt;
+	string_of_int[index] = '\0';
+	reverse(string_of_int, 0, (index - 1));
+	
+	return string_of_int;
 }
 
 /* inline function to swap two numbers */
@@ -84,29 +103,27 @@ void swap(char *x, char *y)
 }
 
 /* function to reverse buffer[i..j] */
-char *reverse(char *reverseAray, int j, int index)
+char *reverse(char *reverse_array, int j, int index)
 {
 	while (j < index)
 	{
-		swap(&reverseAray[j], &reverseAray[index]);
+		swap(&reverse_array[j], &reverse_array[index]);
 		++j;
 		--index;
 	}
 	
-	return reverseAray;
+	return reverse_array;
 }
 
-int NumInInt(int intFromUser)
+int NumInInt(int int_num)
 {
 	int counter = 0;
 	
-	while(0 != intFromUser)
+	while(0 != int_num)
 	{
 		++counter;
-		intFromUser /= 10;
+		int_num /= 10;
 	}
 	
 	return counter;
 }
-
-

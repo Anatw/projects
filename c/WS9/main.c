@@ -5,13 +5,12 @@
 
 int main()
 {
-	char str1[] = "This is a whole new string";
-	char c = 'a';
-	char array[] = {c, c};
+	char str1[] = "This is a whole new string and it is now long enough";
+	char c = '~';
+	char array[100] = {0};
+	Memset(str1, c, 20);
 	
-	int i = 0;
-	for (i = 0; i < 5; i++)
-	printf("%s\n", array);
+	printf("%s\n", str1);
 	
 	return (0);
 }
