@@ -21,7 +21,7 @@ void *Memset(void *str, int c, size_t n)
 	int index = 0;
 	int word_size = sizeof(word);
 
-	/* duplicating the char to a word(3 steps using bit shifting: */
+	/* duplicating the char to a word (3 steps using bit shifting): */
 	for (index = SHIFTS_FOR_WORD; (1 << index) < (word_size * BITS_IN_BYTE);
 		++index)
 	{
