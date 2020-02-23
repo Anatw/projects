@@ -7,7 +7,7 @@ written by Anat Wax, February 23ed 2020.
 
 #include <stdlib.h>
 
-/* manager function - send 
+/* manager function - send */
 void BitArray(long *array, int index, int value);
 
 /* set a single bit: */
