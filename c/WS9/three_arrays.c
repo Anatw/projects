@@ -14,9 +14,8 @@ Written by Anat Wax on February 20, 2020. Reviewer: Noffar Gil
 
 enum cell_status
 {
-	EMPTY,
-	STRING1,
-	STRING2,
+	STRING1 = 1,
+	STRING2 = 2
 };
 
 void PrintIdentical(char* string1, char* string2, char* string3);
@@ -40,12 +39,6 @@ void PrintIdentical(char* string1, char* string2, char* string3)
 	int temp_array[LUTSIZE] = {0};
 	int index = 0;
 	
-	/* initizlise the entire array as EMPTY */
-	for(index = 0; index < LUTSIZE; ++index)
-	{
-		temp_array[index] = EMPTY;
-	}
-	
 	/* sign every existing letter with 1 */
 	for(index = 0; index < s1_length; ++index)
 	{
@@ -64,9 +57,9 @@ void PrintIdentical(char* string1, char* string2, char* string3)
 	/* if a cell is signed as 2 and also exist in string3 - turn in EMPTY */
 	for(index = 0; index < s3_length; ++index)
 	{
-		if(EMPTY != temp_array[(int)string3[index]])
+		if(0 != temp_array[(int)string3[index]])
 		{
-			temp_array[(int)string3[index]] = EMPTY;
+			temp_array[(int)string3[index]] = 0;
 		}
 	}
 	
@@ -77,19 +70,4 @@ void PrintIdentical(char* string1, char* string2, char* string3)
 			printf("%c\n", (char)index);
 		}
 	}
-}	
-
-/*	
-	char *string4 = strcat(string1, string2);
-	int s4_length = (int)strlen(string4);
-	int index = 0;
-	
-	
-	while(index = 0; index < s4_length; ++index)
-	{
-		if(string4[index] >= 'a' && string4[index] <= 'z')
-		{
-			
-		}
-	}
-*/
+}

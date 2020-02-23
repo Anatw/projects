@@ -12,6 +12,8 @@ int main()
 	return (0);
 }
 
+/* this function will check if cell and lock for the highest and lowest points*/
+/* but will make sure to choose the smaler value that appear before the higher*/
 int bursa(int *buy, int *sell, int stock_market[], int stock_market_length)
 {
 	int *is_buy = buy;
@@ -23,12 +25,11 @@ int bursa(int *buy, int *sell, int stock_market[], int stock_market_length)
 	while(index < stock_market_length)
 	{
 		*is_sell = *(stock_market + index);
-		if((*sell - *buy) > (*is_sell - *is_buy))
+		if(*sell > *is_sell)
 		{
 			sell = is_sell;
-			profit = *sell - *buy;
 		}
-		else
+		else if (*buy > *is_buy)
 		{
 			if(sell > is_buy)
 			{

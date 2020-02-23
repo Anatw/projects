@@ -13,11 +13,11 @@ typedef size_t word;
 
 void *Memset(void *str, int c, size_t n)
 {
-	word *str_word_p = NULL;	/* pointer to str as words */
-	byte *str_byte_p = (byte *)str; /* pointer to str as bytes */
-	word c_word = c & 0xff;		/* mask to take only the first 8 bytes of c */
-	byte c_byte = c & 0xff;		/* mask to take only the first 1 byte of c */
-	size_t tail = 0;		/* will take the tail of the word */
+	word *str_word_p = NULL;	   /* pointer to str as words 				  */
+	byte *str_byte_p = (byte *)str;/* pointer to str as bytes  			  	  */
+	word c_word = c & 0xff;		   /* mask to take only the first 8 bytes of c*/
+	byte c_byte = c & 0xff;		   /* mask to take only the first 1 byte of c */
+	size_t tail = 0;			   /* will take the tail of the word		  */
 	int index = 0;
 	int word_size = sizeof(word);
 
@@ -25,11 +25,11 @@ void *Memset(void *str, int c, size_t n)
 	for (index = SHIFTS_FOR_WORD; (1 << index) < (word_size * BITS_IN_BYTE);
 		++index)
 	{
-		c_word |= c_word << (1 << index);
+		c_word = c_word | (c_word << (1 << index));
 	}
 
-	/* check the alignment - if the adress divides by the word_size and
-	 * n is not 0 - assign c_byte to each byte: */
+	/* check the alignment - if the adress divides by the word_size and	 	  */
+	/* n is not 0 - assign c_byte to each byte:							 	  */
 	while (((word)str_byte_p % word_size) && n)
 	{
 		*str_byte_p = c_byte;
@@ -38,13 +38,13 @@ void *Memset(void *str, int c, size_t n)
 		printf("single head char '%c' copied\n", *str_byte_p);
 	}
 
-	/* get the tail - by checking the bits of n and (word_size - 1): */
+	/* get the tail - by checking the bits of n and (word_size - 1): 		  */
 	tail = n % word_size;
 	
 	/* assign the new word-size pointer to str: */
 	str_word_p = (word *)str_byte_p;
 
-	/* loop to duplicate the word-size c in str, using what left from n */
+	/* loop to duplicate the word-size c in str, using what left from n 	  */
 	for (n >>= index - SHIFTS_FOR_WORD; n > 0; ++str_word_p, --n)
 	{
 		*str_word_p = c_word;
@@ -74,8 +74,8 @@ void *Memcpy(void *dest, const void *src, size_t n)
 	size_t tail = 0; /* will take the tail of the word */
 	int word_size = sizeof(word);
 
-	/* check the alignment - if the adress of dest divides by the word_size and
-	 * n is not 0 - assign chars of src to each byte: */
+	/* check the alignment - if the adress of dest divides by the word_size   */
+	/* and n is not 0 - assign chars of src to each byte: 					  */
 	while (((word)dest_byte_p % word_size) && n)
 	{
 		*dest_byte_p = *src_byte_p;
@@ -88,11 +88,11 @@ void *Memcpy(void *dest, const void *src, size_t n)
 	/* get the tail - by checking the bits of n and (word_size - 1) */
 	tail = n % word_size;
 
-	dest_word_p = (word *)dest_byte_p; /* make a new word-size pointer to dest */
-	src_word_p = (word *)src_byte_p; /* make a new word-size pointer to src */
+	dest_word_p = (word *)dest_byte_p; /* make a new word-size pointer to dest*/
+	src_word_p = (word *)src_byte_p; /* make a new word-size pointer to src   */
 
-	/* main loop to duplicate the word-size chunks of dest to src,		* 
-	 * using what left from n 											*/
+	/* main loop to duplicate the word-size chunks of dest to src,		*/ 
+	/* using what left from n 											*/
 	for (n /= word_size; n > 0; --n, ++src_word_p, ++dest_word_p)
 	{
 		*dest_word_p = *src_word_p;
@@ -146,8 +146,8 @@ void *Memmove(void *dest, const void *src, size_t n)
 			printf("single tail char '%c' copied\n", *src_byte_p);
 		}
  		
- 		/* loop to duplicate the word-size chunks of dest to src, * 
-		 * from the last to the first 							  */
+ 		/* loop to duplicate the word-size chunks of dest to src, */
+		/* from the last to the first 							  */
 		for (n /= word_size; n > 0; --n)
 		{
 			/* The reason we copy index n-1 and test n>0 is that  *

@@ -2,7 +2,7 @@
 #include <string.h>
 #define GETPADDING(adress) ((size_t)(adress) % (8))
 
-#include "new_memLib.h"
+#include "MemFuncs.h"
 
 int main()
 {
@@ -12,14 +12,12 @@ int main()
 	printf("string: %s\n", string);
 	printf("string2: %s\n\n", string2);
 	Memset(string + 1, '~', 30);
-	printf("address: %p, offset: %lu, size: %lu\n", (void *)&string,
-		GETPADDING(&string), sizeof(string));
+	printf("address: %p, offset: %lu, size: %lu\n", (void *)&string, GETPADDING(&string), sizeof(string));
 	printf("Expected: h~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ence wow\n");
 	printf("Result:   %s\n\n\n", string);
 
 	Memcpy(string2 + 5, string + 1, 18);
-	printf("address: %p, offset: %lu, size: %lu\n", (void *)&string2,
-		GETPADDING(&string2), sizeof(string2));
+	printf("address: %p, offset: %lu, size: %lu\n", (void *)&string2, GETPADDING(&string2), sizeof(string2));
 	
 	printf("Expected: anoth~~~~~~~~~~~~~~~~~~work with\n");
 	printf("Result:   %s\n\n\n", string2);
