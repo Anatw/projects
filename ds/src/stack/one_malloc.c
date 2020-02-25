@@ -11,8 +11,10 @@ struct stack
 /* O(1) */
 stack_t *StackCreate(size_t size)
 {
-	stack_t *new_stack = (stack_t *)malloc(sizeof(stack_t));
-	(new_stack->container) = (void *)malloc(size * sizeof(void *));
+	stack_t *new_stack = (stack_t *)malloc(sizeof(stack_t) +
+		(size * sizeof(void *)));
+		
+	(new_stack->container) = (void *)(new_stack + sizeof(stack_t));
 	(new_stack->stack_top) = new_stack->container;
 	
 	return (new_stack);
@@ -71,9 +73,6 @@ size_t StackCapacity(stack_t *stack)
 /* O(1) */
 void StackDestroy(stack_t *stack)
 {
-	free(stack->container);
-	stack->container = NULL;
-		
 	free(stack);
 	stack = NULL;
 }

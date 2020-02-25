@@ -13,16 +13,18 @@ void StackDestroy(stack_t *stack);
 /* push an element to the first cel in the stack */
 void StackPush(void *value, stack_t *stack);
 
-/* pop the firs element in the stack */
+/* pop the first element in the stack */
 void StackPop(stack_t *stack);
 
-void *StackPeak(int *value);
+/* operation that returns the value of the top most element of the stack*/
+/* without deleting that element from the stack 			*/
+stack_t *StackPeek(stack_t *stack);
 
-size_t StackSize(char *stack);
+size_t StackSize(stack_t *stack);
 
-/* in c99 if = bool, if c89 = int */
-int StackIsEmpty(char *stack);
+/* is the specific cell empty (0) or has value inside (1)  *||||||*  in c99 if = bool, if c89 = int */
+int StackIsEmpty(stack_t *stack);
 
-size_t StackICapacity(char *stack);
+size_t StackCapacity(stack_t *stack);
 
 #endif
