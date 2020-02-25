@@ -9,8 +9,7 @@ Written by Anat Wax on February 20, 2020. Reviewer: Noffar Gil
 #include <stdlib.h> /* */
 #include <string.h> /* strlen(), strcat() */
 
-#define LUTSIZE (123)/* ascii: 'A' = 65, 'Z' = 90, 'a' = 97, 'z' = 122 : 122-65=*/
-#define LUTSHIFT (65)  /* ascii: 'A' = 65 */
+#define ARRAY_SIZE (123)/* ascii: 'A' = 65, 'Z' = 90, 'a' = 97, 'z' = 122 : 122-65=*/
 
 enum cell_status
 {
@@ -33,10 +32,10 @@ int main()
 
 void PrintIdentical(char* string1, char* string2, char* string3)
 {
-	int s1_length = (int)(strlen(string1));
-	int s2_length = (int)(strlen(string2));
-	int s3_length = (int)(strlen(string3));
-	int temp_array[LUTSIZE] = {0};
+	int s1_length = (strlen(string1));
+	int s2_length = (strlen(string2));
+	int s3_length = (strlen(string3));
+	int temp_array[ARRAY_SIZE] = {0};
 	int index = 0;
 	
 	/* sign every existing letter with 1 */
@@ -63,7 +62,7 @@ void PrintIdentical(char* string1, char* string2, char* string3)
 		}
 	}
 	
-	for(index = 0; index < LUTSIZE; ++index)
+	for(index = 0; index < ARRAY_SIZE; ++index)
 	{
 		if(STRING2 == temp_array[index])
 		{
