@@ -17,34 +17,34 @@ typedef size_t bit_array_t;
 
 /* set a single bit: */
 /* set on a specific bit */
-bit_array_t SetOn(bit_array_t array, unsigned int index);
+bit_array_t BitArraySetOn(bit_array_t array, unsigned int index);
 
 /* set off a specific bit */
-bit_array_t SetOff(bit_array_t array, unsigned int index);
+bit_array_t BitArraySetOff(bit_array_t array, unsigned int index);
 
 /* set a specific bit on (value = 1) or off (value = 0) as valued */
-bit_array_t SetBit(bit_array_t array, unsigned int index, unsigned int value);
+bit_array_t BitArraySetBit(bit_array_t array, unsigned int index, unsigned int value);
 
 /* print the value in a specific bit */
-int GetVal(bit_array_t array, unsigned int index);
+int BitArrayGetVal(bit_array_t array, unsigned int index);
 
 /* flip the value of a specific bit */
-bit_array_t FlipBit(bit_array_t array, unsigned int index);
+bit_array_t BitArrayFlipBit(bit_array_t array, unsigned int index);
 
 /* set all bits: */
-bit_array_t SetAll();
-bit_array_t ResetAll();
-bit_array_t RotL(bit_array_t array, unsigned int rot_num);
-bit_array_t RotR(bit_array_t array, unsigned int rot_num);
-bit_array_t Mirror(bit_array_t array);
-int CountOn(bit_array_t array);
-int CountOnLUT(bit_array_t array);
-int CountOff(bit_array_t array);
+bit_array_t BitArraySetAll();
+bit_array_t BitArrayResetAll();
+bit_array_t BitArrayRotL(bit_array_t array, unsigned int rot_num);
+bit_array_t BitArrayRotR(bit_array_t array, unsigned int rot_num);
+bit_array_t BitArrayMirror(bit_array_t array);
+int BitArrayCountOn(bit_array_t array);
+int BitArrayCountOnLUT(bit_array_t array);
+int BitArrayCountOff(bit_array_t array);
 
 /* recieces bit array and a pointer to an array in the size of				*/
 /* ((sizeof(bit_array) + 1) * 64), returns its elements status as a string  */
-char *ToString(bit_array_t array, char *dest);
+char *BitArrayToString(bit_array_t array, char *dest);
 
-bit_array_t Reverse(bit_array_t array);
+bit_array_t BitArrayReverse(bit_array_t array);
 
 #endif /* BITARRAY_H */

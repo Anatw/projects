@@ -13,10 +13,10 @@
 #define TO_NUMBER (48) /* '0' in ASCII */
 #define MASK_ALL_ON (0xff)
 
-char *ToString(bit_array_t array, char *dest)
+char *BitArrayToString(bit_array_t array, char *dest)
 {
 	unsigned int i = 0;
-	array = Mirror(array);
+	array = BitArrayMirror(array);
 	
 	for(i = 0; i < ARRAY_LENGTH; ++i, array >>= 1)
 	{
@@ -30,7 +30,7 @@ char *ToString(bit_array_t array, char *dest)
 
 
 /******************************************************************************/
-bit_array_t Mirror(bit_array_t array)
+bit_array_t BitArrayMirror(bit_array_t array)
 {
 	bit_array_t reverse = array;
 	
@@ -70,19 +70,19 @@ bit_array_t Mirror(bit_array_t array)
 }
 
 /******************************************************************************/
-bit_array_t SetAll()
+bit_array_t BitArraySetAll()
 {
 	return (~0);
 }
 
 /******************************************************************************/
-bit_array_t ResetAll()
+bit_array_t BitArrayResetAll()
 {
 	return (0);
 }
 
 /******************************************************************************/
-bit_array_t SetOn(bit_array_t array, unsigned int index)
+bit_array_t BitArraySetOn(bit_array_t array, unsigned int index)
 {
 	bit_array_t mask = 1;
 	
@@ -96,7 +96,7 @@ bit_array_t SetOn(bit_array_t array, unsigned int index)
 }
 
 /******************************************************************************/
-bit_array_t SetOff(bit_array_t array, unsigned int index)
+bit_array_t BitArraySetOff(bit_array_t array, unsigned int index)
 {
 	bit_array_t mask = 0;
 	
@@ -110,14 +110,14 @@ bit_array_t SetOff(bit_array_t array, unsigned int index)
 }
 
 /******************************************************************************/
-bit_array_t SetBit(bit_array_t array, unsigned int index, unsigned int value)
+bit_array_t BitArraySetBit(bit_array_t array, unsigned int index, unsigned int value)
 {
 	bit_array_t mask = value; 
 	
 	assert((bit_array_t)index <= ARRAY_LENGTH);
 	assert(0 == value || 1 == value);	
 		
-	SetOff(array, index); /* set off the requested bit */
+	BitArraySetOff(array, index); /* set off the requested bit */
 	
 	mask <<= index;
 	
@@ -129,7 +129,7 @@ bit_array_t SetBit(bit_array_t array, unsigned int index, unsigned int value)
 
 
 /******************************************************************************/
-bit_array_t FlipBit(bit_array_t array, unsigned int index)
+bit_array_t BitArrayFlipBit(bit_array_t array, unsigned int index)
 {
 	bit_array_t mask = 1;
 	
@@ -144,7 +144,7 @@ bit_array_t FlipBit(bit_array_t array, unsigned int index)
 
 
 /******************************************************************************/
-int GetVal(bit_array_t array, unsigned int index)
+int BitArrayGetVal(bit_array_t array, unsigned int index)
 {
 	int value = 0;
 	bit_array_t mask = 1;
@@ -161,7 +161,7 @@ int GetVal(bit_array_t array, unsigned int index)
 
 
 /******************************************************************************/
-int CountOn(bit_array_t array)
+int BitArrayCountOn(bit_array_t array)
 {
 	int counter = 0;
 	
@@ -176,7 +176,7 @@ int CountOn(bit_array_t array)
 
 /**************/
 
-int CountOnLUT(bit_array_t array)
+int BitArrayCountOnLUT(bit_array_t array)
 {
 	bit_array_t count_bit_on = 0;
 	
@@ -208,17 +208,17 @@ int CountOnLUT(bit_array_t array)
 }
 
 /******************************************************************************/
-int CountOff(bit_array_t array)
+int BitArrayCountOff(bit_array_t array)
 {
 	int counter = 0;
-	counter = ARRAY_LENGTH - CountOn(array);
+	counter = ARRAY_LENGTH - BitArrayCountOn(array);
 	
 	return (counter);
 }
 
 
 /******************************************************************************/
-bit_array_t RotL(bit_array_t array, unsigned int rot_num)
+bit_array_t BitArrayRotL(bit_array_t array, unsigned int rot_num)
 {
 	bit_array_t array_mask = array;
 	rot_num = (rot_num % ARRAY_LENGTH);
@@ -234,7 +234,7 @@ bit_array_t RotL(bit_array_t array, unsigned int rot_num)
 
 
 /******************************************************************************/
-bit_array_t RotR(bit_array_t array, unsigned int rot_num)
+bit_array_t BitArrayRotR(bit_array_t array, unsigned int rot_num)
 {
 	bit_array_t array_mask = array;
 	rot_num = (rot_num % ARRAY_LENGTH);
