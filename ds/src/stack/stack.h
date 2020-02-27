@@ -1,3 +1,13 @@
+/*******************************************************************************
+This program build a stack (an array pointers) in the size requested by the user
+(using malloc on run-time). the user can push or pop to the stack, peek, cheack
+if empty and destroy the stack (free all malloc).
+
+					  	 Written by Anat Wax
+						  February 25, 2020
+						Reviewer: Amir Saraf
+*******************************************************************************/
+
 #ifndef STACK_H
 #define STACK_H
 
@@ -16,15 +26,17 @@ void StackPush(void *value, stack_t *stack);
 /* pop the first element in the stack */
 void StackPop(stack_t *stack);
 
-/* operation that returns the value of the top most element of the stack*/
-/* without deleting that element from the stack 			*/
+/* operation that returns the value of the top most element of */
+/* the stack without deleting that element from the stack 	   */
 stack_t *StackPeek(stack_t *stack);
 
 size_t StackSize(stack_t *stack);
 
-/* is the specific cell empty (0) or has value inside (1)  *||||||*  in c99 if = bool, if c89 = int */
+/* is the specific cell empty (0) or has value inside (1) */
+/* for later improvement: in c99 if = bool, if c89 = int  */
 int StackIsEmpty(stack_t *stack);
 
+/* equal to he size (size_t) the user asked for when running the program */
 size_t StackCapacity(stack_t *stack);
 
 #endif

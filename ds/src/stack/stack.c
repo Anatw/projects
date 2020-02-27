@@ -1,4 +1,11 @@
-#include <stdlib.h> /* sizeof() */
+/*******************************************************************************
+					  	 Written by Anat Wax
+						  February 25, 2020
+						Reviewer: Amir Saraf
+*******************************************************************************/
+
+#include <stdlib.h> /* sizeof(), malloc() */
+#include <stdio.h>
 
 #include "stack.h"
 
@@ -6,14 +13,33 @@ struct stack
 {
 	void **container;
 	void **stack_top;
+	size_t stack_capacity;
 };
 
+
 /* O(1) */
-stack_t *StackCreate(size_t size)
+stack_t *StackCreateTwoMalloc(size_t size)
 {
 	stack_t *new_stack = (stack_t *)malloc(sizeof(stack_t));
 	(new_stack->container) = (void *)malloc(size * sizeof(void *));
 	(new_stack->stack_top) = new_stack->container;
+	
+	return (new_stack);
+}
+
+
+/* O(1) */
+stack_t *StackCreate(size_t size)
+{
+	stack_t *new_stack = (stack_t *)malloc(sizeof(stack_t) +
+		(size * sizeof(void *)));
+		
+	(new_stack->container) = (void *)(new_stack + sizeof(stack_t));
+	(new_stack->stack_top) = new_stack->container;
+	(new_stack->stack_capacity) = size;
+	
+	printf("'stack' address is: %lu\n", (size_t)new_stack->stack_top);
+	printf("'stack' address is: %lu\n", (size_t)new_stack);
 	
 	return (new_stack);
 }
@@ -42,37 +68,27 @@ size_t StackSize(stack_t *stack)
 
 /* O(1) */
 stack_t *StackPeek(stack_t *stack)
-{
+{	
 	return (*((stack->stack_top) - 1));
 }
 
-/* O(1) */
+/* O(1) - is the entire stack empty or full */
 int StackIsEmpty(stack_t *stack)
 {
-	int value = 0;
-	
-	if(0 != *(stack->stack_top))
-	{
-	value = 1;
-	}
-	
-	return (value);
+	return ((StackSize(stack) > 0) ? 0 : 1);
 }
 
 /* O(1) */
 size_t StackCapacity(stack_t *stack)
 {
-	size_t stack_size = (stack->stack_top) - (stack->container);
-	stack_size *= (sizeof(void *));
-	
-	return (stack_size);
+	return (stack->stack_capacity);
 }
 
 /* O(1) */
 void StackDestroy(stack_t *stack)
 {
-	free(stack->container);
-	stack->container = NULL;
+	/* free(stack->container);		to use when StackCreateTwoMalloc is used */
+	/* stack->container = NULL;		to use when StackCreateTwoMalloc is used */
 		
 	free(stack);
 	stack = NULL;
