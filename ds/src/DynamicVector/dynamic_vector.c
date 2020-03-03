@@ -11,7 +11,7 @@
 
 #define SUCCESS (0)
 #define ERROR (1)
-#define DOUBLE (2)
+#define TWO (2)
 
 struct dynamic_vector
 {
@@ -23,9 +23,21 @@ struct dynamic_vector
 vector_t *VectorCreate(size_t capacity)
 {
 	vector_t *dynamic_array = (vector_t *)malloc(sizeof(vector_t));
+	assert(0 < capacity);
+	
+	if(NULL == dynamic_array)
+	{
+		return (NULL);
+	}
+	
 	(dynamic_array->array) = (void *)malloc(capacity * sizeof(void *));
+	if(NULL == dynamic_array->array)
+	{
+		return (NULL);
+	}
+	
 	(dynamic_array->capacity) = capacity;
-	(dynamic_array->size) = 0;
+	(dynamic_array->size) = (-1);
 	
 	return (dynamic_array);
 }
@@ -70,16 +82,15 @@ int VectorPushBack(vector_t *vector, void *value)
 	
 	if(vector->size == vector->capacity)
 	{
-		vector->capacity *= DOUBLE;
+		vector->capacity = VectorReserve(vector, (vector->capacity * TWO));
+		/*vector->capacity *= TWO; 
 		(vector->array) = (void *)realloc(vector->array,
-							vector->capacity * sizeof(size_t));
+							vector->capacity * sizeof(size_t)); */
 	}
-	else
-	{
-		++(vector->size);
-		vector->array[(vector->size)] = value;
-	}
-		
+	
+	++(vector->size);
+	vector->array[(vector->size)] = value;
+	
 	return (SUCCESS);
 }
 
@@ -87,12 +98,20 @@ int VectorPushBack(vector_t *vector, void *value)
 
 int VectorReserve(vector_t *vector, size_t capacity)
 {
+	void **temp_array = NULL;
 	assert(NULL != vector);
+	assert(0 < capacity);
 	
 	vector->capacity = capacity;
-	(vector->array) = realloc(vector->array, capacity * sizeof(size_t));
-		
-	return ((NULL != (vector->array))? SUCCESS : ERROR);
+	temp_array = realloc(vector->array, capacity * sizeof(size_t));
+	if(NULL == temp_array)
+	{
+		return (ERROR);
+	}
+	
+	(vector->array) = temp_array;
+	
+	return (SUCCESS);
 }
 
 /******************************************************************************/
@@ -100,6 +119,7 @@ int VectorReserve(vector_t *vector, size_t capacity)
 void *VectorGetElement(vector_t *vector, size_t index)
 {
 	assert(NULL != vector);
+	assert(index < vector->size);
 	
 	return (vector->array[index]);
 }
@@ -117,6 +137,7 @@ void VectorPopBack(vector_t *vector)
 void VectorSetElement(vector_t *vector, int index, void *value)
 {
 	assert(NULL != vector);
+	assert(index < vector->size);
 	
 	vector->array[index] = value;
 }
@@ -130,8 +151,8 @@ int VectorShrinkToFit(vector_t *vector)
 	
 	if(0 != succedded)
 	{
-		return (SUCCESS);
+		return (ERROR);
 	}
 
-	return (ERROR);
+	return (SUCCESS);
 }

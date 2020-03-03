@@ -2,7 +2,7 @@
 This program build a dynamic vector (dynamic array) in the capacity requested by
 the user (using realloc). The user can push or pop to the to of the array, set
 a specific index in the array, shrink the capacity of the array to a specific
-size, reserve a specific capacity and destroy the stack (free all malloc).
+size, reserve a specific capacity and frees all malloc.
 
 					  	 Written by Anat Wax
 						  February 27, 2020
@@ -15,6 +15,7 @@ size, reserve a specific capacity and destroy the stack (free all malloc).
 typedef struct dynamic_vector vector_t;
 
 /* Creates a dynamic array with a given size and return pointer to the array */
+/* if the malloc failes, the function returns a NULL pointer				 */
 vector_t *VectorCreate(size_t capacity);
 
 /* Frees a given array */
