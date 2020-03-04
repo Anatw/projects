@@ -1,9 +1,15 @@
-/* I'm using the struct of node (node_t) from the Singly Linked List exersize */
+/*******************************************************************************
+					  	 Written by Anat Wax
+						  March 3, 2020
+						Reviewer: 
+*******************************************************************************/
 
-#include <stdlib>
+/* I'm using the struct of node (node_t) from the Singly Linked List exersize */
+#include <stdlib.h>
+#include <assert.h> /* assert() */
 
 #include "queue.h"
-#include "../SinglyLinkedList/singly_linked_list.h"
+#include "singly_linked_list.h"
 
 /*
 struct SLL
@@ -11,37 +17,97 @@ struct SLL
 	node_t *head;
 	node_t *tail;
 }SLL_t;
+
+typedef struct sll_node *iter_t;
 */
 
-typedef struct queue
+struct queue
 {
 	SLL_t *list;
 };
 
+
 queue_t *QueueCreate()
 {
-	SLL_t *queue_list = SLLCreate(); /*create a new list */
+	SLL_t *queue_list = SLLCreate(); /*create a new SLL struct list */
+	queue_t *new_queue = NULL;
 	
-	if(NULL == queue_list) /* if malloc failed */
+	if (NULL == queue_list) /* if malloc failed */
 	{
 		return (NULL);
 	}
 	
-	queue_t *queue = (SLL_t *)malloc(sizeof(SLL_t)); /* create a new queue */
+	new_queue = (queue_t *)malloc(sizeof(queue_t)); /* create a new queue */
 	
-	if(NULL == queue) 	/* if malloc failed */
+	if (NULL == new_queue) 	/* if malloc failed */
 	{
 		return (NULL);
+		free(queue_list);
 	}
-	SLL_t *queue_list
 	
+	new_queue->list = queue_list;	
 	
-	
+	return (new_queue);
 }
 
-
-int QueueEnqueu(queue_t *queue)
+int QueueEnqueu(queue_t *queue, void *data)
 {
-	node
+	iter_t new_data = SLLInsert(SLLTail(queue->list), data);
+	
+	/* if queue is full (new iter == tail) - return 1 (error) */
+	if (1 == SLLIsSameIter(new_data, SLLBegin(queue->list)))
+	{
+		return (1);
+	}
+	
+	return (0);
 }
-/*Enqueue: Adds an item to the queue. If the queue is full, then it is said to be an Overflow condition.*/
+
+void QueueDequeu(queue_t *queue)
+{
+	assert(NULL != queue);
+	
+	SLLRemove(SLLBegin(queue->list));
+}
+
+void *QueuePeek(queue_t *queue)
+{
+	assert(NULL != queue);
+	
+	return (SLLGetData(SLLBegin(queue->list)));
+}
+
+int QueueIsEmpty(queue_t *queue)
+{
+	assert(NULL != queue);
+	
+	return (SLLIsEmpty(queue->list));
+}
+
+size_t QueueSize(queue_t *queue)
+{
+	assert(NULL != queue);
+	
+	return(SLLCount(queue->list));
+}
+
+void QueueDestroy(queue_t *queue)
+{
+	assert(NULL != queue);
+	
+	SLLDestroy(queue->list);
+
+	free(queue);
+	queue = NULL;
+}
+
+void QueueAppend(queue_t *dest, queue_t *src)
+{
+	assert(NULL != dest);
+	assert(NULL != src);
+	
+	SLLAppend(dest->list, src->list);
+	
+	free(src);
+	src = NULL;
+}

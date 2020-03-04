@@ -70,6 +70,7 @@ int main()
 	return (0);
 }
 
+/* IntCompare: 1 = members are identical, 0 = members are different */
 int IntCompare(void *x, void *y)
 {
 	return ((*(int *)x == *(int *)y) ? 1 : 0);
