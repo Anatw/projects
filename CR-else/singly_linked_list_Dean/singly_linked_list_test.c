@@ -79,7 +79,7 @@ int main()
 	
 /******************************SLLFind*****************************************/
 	
-	i = SLLFind(SLLBegin(sll), SLLEnd(sll), ptr3, IsTheSame);
+	i = SLLFind(SLLBegin(sll), SLLEnd(sll), ptr4, IsTheSame);
 	printf("the data of current iterator is %d\n", *((int*)(SLLGetData(i))));
 	
 /******************************SLLSetData**************************************/	

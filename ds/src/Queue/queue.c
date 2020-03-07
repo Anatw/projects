@@ -1,7 +1,7 @@
 /*******************************************************************************
-					  	 Written by Anat Wax
-						  March 3, 2020
-						Reviewer: 
+			      Written by Anat Wax
+				 March 4, 2020
+			     Reviewer: Esti Binder
 *******************************************************************************/
 
 /* I'm using the struct of node (node_t) from the Singly Linked List exersize */
@@ -11,7 +11,7 @@
 #include "queue.h"
 #include "singly_linked_list.h"
 
-/*
+/* left here for aid. The real code is in the "silngly linked list" library
 struct SLL
 {
 	node_t *head;
@@ -43,6 +43,7 @@ queue_t *QueueCreate()
 	{
 		return (NULL);
 		free(queue_list);
+		queue_list = NULL;
 	}
 	
 	new_queue->list = queue_list;	

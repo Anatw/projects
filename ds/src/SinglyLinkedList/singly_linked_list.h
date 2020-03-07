@@ -1,7 +1,7 @@
 /*******************************************************************************
 					  	 Written by Anat Wax
 						  March 3, 2020
-						Reviewer: Yoni Naor
+						Reviewer: Yehuda Levavi
 *******************************************************************************/
 #include <stddef.h> /* size_t */
 
@@ -44,6 +44,7 @@ size_t SLLCount(const SLL_t *list);
 int SLLIsEmpty(const SLL_t *list);
 
 /* Functionality: return the data in the requested iterator				    */
+/* return value: the function will return (1) if empty and (0) if not empty */
 /* 'node' - the requested iterator to retrieve data from 					*/
 /* Complexity: O(1) 														*/
 void *SLLGetData(const iter_t node);
@@ -52,7 +53,7 @@ void *SLLGetData(const iter_t node);
 /* 'node' - the requested iterator to set data inside					    */
 /* 'data' - the data you'de like to assign								    */
 /* Complexity: O(1) 														*/
-void SLLSetData(const iter_t iterator, void *data);
+void SLLSetData(const iter_t iterator, const void *data);
 
 /* Functionality: move the iterator to the next node					    */
 /* Complexity: O(1) 														*/
@@ -65,7 +66,7 @@ void SLLSetData(const iter_t iterator, void *data);
 
 /* Functionality: returns an iterator to te end of the list 				*/
 /* Complexity: O(1) 														*/
-/* */iter_t SLLTail(const SLL_t *list);
+/* */iter_t SLLEnd(const SLL_t *list);
 
 /* Functionality: check if two iterators point at the same node			    */
 /* 'iter1' - the first iterator to compare to 'iter2' 						*/
@@ -87,8 +88,8 @@ iter_t SLLNext(const iter_t member);
 /* '*match_func' - pointer to a function that received two void pointer to    */
 /* any data 																  */
 /* Complexity: O(n) 														  */
-iter_t SLLFind(const iter_t from, const iter_t to, void *data,
-			   int (*match_func)(void *, void *));
+iter_t SLLFind(const iter_t from, const iter_t to, const void *data,
+			   int (*match_func)(const void *, const void *));
 
 /* Functionality: receieves a function (action_func()) and assign it to all   */
 /* the members of the list	-	returns 0 is successed and 1 if failed		  */

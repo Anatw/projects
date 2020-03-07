@@ -1,7 +1,7 @@
 /*******************************************************************************
 					  	 Written by Anat Wax
 						  March 3, 2020
-						Reviewer: Yoni Naor
+						Reviewer: Yehuda Levavi
 *******************************************************************************/
 #include <stdlib.h>
 #include <assert.h> 	/* assert() */
@@ -12,7 +12,7 @@ typedef struct sll_node
 {
 	void *data;
 	struct sll_node *next;
-}node_t;
+} node_t;
 
 
 struct SLL
@@ -23,12 +23,13 @@ struct SLL
 
 /******************************************************************************/
 
-node_t *CreateNode(void *data)
+static node_t *CreateNode(void *data)
 {
 	node_t *new_node = NULL;
 	
 	new_node = (node_t *)malloc(sizeof(node_t));
 	new_node->data = data;
+	new_node->next = NULL;
 	
 	return (new_node);
 }
@@ -51,13 +52,12 @@ SLL_t *SLLCreate()
 	
 	if (NULL == stab) /* if mallocs failed */
 	{
-		return (NULL);
 		free(list);
 		list = NULL;
+		return (NULL);
 	}
 	
-	stab->next = NULL;
-
+	
 	list->head = stab;
 	list->tail = stab;
 	
@@ -75,7 +75,7 @@ iter_t SLLBegin(const SLL_t *list)
 
 /******************************************************************************/
 
-iter_t SLLTail(const SLL_t *list)
+iter_t SLLEnd(const SLL_t *list)
 {
 	assert(NULL != list);
 	
@@ -93,6 +93,8 @@ int SLLIsSameIter(const iter_t iter1, const iter_t iter2)
 
 iter_t SLLNext(const iter_t member)
 {
+	assert(NULL != member->next);
+	
 	return (member->next);
 }
 
@@ -105,7 +107,7 @@ iter_t SLLInsert(iter_t where, void *data)
 	/* rotate over the entire array until stab and return stab: */
 	if (new_node == NULL)
 	{
-		while (NULL == where->next)
+		while (NULL != where->next)
 		{
 			SLLNext(where);
 		}
@@ -148,22 +150,28 @@ size_t SLLCount(const SLL_t *list)
 
 void *SLLGetData(const iter_t node)
 {
+	assert (NULL != node->next);
+	
 	return (node->data);
 }
 
 /******************************************************************************/
 
-void SLLSetData(const iter_t iterator, void *data)
+void SLLSetData(const iter_t iterator, const void *data)
 {
-	iterator->data = data;
+	assert (NULL != iterator->next);
+
+	iterator->data = (void *)data;
 }
 
 /******************************************************************************/
 
-iter_t SLLFind(const iter_t from, const iter_t to, void *data,
-			   int (*match_func)(void *, void *))
+iter_t SLLFind(const iter_t from, const iter_t to, const void *data,
+			   int (*match_func)(const void *, const void *))
 {
 	iter_t i = from;
+	
+	assert(NULL != match_func);
 	
 	for (; 0 == SLLIsSameIter(i, to); i = SLLNext(i))
 	{
@@ -182,12 +190,7 @@ int SLLIsEmpty(const SLL_t *list)
 {
 	assert(NULL != list);
 	
-	if (list->head == list->tail) /* the list is empty */
-	{
-		return (1);
-	}
-	
-	return (0);
+	return (list->head == list->tail);
 }
 
 /******************************************************************************/
@@ -195,6 +198,8 @@ int SLLIsEmpty(const SLL_t *list)
 iter_t SLLRemove(iter_t who)
 {
 	node_t *temp = who->next;
+	
+	assert(NULL != who->next);
 	
 	/* if you are pointing at dummy, meaning list is empty */
 	if (NULL == temp->next)
@@ -244,6 +249,11 @@ int SLLForEach(iter_t from, iter_t to, void *param, int (*action_func)
 	for (; 0 == SLLIsSameIter(i, to); i = SLLNext(i))
 	{
 		status = action_func(param, i->data);
+		
+		if (1 == status)
+		{
+			return (status);
+		}
 	}
 	
 	return (status);

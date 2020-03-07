@@ -63,8 +63,11 @@ the user want to copy.
 
 char *Strcpy(char *dest, const char *src)
 {
+	char *dest_start = dest;
+	
 	assert(*dest != '\0');
 	assert(*src != '\0');
+	
 	while(*src)	
 	{
 		*dest=*src;
@@ -72,7 +75,9 @@ char *Strcpy(char *dest, const char *src)
 		src++;
 	}
 	
-	return dest;
+	*dest = '\0';
+	
+	return dest_start;
 }
 
 
