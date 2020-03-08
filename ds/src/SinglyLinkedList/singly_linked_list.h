@@ -80,8 +80,8 @@ int SLLIsSameIter(const iter_t iter1, const iter_t iter2);
 /* Complexity: O(1) 														*/
 iter_t SLLNext(const iter_t member);
 
-/* Functionality: check if any node econtain the searched data * pointer to a */
-/* function wS8 															  */
+/* Functionality: check if any node contains the searched data * pointer to a */
+/* function																	  */
 /* 'from' - the member from which you'd like to search 						  */
 /* 'to' - the member until which you'de like to search 						  */
 /* 'data' - the data you are searching for 									  */
