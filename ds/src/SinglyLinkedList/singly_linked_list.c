@@ -8,10 +8,11 @@
 
 #include "singly_linked_list.h"
 
+/* type of node in the list */
 typedef struct sll_node
 {
-	void *data;
-	struct sll_node *next;
+	void *data; /* pointer to the data the node contain */
+	struct sll_node *next; /* pointer to the next node */
 } node_t;
 
 
