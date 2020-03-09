@@ -7,13 +7,13 @@ OBJECTS = doubly_linked_list.o doubly_linked_list_test.o
 DEPS = doubly_linked_list.h
 
 test: $(OBJECTS)
-	$(gd) $(OBJECTS) -o $(NAME)
+	@ $(gd) $(OBJECTS) -o $(NAME)
 
 production: $(PRODUCTION)
-	$(gc) -c $(PRODUCTION) -o $(NAME)$@
+	@ $(gc) -c $(PRODUCTION) -o $(NAME)$@
 	
 %.o: %.c $(DEPS)
-	$(gd) -c -o $@ $<
+	@ $(gd) -c -o $@ $<
 
 
 # Room Service

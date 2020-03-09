@@ -28,10 +28,10 @@ int main()
 	DLLInsert(DLLBegin(new_list), &data2); /* 4 3 */
 	printf("current SIZE is: %ld\n", DLLSize(new_list));
 	
-	DLLInsert(DLLBegin(new_list), &data3); /* 8 4 3 */
+	new_node2 = DLLInsert(DLLBegin(new_list), &data3); /* 8 4 3 */
 	printf("current SIZE is: %ld\n", DLLSize(new_list));
 	
-	new_node2 = DLLInsert(DLLEnd(new_list), &data4); /* 8 4 3 20 */
+	DLLInsert(DLLEnd(new_list), &data4); /* 8 4 3 20 */
 	printf("current SIZE is: %ld\n", DLLSize(new_list));
 	
 	printf("DLLPushBack:\n");
@@ -56,26 +56,24 @@ int main()
 	DLLPopFront(new_list);
 	printf("after DLLPopFront: current SIZE is: %ld\n\n", DLLSize(new_list));
 	
-	
-	
-	printf("Printing the list: \n"); /* 4 3 20 */
-	DLLPrint(new_list);
-	
 	/* problem start here: */
-	printf("one node removed\n");
+	
+	printf("Printing the list: \n");
+	DLLPrint(new_list);
+	
 	DLLRemove(new_node2);
+	printf("one node removed\n");
 	printf("current SIZE is: %ld\n", DLLSize(new_list));
-	printf("Printing the list: \n"); /* 4 3 20 */
+	
+	
+	DLLInsert(DLLBegin(new_list), &data3); /* 4 3 */
+	printf("current SIZE is: %ld\n", DLLSize(new_list));
+	
+	DLLInsert(DLLEnd(new_list), &data4); /* 8 4 3 20 */
+	printf("current SIZE is: %ld\n\n", DLLSize(new_list));
+	
 	DLLPrint(new_list);
 	
-	DLLInsert(DLLBegin(new_list), &data3); 
-	printf("inserted (8) - current SIZE is: %ld\n", DLLSize(new_list));
-	
-	DLLInsert(DLLEnd(new_list), &data4);
-	printf("inserted (20) - current SIZE is: %ld\n\n", DLLSize(new_list));
-	
-	DLLPrint(new_list);
-	printf("\n\n");
 	DLLForEach(DLLBegin(new_list), DLLEnd(new_list), DLLAddParam, &param);
 	DLLPrint(new_list);
 	

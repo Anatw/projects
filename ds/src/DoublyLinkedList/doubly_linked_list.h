@@ -14,7 +14,7 @@ typedef struct dll_node *iter_t;
 
 /*  Allocates memory for new doubly linked list  
  *  return: pointer to newly created list 
- *  Time Complexity: O(1)  */
+ *  Time Complexity: O(1) */
 dll_t *DLLCreate(void);
 
 /*  Free all allocation for given circular buffer  
@@ -43,10 +43,11 @@ size_t DLLSize(const dll_t *list);
  * Time Complexity: O(1) */
 int DLLIsEmpty(const dll_t *list);
 
-/* remove the last node in the list
+/* remove the last node in the list.
+ * returns the data of the poped element.
  * list: a pointer to list 'list'
  * Time Complexity: O(1) */
-void *DLLPopBack(const dll_t *list);
+void *DLLPopBack(dll_t *list);
 
 /* insert a new node to the end of the list
  * Return 0 if successfully pushed, else return 1 
@@ -55,10 +56,11 @@ void *DLLPopBack(const dll_t *list);
  * Time Complexity: O(1) */
 iter_t DLLPushBack(const dll_t *list, void *data);
 
-/* remove the first node in the list
+/* remove the first node in the list.
+ * returns the data of the poped element.
  * list: a pointer to list 'list'
  * Time Complexity: O(1) */
-void *DLLPopFront(const dll_t *list);
+void *DLLPopFront(dll_t *list);
 
 /* insert a new node to the beginning of the list
  * Return 0 if successfully pushed, else return 1 
@@ -77,6 +79,7 @@ void DLLSetData(iter_t where, const void *new_data);
 
 /* inert a new node in a specific location within the list. The node will be
  * added before the node you enter to the function.
+ * return a pointer to the new cell (the new iterator).
  * where: the node before which you'de like to enter the new node.
  * data: the data you'de like to set in the new node.
  * Time Complexity: O(1) */
@@ -105,12 +108,13 @@ iter_t DLLPrev(const iter_t iter);
 int DLLIsSameIter(const iter_t iter1, const iter_t iter2);
 
 /* search in the list for specific data
- * from, to: the iterator you want to search in between.
+ * from, to: the iterator you want to search in between. Including the 'from',
+ * not encloding the 'to'.
  * data: the data you wish to search for in the list.
  * MatchFunc: pointer to a function that received two void pointer to any data.
  * Time Complexity: O(n) */
 iter_t DLLFind(const iter_t from, const iter_t to, const void *data, 
-				int (*MatchFunc)(void *data1, void *data2));
+				int (*MatchFunc)(const void *data1, const void *data2));
 
 /* Functionality: receieves a function (action_func()) and assign it to all 
  * the members of the list.
@@ -126,14 +130,16 @@ int DLLForEach(const iter_t from, const iter_t to, int (*OprFunc)(void
 /* the function insert a nomber of connected nodes into a different list. The
  * function connect the list the nodes were taken from.
  * returns: the last memner (cell) that was coppied.
- * 'from' - the member from which you'd like to commit the action 			  
- * 'to' - the member until which you'de like to commit the action
+ * 'from' - the member from which you'd like to commit the action, including
+ * the 'from'.
+ * 'to' - the member until which you'de like to commit the action, not 
+ * encloding the 'to'.		
  * where: the place where you eish to enter the new set of nodes.			 
  * Complexity: */
 iter_t DLLSplice(iter_t from, iter_t to, iter_t where);
 
 /* allows you to search using different conditions (different functions).
- * return: the number of lemnts it has found (the size of dest).
+ * return: the number of elements it has found (the size of dest).
  * 'from' - the member from which you'd like to commit the action 			  
  * 'to' - the member until which you'de like to commit the action
  * MatchFunc: pointer to a function that received two void pointer to any data.
@@ -147,5 +153,7 @@ size_t DLLMultiFind(const iter_t from, const iter_t to, const void *data,
  * Time Complexity: O(n) */
 void PrintList(const dll_t *list);
 
+/* aiding function to print the list: */
+void DLLPrint(const dll_t *list);
 
 #endif /* DOUBLY_LINKED_LIST_H */
