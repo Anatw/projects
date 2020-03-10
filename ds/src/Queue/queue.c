@@ -108,7 +108,4 @@ void QueueAppend(queue_t *dest, queue_t *src)
 	assert(NULL != src);
 	
 	SLLAppend(dest->list, src->list);
-	
-	free(src);
-	src = NULL;
 }

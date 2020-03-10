@@ -1,9 +1,8 @@
 /*******************************************************************************
 					  	 Written by Anat Wax
-						  March 8, 2020
-						Reviewer:
+						    March 9-10, 2020
+						Reviewer: Haim Sa'adia
 *******************************************************************************/
-
 #ifndef DOUBLY_LINKED_LIST_H
 #define DOUBLY_LINKED_LIST_H
 
@@ -69,7 +68,9 @@ void *DLLPopFront(dll_t *list);
  * Time Complexity: O(1) */
 iter_t DLLPushFront(const dll_t *list, void *data);
 
-/* Time Complexity: O(1) */
+/* returns a pointer to the data inside the requested iterator.
+ * where: the iterator whose data you wish to retrieve.
+ * Time Complexity: O(1) */
 void *DLLGetData(const iter_t where);
 
 /* set a diffrenet data to a specific cell
@@ -127,14 +128,14 @@ iter_t DLLFind(const iter_t from, const iter_t to, const void *data,
  * Complexity: O(n) */
 int DLLForEach(const iter_t from, const iter_t to, int (*OprFunc)(void 
 			   *operand1, void *operand2), const void *param);
-/* the function insert a nomber of connected nodes into a different list. The
- * function connect the list the nodes were taken from.
- * returns: the last memner (cell) that was coppied.
+/* the function insert a number of connected nodes into a different list. The
+ * function re-connect the list from which the nodes were taken from.
+ * returns: the last member (cell) that was coppied.
  * 'from' - the member from which you'd like to commit the action, including
- * the 'from'.
+ * the 'from' (in the first list).
  * 'to' - the member until which you'de like to commit the action, not 
- * encloding the 'to'.		
- * where: the place where you eish to enter the new set of nodes.			 
+ * encloding the 'to' (in the first list).		
+ * where: the place where you wish to enter the new set of nodes (in the second list).			 
  * Complexity: */
 iter_t DLLSplice(iter_t from, iter_t to, iter_t where);
 
@@ -146,7 +147,7 @@ iter_t DLLSplice(iter_t from, iter_t to, iter_t where);
  * dest: pointer to a list containing the iterators found
  * Complexity: */
 size_t DLLMultiFind(const iter_t from, const iter_t to, const void *data, 
-				int (*MatchFunc)(void *data1, void *data2), dll_t *dest);
+				int (*MatchFunc)(const void *data1, const void *data2), dll_t *dest);
 
 /* Helper Function to print list 
  * list: a pointer to list 'list'

@@ -48,7 +48,8 @@ size_t QueueSize(queue_t *queue);
 /* Complexity: O(1) 							*/
 int QueueIsEmpty(queue_t *queue);
 
-/* Functionality: appent the 'src' list right after the '*dest' list 	*/
+/* Functionality: appent the 'src' list right after the '*dest' list. the function dows not 
+ * destroy the empty string - it is the costumers responsibility to free that list	*/
 /* '*dest' - the list which will be start the new list 			*/
 /* '*src' - the appended list (after '*dest') 				*/
 /* Complexity: O(1) 							*/
