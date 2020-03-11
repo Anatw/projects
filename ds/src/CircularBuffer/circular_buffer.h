@@ -1,4 +1,8 @@
 /*******************************************************************************
+The Circular buffer is a struct named 'cb' containing the front' size' capacity
+and a flexible array 'array'.
+It's AIP is based on an array.
+
 					  	 Written by Anat Wax
 						    March 5-8, 2020
 						Reviewer: Amir Saraf
@@ -28,13 +32,13 @@ circularbuffer_t *CBCreate_offset(size_t capacity);
 /* Complexity: O(1) 														  */
 void CBDestroy(circularbuffer_t *cb);
 
-/* purpose: return the number of read cells 								  */
+/* purpose: return the number of read cells (free bytes)					  */
 /* return value: the  number of cells that were written. 					  */
 /* ssize_t - can move from (-65536) to 65535 								  */
 /* cb - pointer to the circular buffer 										  */
 /* buf - the buffer to which the read data should be written 				  */
 /* count - the number of elements (cells) you'de like to read 				  */
-/* Complexity: O(1) 														  */
+/* Complexity: O(n) 														  */
 ssize_t CBRead(circularbuffer_t *cb, void *buf, size_t count);
 
 /* purpose: buf - pointer to the data you'de like to enter					  */

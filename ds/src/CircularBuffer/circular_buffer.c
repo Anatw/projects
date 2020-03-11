@@ -24,7 +24,11 @@ circularbuffer_t *CBCreate(size_t capacity)
 	circularbuffer_t *buffer = (circularbuffer_t *)malloc
 							   (sizeof(circularbuffer_t) +
 	 				 		   (capacity * sizeof(buffer->array)));
-
+	if (NULL == buffer)
+	{
+		return (NULL);
+	}
+	
 	buffer->front = 0;
 	buffer->size = 0;
 	buffer->capacity = capacity;
@@ -36,8 +40,14 @@ circularbuffer_t *CBCreate_offset(size_t capacity)
 {
 	circularbuffer_t *buffer = (circularbuffer_t *)malloc
 							   (offsetof(circularbuffer_t, array) +
-							   (capacity * sizeof(buffer->array)));
+							   ((capacity * sizeof(buffer->array)) - 1));
+	
+	if (NULL == buffer)
+	{
+		return (NULL);
+	}
 							   
+	buffer->front = 0;
 	buffer->size = 0;
 	buffer->capacity = capacity;
 		
@@ -48,39 +58,41 @@ circularbuffer_t *CBCreate_offset(size_t capacity)
 void CBDestroy(circularbuffer_t *cb)
 {
 	free(cb);
+	cb = NULL;
 }
 
 
 ssize_t CBWrite(circularbuffer_t *cb, const void *buf, size_t count)
 {
-	unsigned int index = 0;
+	unsigned int write_bytes = 0;
 	char *p_buf = (char *)buf;
 	
 	assert(NULL != cb);
 	assert(NULL != buf);
+	assert(count <= buf);
 	assert(count > 0);
 	
 	/* in order to read from buf i need to cast it into a pointer
 	to char so it will move in char units, the same as array */
-	while(index < count)
+	while(write_bytes < count)
 	{
 		if (cb->size == cb->capacity)
 		{
-			return (1);
+			return (write_bytes);
 		}
 	
-		cb->array[(cb->front + cb->size) % cb->capacity] = p_buf[index];
-		++index;
+		cb->array[(cb->front + cb->size) % cb->capacity] = p_buf[write_bytes];
+		++write_bytes;
 		++cb->size;
 	}
 	
-	return (0);
+	return (write_bytes);
 }
 
 
 ssize_t CBRead(circularbuffer_t *cb, void *buf, size_t count)
 {
-	unsigned int index = 0;
+	unsigned int read_values = 0;
 	char *p_buf = (char *)buf;
 	
 	assert(count < cb->capacity);
@@ -90,9 +102,9 @@ ssize_t CBRead(circularbuffer_t *cb, void *buf, size_t count)
 	/* front moves only in the Read() function. */
 	/* if front is now at the last cell, it	    */
 	/* should move to position 0 of the array;  */
-	while(index < count && (0 != cb->size))
+	while(read_values < count && (0 != cb->size))
 	{
-		p_buf[index] = cb->array[cb->front];
+		p_buf[read_values] = cb->array[cb->front];
 		
 		if ((cb->front + 1) == cb->capacity)
 		{
@@ -103,11 +115,11 @@ ssize_t CBRead(circularbuffer_t *cb, void *buf, size_t count)
 			++cb->front;
 		}
 		
-		++index;
+		++read_values;
 		--cb->size;
 	}
 	
-	return (index);
+	return (read_values);
 }
 
 

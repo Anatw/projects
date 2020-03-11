@@ -34,7 +34,7 @@ int main()
 	test = CBRead(new_buffer, get_info, 6);
 	printf("read size: %ld\n", test);
 		
-	printf("is the buffer empty? %s\n", (CBIsEmpty(new_buffer) ? "no" : "yes"));
+	printf("is the buffer empty? %s\n", (CBIsEmpty(new_buffer) ? "yes" : "no"));
 	
 	CBDestroy(new_buffer);
 	

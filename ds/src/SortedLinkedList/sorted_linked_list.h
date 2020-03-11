@@ -1,3 +1,8 @@
+/*******************************************************************************
+					  	 Written by Anat Wax
+						    March 9-11, 2020
+						Reviewer: Lior Cohen
+*******************************************************************************/
 #ifndef SORTED_LINKED_LIST_H
 #define SORTED_LINKED_LIST_H
 
@@ -67,7 +72,7 @@ void *DSLLPopBack(const dsll_t *list);
  * Time Complexity: O(1) */
 int DSLLIsEmpty(dsll_t *list);
 
-/* merges two sorted isted into one list.
+/* merges two sorted isted into the first list.
  * list1 - the 
  * Compexity: */
 void DSLLMerge(dsll_t *list1, dsll_t *list2);
@@ -81,9 +86,9 @@ void DSLLMerge(dsll_t *list1, dsll_t *list2);
  * '*action_func' - a pointer to the function who's action you'd like to 
  * conduct on the 'from'-'to' members						
  * Complexity: O(n) */
-int DSLLForEach(dsll_iter_t from, dsll_iter_t to,
+int DSLLForEach(const dsll_iter_t from, const dsll_iter_t to,
 		int (*action_fun)(void *param, void *data),
-		void *param);
+		const void *param);
 
 /* search in the list for specific data
  * from, to: the iterator you want to search in between. Including the 'from',
@@ -91,11 +96,18 @@ int DSLLForEach(dsll_iter_t from, dsll_iter_t to,
  * data: the data you wish to search for in the list.
  * MatchFunc: pointer to a function that received two void pointer to any data.
  * Time Complexity: O(n) */
+/*dsll_iter_t DSLLFind(dsll_iter_t from, dsll_iter_t to, void *data);*/
 dsll_iter_t DSLLFind(dsll_t *list, dsll_iter_t from, dsll_iter_t to, void *data);
-
-dsll_iter_t DSLLFindIf(dsll_t *list, dsll_iter_t from,
-		       dsll_iter_t to, int (*cond_func)(void *,
-		       void *), void *param);
+/* search in the list for specific data.
+ * from, to: the iterator you want to search in between. Including the 'from',
+ * not encloding the 'to'.
+ * return: the first member equal to the data you searched for. If the data
+ * cound'nt be found in the list, the function returns null.
+ * data: the data you wish to search for in the list.
+ * MatchFunc: pointer to a function that received two void pointer to any data.
+ * Time Complexity: O(n) */
+dsll_iter_t DSLLFindIf(dsll_iter_t from, dsll_iter_t to,
+					   int (*cond_func)(const void *, const void *), void *param);
 					   
 /* the function returns the pointer to the next iterator.
  * iter: the iterator whose next value you wish to recieve.
@@ -107,7 +119,9 @@ dsll_iter_t DSLLNext(dsll_iter_t current);
  * Time Complexity: O(1) */
 dsll_iter_t DSLLPrev(dsll_iter_t current);
 
-/* the function check if the data of two iterator is equal.
+/* the function check if the data of two iterator is equal = meaning if
+ * they are both entwered to the list from the same variable
+ * (for example '&data1').
  * return value: 1 if the value is equal. 0 if it is not equal.
  * iter1, iter2: the iterators whose value you wish to compare.
  * Complexity: O(1) */

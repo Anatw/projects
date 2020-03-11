@@ -1,19 +1,19 @@
 gc = gcc -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3
 gd = gcc -ansi -pedantic-errors -Wall -Wextra -g
 
-NAME = circular_buffer_
-PRODUCTION = circular_buffer.o
-OBJECTS = circular_buffer_test.o circular_buffer.o
-DEPS = circular_buffer.h
+NAME = uid_
+PRODUCTION = uid.o
+OBJECTS = uid.o uid_test.o
+DEPS = uid.h
 
 test: $(OBJECTS)
-	$(gd) $(OBJECTS) -o $(NAME)$@
+	@ $(gd) $(OBJECTS) -o $(NAME)
 
 production: $(PRODUCTION)
-	$(gc) -c $(PRODUCTION) -o $(NAME)$@
+	@ $(gc) -c $(PRODUCTION) -o $(NAME)$@
 	
 %.o: %.c $(DEPS)
-	$(gd) -c -o $@ $<
+	@ $(gd) -c -o $@ $<
 
 
 # Room Service

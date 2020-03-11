@@ -32,6 +32,12 @@ static dll_node_t *DLLCreateNode(void *data)
 	dll_node_t *new_node = NULL;
 	
 	new_node = (dll_node_t *)malloc(sizeof(dll_node_t));
+	
+	if (NULL == new_node)
+	{
+		return (new_node);
+	}
+	
 	new_node->data = data;
 	new_node->next = NULL;
 	
@@ -227,7 +233,8 @@ iter_t DLLFind(const iter_t from, const iter_t to, const void *data,
 }
 
 size_t DLLMultiFind(const iter_t from, const iter_t to, const void *data, 
-					int (*MatchFunc)(const void *data1, const void *data2), dll_t *dest)
+					int (*MatchFunc)(const void *data1, const void *data2),
+					dll_t *dest)
 {
 	iter_t point_to = from;
 	size_t counter = 0;
