@@ -8,11 +8,11 @@
 
 #include "sorted_linked_list.h"
 
-int IsBefore(void *data1, void *data2);
+/* int IsBefore(void *data1, void *data2); */
+int Compare(const void *data1, const void *data2);
 int DSLLIntCompare(const void *x, const void *y);
 int DSLLAddParam(void *param, void *data);
 void SDLLPrint(dsll_t *list);
-int DSLLIntCompare(const void *x, const void *y);
 
 int main()
 {
@@ -28,8 +28,8 @@ int main()
 	int add2 = 2;
 	iter_t match = NULL;
 		
-	dsll_t *slist = DSLLCreate(IsBefore);
-	dsll_t *slist2 = DSLLCreate(IsBefore);
+	dsll_t *slist = DSLLCreate(Compare);
+	dsll_t *slist2 = DSLLCreate(Compare);
 	printf("creating list 'slist':\n");
 	
 	printf("inserting 2:\n");
@@ -75,7 +75,7 @@ int main()
 		   (DSLLIsEqual(DSLLBegin(slist), DSLLNext(DSLLBegin(slist))) ? "yes" : "no"));
 	printf("\nAdding 2 to each member, printing the list: \n");
 	SDLLPrint(slist);*/
-	/* checking DSLLFindIf:
+	/*checking DSLLFindIf:
 	match = DSLLFindIf(DSLLBegin(slist), DSLLEnd(slist), DSLLIntCompare, &data2);
 	printf("DSLLFind (8): %d\n", *(int *)DLLGetData(match));
 	*/
@@ -113,8 +113,21 @@ int main()
 	return (0);
 }
 
-/* return 1 if data1 is bedore data2 (data1 is smaller than data2).
- * 0 if data2 if not (= / >) */
+int Compare(const void *data1, const void *data2)
+{
+	if (*(int *)data1 < *(int *)data2)
+	{
+		return (1);
+	}
+	else if (*(int *)data1 > *(int *)data2)
+	{
+		return (-1);
+	}
+	return (0);
+}
+/* OLD VERSION _ BEDORE CHANGE FROM INFINITY:
+ * return 1 if data1 is bedore data2 (data1 is smaller than data2).
+ * 0 if data2 if not (= / >) 
 int IsBefore(void *data1, void *data2)
 {
 	if (*(int *)data1 < *(int *)data2)
@@ -124,12 +137,7 @@ int IsBefore(void *data1, void *data2)
 	
 	return (0);
 }
-
-/* IntCompare: 1 = members are identical, 0 = members are different */
-int DLLIntCompare(const void *x, const void *y)
-{
-	return ((*(int *)x == *(int *)y) ? 1 : 0);
-}
+*/
 
 int DSLLAddParam(void *param, void *data)
 {

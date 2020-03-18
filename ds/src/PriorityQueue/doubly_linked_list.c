@@ -218,10 +218,8 @@ int DLLIsSameIter(const iter_t iter1, const iter_t iter2)
 	return (iter1 == iter2 ? 1 : 0);
 }
 
-iter_t DLLFind(const iter_t from,
-			   const iter_t to,
-			   const void *data, 
-			   int (*MatchFunc)(const void *data1, const void *data2))
+iter_t DLLFind(const iter_t from, const iter_t to, const void *data, 
+				int (*MatchFunc)(const void *data1, const void *data2))
 {
 	iter_t i = from;
 	void *p_data = (void *)data;
@@ -241,11 +239,8 @@ iter_t DLLFind(const iter_t from,
 	return (i);
 }
 
-size_t DLLMultiFind(const iter_t from,
-					const iter_t to,
-					const void *data, 
-					int (*MatchFunc)(const void *data1,
-									 const void *data2),
+size_t DLLMultiFind(const iter_t from, const iter_t to, const void *data, 
+					int (*MatchFunc)(const void *data1, const void *data2),
 					dll_t *dest)
 {
 	iter_t point_to = from;
@@ -308,8 +303,7 @@ void DLLPrint(const dll_t *list)
 	}
 }
 
-int DLLForEach(const iter_t from,
-			   const iter_t to,
+int DLLForEach(const iter_t from, const iter_t to,
 			   int (*DLLAddParam)(void *operand1, void *operand2),
 			   const void *param)
 {

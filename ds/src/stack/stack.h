@@ -1,5 +1,5 @@
 /*******************************************************************************
-This program build a stack (an array pointers) in the size requested by the user
+This program build a stack (an array of pointers) in the size requested by the user
 (using malloc on run-time). the user can push or pop to the stack, peek, cheack
 if empty and destroy the stack (free all malloc).
 

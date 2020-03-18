@@ -69,12 +69,11 @@ ssize_t CBWrite(circularbuffer_t *cb, const void *buf, size_t count)
 	
 	assert(NULL != cb);
 	assert(NULL != buf);
-	assert(count <= buf);
 	assert(count > 0);
 	
 	/* in order to read from buf i need to cast it into a pointer
 	to char so it will move in char units, the same as array */
-	while(write_bytes < count)
+	while(write_bytes < count && write_bytes <= cb->capacity)
 	{
 		if (cb->size == cb->capacity)
 		{
