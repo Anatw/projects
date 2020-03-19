@@ -11,7 +11,9 @@
 
 typedef struct scheduler scheduler_t;
 
-/* returns status (why functions stopped? 0:stopped, 1:nothing to run */
+/* returns status (why functions stopped? 0:stopped
+									1:nothing to run
+									2: problem in allocation */
 /* execute first task-> enqueue (with updated next operation) */
 int SchedulerRun(scheduler_t *schd);
 void SchedulerStop(scheduler_t *schd); /* stops program */

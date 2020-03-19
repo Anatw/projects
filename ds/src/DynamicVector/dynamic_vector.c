@@ -25,13 +25,13 @@ vector_t *VectorCreate(size_t capacity)
 	vector_t *dynamic_array = (vector_t *)malloc(sizeof(vector_t));
 	assert(0 < capacity);
 	
-	if(NULL == dynamic_array)
+	if (NULL == dynamic_array)
 	{
 		return (NULL);
 	}
 	
 	(dynamic_array->array) = (void *)malloc(capacity * sizeof(void *));
-	if(NULL == dynamic_array->array)
+	if (NULL == dynamic_array->array)
 	{
 		return (NULL);
 	}
@@ -61,7 +61,7 @@ size_t VectorCapacity(vector_t *vector)
 {
 	assert(NULL != vector);
 	
-	return(vector->capacity);
+	return (vector->capacity);
 }
 
 /******************************************************************************/
@@ -70,7 +70,7 @@ size_t VectorSize(vector_t *vector)
 {
 	assert(NULL != vector);
 	
-	return(vector->size);
+	return (vector->size);
 }
 
 /******************************************************************************/
@@ -80,7 +80,7 @@ int VectorPushBack(vector_t *vector, void *value)
 	assert(NULL != vector);
 	assert(NULL != value);
 	
-	if(vector->size == vector->capacity)
+	if (vector->size == vector->capacity)
 	{
 		vector->capacity = VectorReserve(vector, (vector->capacity * TWO));
 		/*vector->capacity *= TWO; 
@@ -104,7 +104,7 @@ int VectorReserve(vector_t *vector, size_t capacity)
 	
 	vector->capacity = capacity;
 	temp_array = realloc(vector->array, capacity * sizeof(size_t));
-	if(NULL == temp_array)
+	if (NULL == temp_array)
 	{
 		return (ERROR);
 	}
@@ -147,9 +147,10 @@ void VectorSetElement(vector_t *vector, int index, void *value)
 int VectorShrinkToFit(vector_t *vector)
 {
 	int succedded = VectorReserve(vector, vector->size);
+	
 	assert(NULL != vector);
 	
-	if(0 != succedded)
+	if (0 != succedded)
 	{
 		return (ERROR);
 	}
