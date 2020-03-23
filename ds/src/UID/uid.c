@@ -35,12 +35,7 @@ Uid_t UIDGetBadUID()
 
 int UIDIsSame(Uid_t first, Uid_t second)
 {
-	if (first.pid == second.pid &&
-	    first.time == second.time &&
-	    first.count == second.count)
-	{
-		return (1);
-	}
-	
-	return (0);
+	return (first.pid == second.pid &&
+	    	first.time == second.time &&
+	    	first.count == second.count);
 }

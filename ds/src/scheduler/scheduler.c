@@ -1,7 +1,7 @@
 /*******************************************************************************
-			   Written by Anat Wax
-			     March , 2020
-		  	  Reviewer: 
+			  			 	Written by Anat Wax
+			     			 March 16-19, 2020
+		  	  				Reviewer: Yoni Naor
 *******************************************************************************/
 #include <stdlib.h> /* malloc(), free() */
 #include <assert.h> /* assert() */
@@ -38,7 +38,7 @@ scheduler_t *SchedulerCreate()
 	
 	if (!scheduler->pqueue)
 	{
-		FREENULL(schd);
+		FREENULL(scheduler);
 		
 		return (NULL);
 	}
@@ -74,7 +74,8 @@ void SchedulerClear(scheduler_t *schd)
 
 /* when creating a new task - always check if the uid is not a bad uid */
 Uid_t SchedulerInsertTask(scheduler_t *schd,
-						  size_t interval, int 							  (*func)(void *param),
+						  size_t interval, 
+						  int (*func)(void *param),
 						  void *param)
 {
 	task_t *new_task = TaskCreate(interval, func, param);
@@ -119,6 +120,11 @@ size_t SchedulerSize(scheduler_t *schd)
 
 int SchedulerIsEmpty(scheduler_t *schd)
 {
+	if (schd->current_task)  
+	{						
+		return(0);
+	}
+	
 	return (0 == SchedulerSize(schd) ? 1 : 0);
 }
 
@@ -139,18 +145,20 @@ static int TimeCompare(const void * data1, const void *data2)
 /*
  * this is a helping func that accepts the availables parameters, and
  * sent the accpected paramters to the compare func
+ * Return: 1 - if could find (and destroy) the requested task (uid).
+ * 		   0 - if failed to locate the requested task (uid) to destroy. 
  */
-static int FindAndDestroy(const void *data1, const void *param)
+static int FindAndDestroy(const void *data, const void *param)
 {
 	int is_equal = 0;
-	task_t *task_data = (task_t *)data1;
-	Uid_t *uid_param = (Uid_t *)param;
+	task_t *task_param = (task_t *)param;
+	Uid_t uid_data = *(Uid_t *)data;
 	
-	is_equal = UIDIsSame(*uid_param, TaskGetUID(task_data));
+	is_equal = UIDIsSame(uid_data, TaskGetUID(task_param));
 	
 	if (is_equal)
 	{
-		TaskDestroy(task_data);
+		TaskDestroy(task_param);
 	}
 	
 	return (is_equal);
@@ -171,13 +179,15 @@ int SchedulerRun(scheduler_t *schd)
 		next_task = (task_t *)PQueuePeek(schd->pqueue);
 		schd->current_task = next_task;
 		
-		/* if there is time left before first-task-to-execute - sleep until ready */
+		/* if there is time left before				  */
+		/* first-task-to-execute - sleep until ready  */
 		if (TaskGetOperationTime(next_task) > time(NULL))
 		{
 			sleep(TaskGetOperationTime(schd->current_task) - time(NULL));
 		}
 		
-		/* first dqueue, then execute - so that if the task should go back to the queue, it won't go twice */
+		/* first dqueue, then execute - so that if the task should    */
+		/* go back to the queue, it won't go twice 					  */
 		PQueueDequeue(schd->pqueue);
 		status = TaskExecute(next_task);
 		
@@ -200,12 +210,7 @@ int SchedulerRun(scheduler_t *schd)
 	
 	schd->current_task = NULL;
 		
-	if (SchedulerIsEmpty(schd))
-	{
-		return (1);
-	}
-	
-	return (0);
+	return (SchedulerIsEmpty(schd));
 }
 
 void SchedulerStop(scheduler_t *schd)

@@ -35,6 +35,9 @@
 
 #define NAMES (13)
 
+void GoodLuck();
+void GoodJob();
+
 /**************************** Test Functions *********************************/
 /*
  * Our Names: Prints all of our names by alphabetical order. Param will decide
@@ -82,12 +85,11 @@ int PrimeNumbers(void *param);
 int ABC(void *param);
 
 /*
- * Small And Big: Turns small letters to big ones and vise versa
- * Return: 0 for success, 2 for remove - 2 will remove the task from the
- *		   scheduler
+ * Summing Up: Takes the param (379) and adds it to itself each time
+ * Return: 0 for success
  * Receive: Pointer to parameter
  */
-int SmallAndBig(void *param);
+int SummingUp(void *param);
 
 /*
  * Almost Always Right: Generates 10 diffrent random numbers, will stop if the
@@ -102,40 +104,34 @@ int AlmostAlwaysRight(void *param);
 
 int main()
 {
+	scheduler_t *main_scheduler = NULL;
 	Uid_t task1 = UIDGetBadUID();
 	Uid_t task2 = UIDGetBadUID();
-	Uid_t task3 = UIDGetBadUID();
-	Uid_t task4 = UIDGetBadUID();
-	Uid_t task5 = UIDGetBadUID();
-	Uid_t task6 = UIDGetBadUID();
-	Uid_t task7 = UIDGetBadUID();
-	Uid_t task8 = UIDGetBadUID();
 	
-	int status = 0;
 	int param1 = 7;
 	int param2 = -4321;
 	int param3 = -23;
 	int param4 = 237;
-	char param5[] = "Are We Not Pure? “No, Sir!” Panama’s Moody Noriega Brags.\
- “It Is Garbage!” Irony Dooms A Man—a Prisoner Up To New Era";
+	int param5 = 379;
 	int param6 = 15000;
 	
+	GoodLuck();
 	
 	/* Create the schedule */
-	scheduler_t *main_scheduler = SchedulerCreate();
+	main_scheduler = SchedulerCreate();
 
 	printf("\nAfter creation the scheduler is empty (1): ");
 	printf("%d\n\n", SchedulerIsEmpty(main_scheduler));
 	
 	/* Inserting 8 diffrent tasks inside it */
-	task1 = SchedulerInsertTask(main_scheduler, 2, OurNames, &param1);
-	task2 = SchedulerInsertTask(main_scheduler, 0, Fibonacci, &param1);
-	task3 = SchedulerInsertTask(main_scheduler, 0, ReverseNum, &param2);
-	task4 = SchedulerInsertTask(main_scheduler, 0, PrintMinusNums, &param3);
-	task5 = SchedulerInsertTask(main_scheduler, 0, PrimeNumbers, &param4);
-	task6 = SchedulerInsertTask(main_scheduler, 1, ABC, &param1);
-	task7 = SchedulerInsertTask(main_scheduler, 1, SmallAndBig, &param5);
-	task8 = SchedulerInsertTask(main_scheduler, 2, AlmostAlwaysRight, &param6);
+	SchedulerInsertTask(main_scheduler, 2, OurNames, &param1);
+	SchedulerInsertTask(main_scheduler, 0, Fibonacci, &param1);
+	SchedulerInsertTask(main_scheduler, 0, ReverseNum, &param2);
+	SchedulerInsertTask(main_scheduler, 0, PrintMinusNums, &param3);
+	SchedulerInsertTask(main_scheduler ,0, PrimeNumbers, &param4);
+	task1 = SchedulerInsertTask(main_scheduler, 1, ABC, &param1);
+	task2 = SchedulerInsertTask(main_scheduler, 1, SummingUp, &param5);
+	SchedulerInsertTask(main_scheduler, 2, AlmostAlwaysRight, &param6);
 
 	printf("After adding 8 new tasks the scheduler is NOT empty (0): ");
 	printf("%d\n\n", SchedulerIsEmpty(main_scheduler));
@@ -144,29 +140,36 @@ int main()
 	printf("%ld\n\n", SchedulerSize(main_scheduler));
 	
 	/* Running the scheduler: will remove task 2, 3, 4 and 5	*/
-	/* After 2 runs task 7 will be removed						*/
 	/* It will stop running after 4 runs						*/
-	status = SchedulerRun(main_scheduler);
+	SchedulerRun(main_scheduler);
+	
 	
 	printf("***************************************************************");
 	printf("***************************************************************");
 	printf("***************************************************************");
 	
 	/* Removing task 6 out of the scheduler */
-	SchedulerRemoveTask(main_scheduler, task6);
+	SchedulerRemoveTask(main_scheduler, task1);
+	SchedulerRemoveTask(main_scheduler, task2);
+	
 
 	printf("\n\nAfter removing total of 6 tasks, the size is (2): ");
 	printf("%ld\n\n", SchedulerSize(main_scheduler));
 	
 	/* Running again: Will stop after 4 runs */
-	status = SchedulerRun(main_scheduler);
+	SchedulerRun(main_scheduler);
 	
 	/* Cleaning the scheduler */
 	SchedulerClear(main_scheduler);
 	printf("After clean the scheduler is empty (1): ");
 	printf("%d\n\n", SchedulerIsEmpty(main_scheduler));
 	
+	
+
+	
 	SchedulerDestroy(main_scheduler);
+	
+	GoodJob();
 	
 	return (0);
 }
@@ -365,33 +368,13 @@ int ABC(void *param)
 
 /******************************************************************************/
 
-int SmallAndBig(void *param)
+int SummingUp(void *param)
 {
-	char *par = (char *)param;
-	int length = strlen((char *)param);
-	static int count = 0;
-
-	if (2 == count)
-	{
-		return (2);
-	}
-
-	while (*par)
-	{
-		if ('A' <= *par && 'Z' >= *par)
-		{
-			*par += 32;
-		}
-		else if ('a' <= *par && 'z' >= *par)
-		{
-			*par -= 32;
-		}
-
-		++par;
-	}
-	par -= length;
-	printf("%s\n", par);
-	count += 1;
+	int par = *(int *)param;
+	static int sum = 0;
+	
+	sum += par;
+	printf("The sum now is: %d\n\n", sum);
 	
 	return (0);
 }
@@ -421,6 +404,47 @@ int AlmostAlwaysRight(void *param)
 	return (0);
 }
 
+/******************************************************************************/
+
+void GoodLuck()
+{
+	printf("  * * * *     * * * *     * * * *    * * * * 	\n");
+	printf(" *       *   *       *   *       *   *       *	\n");
+	printf(" *           *       *   *       *   *        *	\n");
+	printf(" *  * * *    *       *   *       *   *        *	\n");
+	printf(" *       *   *       *   *       *   *        *	\n");
+	printf(" *       *   *       *   *       *   *       *	\n");
+	printf("  * * * *     * * * *     * * * *    * * * *	\n\n");
+	
+	printf(" *           *       *    * * * *    *     *    \n");
+	printf(" *           *       *   *       *   *   *     	\n");
+	printf(" *           *       *   *           * *        \n");
+	printf(" *           *       *   *           * *     	\n");
+	printf(" *           *       *   *           *   *   	\n");
+	printf(" *            *     *    *       *   *     *   	\n");
+	printf(" * * * * *     *****      * * * *    *       *  \n\n");
+}
+
+/******************************************************************************/
+
+void GoodJob()
+{
+	printf("  * * * *     * * * *     * * * *    * * * * 	\n");
+	printf(" *       *   *       *   *       *   *       *	\n");
+	printf(" *           *       *   *       *   *        *	\n");
+	printf(" *  * * *    *       *   *       *   *        *	\n");
+	printf(" *       *   *       *   *       *   *        *	\n");
+	printf(" *       *   *       *   *       *   *       *	\n");
+	printf("  * * * *     * * * *     * * * *    * * * *	\n\n");
+	
+	printf("         * * *    * * * *     * * * *     	\n");
+	printf("            *    *       *   *       *   	\n");
+	printf("            *    *       *   *       *   	\n");
+	printf("      *     *    *       *   * * * *     	\n");
+	printf("      *     *    *       *   *       *   	\n");
+	printf("      *     *    *       *   *       *   	\n");
+	printf("       * * *      * * * *     * * * *    	\n\n");
+}
 
 
 

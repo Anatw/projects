@@ -1,27 +1,49 @@
+# General
+NAME = sorted_linked_list
+TEST = $(NAME)_test
+LINKFILES = ../../obj/doubly_linked_list.o
+
+# Compiler Settings:
 gc = gcc -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3 
 gd = gcc -ansi -pedantic-errors -Wall -Wextra -g
+valgrind = valgrind --leak-check=yes --track-origins=yes
+gdbtui = gdbtui
+lldb = lldb
 
-# -I tells the preprocessor to search at this path for the header files included in the c file
-INCLUDES = -I ../../include
+# Path for the header files
+DEPS = ../../include/$(NAME).h	# Same directory header
+INCLUDES = -I ../../include		# Other directories headers
 
-NAME = a.out
-PRODUCTION = sorted_linked_list.o ../../obj/doubly_linked_list.o
-OBJECTS = sorted_linked_list_test.o sorted_linked_list.o ../../obj/doubly_linked_list.o
-DEPS = sorted_linked_list.h
+# General defenitions
+OBJECTS = $(NAME)_test.o $(NAME).o
 
-test: $(OBJECTS)
-	@$(gd) $(OBJECTS) -o $(NAME)$@
+# 1/ Compiling with debuger option and running the executable
+_test: $(OBJECTS)
+	@ $(gd) $(OBJECTS) $(LINKFILES) -o $(NAME)$@
+	./$(NAME)$@
 
-#bit_array_test.o
-production: $(PRODUCTION)
-	@$(gc) -c $(PRODUCTION) -o $(NAME)$@
+# 4/ Deploying the files - sending %.o files to .obj
+deploy: $(OBJECTS)
+	@ $(gc) $(OBJECTS) $(LINKFILES) -o $(NAME)$@
+	mv $(OBJECTS) ../../obj
 
 %.o: %.c $(DEPS)
-	@$(gd) $(INCLUDES) -c -o $@ $<
+	@ $(gd) $(INCLUDES) -c -o $@ $<
+	
+# 2/ Compiling with everything and valgrind after
+vlg: $(TEST)
+	@ $(valgrind) ./$(TEST)
+	
+gt: $(TEST)
+	@ $(gdbtui) ./$(TEST)
 
-# Room Service
+# make ll
+ll: $(TEST) 
+	@ $(lldb) ./$(TEST) 
+
+# 3/ Room Service
 .PHONY: clean
 clean:
-	rm -rf *.o *.out $(NAME) $(NAME)test
+	rm -rf *.o *.out $(NAME)test $(NAME)deploy
 
-# the costumer will receive the h files and the o files (in an archive)
+

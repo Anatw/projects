@@ -92,10 +92,9 @@ void PQueueClear(pqueue_t *pqueue);
  *          3. pointer to the parameter
  * Time Complexity: O(n) 
  */
-int PQueueErase(pqueue_t *pqueue,
-				int (*cond_func)(const void *data,
-								 const void *param),
-				const void *param);
+int PQueueErase(pqueue_t *pqueue, int (*cond_func)(const void *data,
+		 const void *param), const void *param);
+
 
 /* helping functions: */
 int Compare(const void *data1, const void *data2);

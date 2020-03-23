@@ -1,8 +1,8 @@
 # General
-# LINKFILES - .o files that are located in different directories (../../obj/file_name) shold be added to the receipe of '_test' and 'deploy'
-NAME = uid
-TEST = $(NAME)_test
-LINKFILES = ;
+# LINKFILES - .o files that are located in different directories (../../obj/file_name.o) shold be added to the receipe of '_test' and 'deploy'
+NAME = task
+TEST = $(NAME)test
+LINKFILES = ../../obj/uid.o
 
 # Compiler Settings:
 gc = gcc -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3 
@@ -19,13 +19,13 @@ INCLUDES = -I ../../include		# Other directories headers
 OBJECTS = $(NAME)_test.o $(NAME).o
 
 # 1/ Compiling with debuger option and running the executable
-_test: $(OBJECTS)
-	@ $(gd) $(OBJECTS) -o $(NAME)$@
+test: $(OBJECTS)
+	@ $(gd) $(OBJECTS) $(LINKFILES) -o $(NAME)$@
 	@ ./$(NAME)$@
 
 # 4/ Deploying the files - sending %.o files to .obj
 deploy: $(OBJECTS)
-	@ $(gc) $(OBJECTS) -o $(NAME)$@
+	@ $(gc) $(OBJECTS) $(LINKFILES) -o $(NAME)$@
 	mv $(OBJECTS) ../../obj
 
 %.o: %.c $(DEPS)

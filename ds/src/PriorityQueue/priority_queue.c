@@ -117,7 +117,7 @@ void PQueueClear(pqueue_t *pqueue)
 		to_delete = NULL;
 	}
 }
-
+/*
 int PQueueErase(pqueue_t *pqueue,
 				int (*cond_func)(const void *data,
 								 const void *param),
@@ -145,7 +145,28 @@ int PQueueErase(pqueue_t *pqueue,
 	
 	return (1);
 }
+*/
+int PQueueErase(pqueue_t *pqueue,
+				int (*cond_func)(const void *data,
+								 const void *param),
+				const void *param)
+{
+    dsll_iter_t found = NULL;
 
+    assert(pqueue);
+    assert(cond_func);
+
+    found = DSLLFindIf(DSLLBegin(pqueue->pqueue), DSLLEnd(pqueue->pqueue), cond_func, (void *)param);
+
+    if (found == DSLLEnd(pqueue->pqueue))
+    {
+        return (1);
+    }
+
+    DSLLRemove(found);
+    
+    return (0);
+}
 /*
 void PQueueErase(pqueue_t *pqueue, int (*cond_func)(const void *data,
 		 const void *param), const void *param)

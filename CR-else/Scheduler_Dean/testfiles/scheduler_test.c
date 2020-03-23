@@ -1,11 +1,3 @@
-/*******************************************************************************
- * File: scheduler_tests.c - scheduler tests file				 		       *
- * Author: Yehuda Levavi                                                       *
- * Reviewed by: Esti Binder				                                   	   *
- * Date: 18.3.20		                                                       *
- * Note: Due to efficiency reasons, there are no user protection in the 	   *
- * functions, and all the validations are the responsibility of the user.      *
- ******************************************************************************/
 
 #include <stdio.h>	/* printf */
 #include <assert.h> /* assert */
@@ -44,6 +36,7 @@ int main()
 	assert(BasicTests() == 0);
 	assert(AdvencedTests() == 0);
 
+	BasicTests();
 	return (0);
 }
 
@@ -62,8 +55,8 @@ int BasicTests()
 	assert(SchedulerSize(my_sched) == 0);
 
 	/* inserting tasks: */
-	task2 = SchedulerInsertTask(my_sched, TIMEFUNC_INTERVAL, PrintTime, my_sched);
-	task1 = SchedulerInsertTask(my_sched, UIDFUNC_INTERVAL, PrintUID, NULL);
+	task1 = SchedulerInsertTask(my_sched, TIMEFUNC_INTERVAL, PrintTime, my_sched);
+	task2 = SchedulerInsertTask(my_sched, UIDFUNC_INTERVAL, PrintUID, NULL);
 	task3 = SchedulerInsertTask(my_sched, FIVEPLUSFUNC_INTERVAL, PrintFivePlus, &num);
 
 	/* check size & IsEmpty when full: */
@@ -79,7 +72,7 @@ int BasicTests()
 	assert(0 == status); /* validate that exited by command */
 
 	/* check SchedulerRemoveTask */
-	SchedulerRemoveTask(my_sched, task2);
+	/*SchedulerRemoveTask(my_sched, task2);*/
 	assert(SchedulerSize(my_sched) == 1); /* 1 element went out when ran, 1 we removed*/
 
 	printf("\n* Runnig again: expecting PrintTime every 5 sec, no Print UID, \n");
@@ -114,7 +107,7 @@ int AdvencedTests()
 	task1 = SchedulerInsertTask(my_sched, 3, AddFuncsAndPrint, my_sched);
 	remove_item.sched = my_sched;
 	remove_item.uid = task1;
-	task2 = SchedulerInsertTask(my_sched, 5, CountAndRemove, &remove_item);
+	/*task2 = SchedulerInsertTask(my_sched, 5, CountAndRemove, &remove_item);*/
 
 	printf("\n* Runnig Advenced Tests: expecting AddFuncsAndPrint 4 times,\n");
 	printf("* CountAndRemove 3 and than remove AddFuncsAndPrint and stop. \n");
@@ -174,10 +167,11 @@ int PrintTime(void *param)
 
 int AddFuncsAndPrint(void *param)
 {
-	scheduler_t *my_sched = (scheduler_t *)param;
+	scheduler_t *my_sched = NULL;
 	static int count = 0;
 	Uid_t task1 = UIDGetBadUID();
 
+	my_sched = (scheduler_t *)param;
 	printf("AddFuncsAndPrint!\n");
 	printf("Current Scheduler size: %ld, after adding function: %ld\n\n", SchedulerSize(my_sched), SchedulerSize(my_sched) + 1);
 
@@ -191,30 +185,6 @@ int AddFuncsAndPrint(void *param)
 	{
 		++count;
 	}
-
-	return (0);
-}
-
-int CountAndRemove(void *param)
-{
-	struct to_remove *things = (struct to_remove *)param;
-	static int count = 0;
-
-	printf("CountAndRemove!\n");
-
-	if (count == 2)
-	{
-		SchedulerRemoveTask(things->sched, things->uid);
-		printf("Removing AddFuncsAndPrint!\n");
-		SchedulerInsertTask(things->sched, 1, StopScheduler, things->sched);
-		return (1);
-	}
-	else
-	{
-		++count;
-	}
-
-	printf("\n");
 
 	return (0);
 }
