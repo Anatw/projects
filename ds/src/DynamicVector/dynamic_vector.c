@@ -137,7 +137,7 @@ void VectorPopBack(vector_t *vector)
 void VectorSetElement(vector_t *vector, int index, void *value)
 {
 	assert(NULL != vector);
-	assert(index < vector->size);
+	assert((size_t)index < vector->size);
 	
 	vector->array[index] = value;
 }

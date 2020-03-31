@@ -38,9 +38,6 @@ stack_t *StackCreate(size_t size)
 	(new_stack->stack_top) = new_stack->container;
 	(new_stack->stack_capacity) = size;
 	
-	printf("'stack' address is: %lu\n", (size_t)new_stack->stack_top);
-	printf("'stack' address is: %lu\n", (size_t)new_stack);
-	
 	return (new_stack);
 }
 

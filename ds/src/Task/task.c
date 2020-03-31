@@ -9,6 +9,8 @@
 
 #include "task.h"
 
+size_t GetNextTime(task_t *new_task);
+
 struct task
 {
     Uid_t uid;
@@ -25,7 +27,7 @@ task_t *TaskCreate(size_t interval,
 	task_t *new_task = NULL;
 	/* Uid_t bad_uid = UIDGetBadUID(); */
 	
-	assret(operation_func);
+	assert(operation_func);
 	assert(param);
 	
 	new_task = (task_t *)malloc(sizeof(task_t));
@@ -40,13 +42,13 @@ task_t *TaskCreate(size_t interval,
 	 * The newely created UID is a bad UID 
 	if (1 == UIDIsSame(bad_uid, new_task->uid))
 	{
-		return (NULL); /* inside scheduler - check the UID 
+		return (NULL);  inside scheduler - check the UID 
 	}*/
 	
 	new_task->interval_in_seconds = interval;
 	new_task->operation_func = operation_func;
 	new_task->param = param;
-	new_task->next_operation_time = time(NULL) + interval;
+	new_task->next_operation_time = GetNextTime(new_task);
 	
 	return (new_task);
 }
@@ -63,7 +65,7 @@ void TaskUpdateTimeToExecute(task_t *task)
 {
 	assert(task);
 
-	task->next_operation_time = time(NULL) + task->interval_in_seconds;
+	task->next_operation_time = GetNextTime(task);
 }
 
 Uid_t TaskGetUID(task_t *task)
@@ -104,4 +106,9 @@ time_t TaskGetOperationTime(task_t *task)
 	assert(task);
 	
 	return (task->next_operation_time);
+}
+
+size_t GetNextTime(task_t *new_task)
+{
+	return (time(NULL) + new_task->interval_in_seconds);
 }

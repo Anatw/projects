@@ -5,7 +5,7 @@
 *******************************************************************************/
 #include <stdlib.h> /* malloc(), free() */
 #include <assert.h> /* assert() */
-#include <time.h> /* time() */
+#include <time.h> /* time */
 
 #include "scheduler.h"
 #include "priority_queue.h"

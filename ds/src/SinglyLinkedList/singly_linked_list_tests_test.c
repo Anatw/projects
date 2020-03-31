@@ -17,7 +17,6 @@ int IntAdd(void *param, void *data);
 
 int main()
 {
-	int status = 0;
 	SLL_t *my_list = SLLCreate();
 	
 	iter_t my_iter = 0;
@@ -52,17 +51,17 @@ int main()
 	printf("** after inserting 6 elements: **\n");
 	printf("Elements: %lu\n", SLLCount(my_list));
 	printf("Is Empty: %s\n\n", (SLLIsEmpty(my_list) ? "yes" : "no"));
-	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLTail(my_list)); 
+	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLEnd(my_list)); 
 		 i = SLLNext(i))
 	{
 		printf("element: %d\n", *(int *)SLLGetData(i));
 	}
 
-	SLLInsert(SLLTail(my_list), &var7);
+	SLLInsert(SLLEnd(my_list), &var7);
 	printf("\n** after insert 1 element at end: **\n");
 	printf("Elements: %lu\n", SLLCount(my_list));
 	printf("Is Empty: %s\n\n", (SLLIsEmpty(my_list) ? "yes" : "no"));
-	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLTail(my_list)); 
+	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLEnd(my_list)); 
 		 i = SLLNext(i))
 	{
 		printf("element: %d\n", *(int *)SLLGetData(i));
@@ -73,7 +72,7 @@ int main()
 	printf("\n** remove the second element: **\n");
 	printf("Elements: %lu\n", SLLCount(my_list));
 	printf("Is Empty: %s\n\n", (SLLIsEmpty(my_list) ? "yes" : "no"));
-	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLTail(my_list)); 
+	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLEnd(my_list)); 
 		 i = SLLNext(i))
 	{
 		printf("element: %d\n", *(int *)SLLGetData(i));
@@ -84,21 +83,21 @@ int main()
 	printf("\n** set the 3rd element to 734: **\n");
 	printf("Elements: %lu\n", SLLCount(my_list));
 	printf("Is Empty: %s\n\n", (SLLIsEmpty(my_list) ? "yes" : "no"));
-	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLTail(my_list)); 
+	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLEnd(my_list)); 
 		 i = SLLNext(i))
 	{
 		printf("element: %d\n", *(int *)SLLGetData(i));
 	}
 
-	my_iter = SLLFind(SLLBegin(my_list), SLLTail(my_list), &var4, IntCompare);
+	my_iter = SLLFind(SLLBegin(my_list), SLLEnd(my_list), &var4, IntCompare);
 
 	printf("\n** using find function to search 67 **\n");
 	printf("The element found! %d\n", *(int *)SLLGetData(my_iter));
 
-	status = SSLForEach(SLLBegin(my_list), SLLTail(my_list), &var1, IntAdd);
+	status = SLLForEach(SLLBegin(my_list), SLLEnd(my_list), &var1, IntAdd);
 
 	printf("\n** using foreach function to add 5 to each element **\n");
-	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLTail(my_list)); 
+	for (i = SLLBegin(my_list); !SLLIsSameIter(i, SLLEnd(my_list)); 
 		 i = SLLNext(i))
 	{
 		printf("element: %d\n", *(int *)SLLGetData(i));

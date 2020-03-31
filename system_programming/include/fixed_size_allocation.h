@@ -17,6 +17,8 @@ Step Three: You are ready to roll!
 #ifndef FIXED_SIZE_ALLOCATION_H
 #define FIXED_SIZE_ALLOCATION_H
 
+#include <stddef.h>
+
 typedef struct fixed_size_allocation fsa_t;
 
 /* 

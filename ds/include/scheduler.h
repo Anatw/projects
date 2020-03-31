@@ -59,13 +59,14 @@ void SchedulerDestroy(scheduler_t *schd);
  *					 				 0 - keep running the scheduler.
  *									 stop the scheduler:
  *									 		1 - no more items to run.
- *									 		2 - peoblem in allocatinon inside a
- *											 	task function. 
+ *									 		2 - peoblem has occured (for 
+ 												example: in allocatinon inside 
+ *											 	a task function. 
  * 			  		 (func) Argument: param - void pointer to data func need to 
  * 											  proccess.
  * 			  param - void pointer to data func function need to proccess. param
  * 					  may be a pointer to a scheduler.
- * Complexity: O(1)
+ * Complexity: O(n)
  */
 Uid_t SchedulerInsertTask(scheduler_t *schd,
 						  size_t interval,
@@ -74,8 +75,11 @@ Uid_t SchedulerInsertTask(scheduler_t *schd,
 
 /* 
  * Function to remove (completly delete and free) a task from the scheduler.
+ * The user can not remove the task that is now beeing run, It he want to remove
+ * the task from the shcedular the functioni should return 1.
  * Returns: int status: 1: success
- * 			 			0: failure in locating the task
+ * 			 			0: error has occured (for example: failure in 
+ 						   locating the task).
  * Arguments: schd - pointer to the scheduler you want to remove task from.
  * 			  Uid_t - the uid of the task you want to remove.
  * Complexity: O(n)

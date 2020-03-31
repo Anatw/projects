@@ -83,7 +83,7 @@ void *FSAAlloc(fsa_t *fsa_pool)
 	
 	assert(fsa_pool);
 	
-	if(size_t(NULL) == fsa_pool->next_free)
+	if (0 == fsa_pool->next_free)
 	{
 		return NULL;
 	}

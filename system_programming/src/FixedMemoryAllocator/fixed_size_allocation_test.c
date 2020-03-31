@@ -20,8 +20,7 @@ int main()
 	fsa_t *mem_pool = 0;
 	void *memory = NULL;
 	int *data = NULL;
-	int array[20] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-					 16, 17, 18, 19, 20};
+	int array[20] = {1, 2, 3, 4, 5};
 	int index = 0;
 	
 	printf("Creating a new memory block with %d blocks.\n", NUM_BLOCKS);
@@ -43,7 +42,7 @@ int main()
 	data = FSAAlloc(mem_pool);
 	data = array;
 	
-	while (index  < 20)
+	while (index  < (BLOCK_SIZE / sizeof(array[0])))
 	{
 		printf("%d\n", *(data + index));
 		++index;

@@ -1,0 +1,7 @@
+
+
+
+
+
+
+int ThinkOfaNum(int num);

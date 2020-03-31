@@ -1,31 +1,20 @@
 #ifndef VARIABLE_SIZE_ALLOCATION_H
 #define VARIABLE_SIZE_ALLOCATION_H
 
-#define LAST_BLOCK 9999999999999999/* To be complete */
+#include <stddef.h> /* size_t, ssize_t */
 
-#include <stddef.h>
+typedef struct block_header vsa_t;
+typedef struct block_header block_t;
 
-typedef struct block_header /* move to function definitin file */
-{
-	ssize_t block_size; /* negetive value means not free and vice versa */
-
-#ifndef ND
-	long valid; /* should hold a specific value to validate proper position */
-#endif
-
-}block_t;
-
-/*
 /*
  * Arguments:
  			 * Pointer to begining of memory segment allocated by the user
  			 * Total memory segment size in bytes
  			 * 
  * Return: A pointer to the first user data block
- * 
-*/
+ * Complexity:
+ */
 block_t *VSAInit(void *memory, size_t seg_size);
-
 
 /*
  * Arguments: Allocate a new freed block for the user
@@ -33,28 +22,18 @@ block_t *VSAInit(void *memory, size_t seg_size);
  			 * The size of block to be allocated 'block_size'
  			 * 
  * Return: A pointer to the user data block
- * Time complexity O(n)
-*/
+ * Complexity: O(n)
+ */
 
-void *VSAAlloc(VSA_t *vsa_pool, size_t block_size);
+void *VSAAlloc(vsa_t *vsa_pool, size_t size_needed);
 
 /*
  * Arguments: Free the block pointed by 'block_ptr' within memory segment
  			 * A pointer to the required block to be freed
  * Return: void
  * Time complexity O(1)
-*/
+ */
 void VSAFree(void *block_ptr);
-
-/*
- * Arguments:
- 			 * 
- 			 * 
- 			 * 
- * Return: The size of the largest block available within memory segment
- * 
-*/
-
 size_t VSALargestBlockAvailable(vsa_t *pool);
 
 #endif /* VSA */
