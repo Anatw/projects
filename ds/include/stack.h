@@ -28,7 +28,7 @@ void StackPop(stack_t *stack);
 
 /* operation that returns the value of the top most element of */
 /* the stack without deleting that element from the stack 	   */
-stack_t *StackPeek(stack_t *stack);
+void *StackPeek(stack_t *stack);
 
 size_t StackSize(stack_t *stack);
 

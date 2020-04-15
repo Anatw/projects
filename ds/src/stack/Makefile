@@ -8,11 +8,6 @@ DEPS = stack_array.h
 
 # when typing "make" the "bit_array" file will be created.
 test: $(OBJECTS)git add-A
-git commit
-git push origin m
-
-
-
 	$(gd) $(OBJECTS) -o $(NAME)
 
 production: $(PRODUCTION)

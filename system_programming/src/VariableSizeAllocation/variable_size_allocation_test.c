@@ -14,6 +14,13 @@ functions, and all the validations are the responsibility of the user.
 #include "variable_size_allocation.h"
 
 #define POOLSIZE (200)
+/* in calls CR: add to check:
+alloc to 0
+alloc to 1
+alloc to 8 (word size)
+a loop to alloc till there is no space and check what happens
+checks of allocs and free in zigzag - a loop that fish a random number and 
+decides, randomly, if it want's to allocate or free */
 
 int main()
 {

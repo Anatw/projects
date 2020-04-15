@@ -7,7 +7,7 @@
 #include <stdlib.h> /* sizeof(), malloc() */
 #include <stdio.h>
 
-#include "/home/anat/git/anat-wax/ds/include/stack.h"
+#include "stack.h"
 
 struct stack
 {

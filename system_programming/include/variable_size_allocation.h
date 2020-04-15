@@ -20,17 +20,16 @@ After allocation use VSAInit to initialize the allocated memory block.
 #include <stddef.h> /* size_t, ssize_t */
 
 typedef struct block_header vsa_t;
-typedef struct block_header block_t;
 
 /*
  * Initializes the memory pool.
  * Arguments: memory - pointer to begining of memory segment allocated by
- 					   the user
+ *					   the user
  *			  seg_size - total memory segment size in bytes
  * Return: A pointer to the first user data block
  * Complexity: O(1)
  */
-block_t *VSAInit(void *memory, size_t seg_size);
+vsa_t *VSAInit(void *memory, size_t seg_size);
 
 /*
  * Tag a memory block as allocated.

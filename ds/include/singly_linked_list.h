@@ -33,7 +33,7 @@ iter_t SLLInsert(iter_t where, void *data);
 /* Complexity: O(1) 														*/
 iter_t SLLRemove(iter_t who);
 
-/* Functionality: function that count the number of mmbers in the list 		*/
+/* Functionality: function that count the number of members in the list 		*/
 /* 'list' - the list who's members you'de like to count 					*/
 /* Complexity: O(n) 														*/
 size_t SLLCount(const SLL_t *list);

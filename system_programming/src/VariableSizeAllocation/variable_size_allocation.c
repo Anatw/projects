@@ -19,10 +19,12 @@ functions, and all the validations are the responsibility of the user.
 #define SWITCHMODE (-1)
 #define WORD (sizeof(void *))
 
+typedef struct block_header block_t;
+
 struct block_header
 {
 	ssize_t block_size; /* positive value = free; negetive value = not free */
-	#ifndef ND
+	#ifndef _NDEBUG
 	long valid; /* ment to validate that we point to a header and not data */
 	#endif
 };
@@ -50,7 +52,7 @@ block_t *VSAInit(void *memory, size_t seg_size)
 	last_block = (block_t *)byte_p;
 	last_block->block_size = LASTBLOCK;
 	
-	#ifndef NDEBUG
+	#ifndef _NDEBUG
 	last_block->valid = ISHEADER;
 	vsa_pool->valid = ISHEADER;
 	#endif /*NDEBUG */
@@ -112,9 +114,9 @@ void *VSAAlloc(vsa_t *vsa_pool, size_t size_needed)
 			/* create a new header inside the block */
 			new_block->block_size = labs(block_p->block_size) - size_needed -
 									sizeof(block_t);
-			#ifndef ND				
+			#ifndef _NDEBUG				
 			new_block->valid = ISHEADER;
-			#endif /* ND */
+			#endif /* _NDEBUG */
 			
 			block_p->block_size = size_needed * SWITCHMODE;
 			
@@ -124,9 +126,9 @@ void *VSAAlloc(vsa_t *vsa_pool, size_t size_needed)
 		else if ((ssize_t)size_needed <= block_p->block_size)
 		{
 			block_p->block_size *= SWITCHMODE;
-			#ifndef ND
+			#ifndef _NDEBUG
 			block_p->valid = ISHEADER;
-			#endif /* ND */
+			#endif /* _NDEBUG */
 			
 			return (block_p + 1);
 		}
