@@ -5,6 +5,7 @@
 *******************************************************************************/
 #include <stdlib.h> /* malloc(), free(), size_t, abs() */
 #include <stdio.h> /* printf(), size_t */
+#include <assert.h> /* assert() */
 
 #define FREE(x) ((free(x), (x = NULL)))
 
@@ -14,17 +15,18 @@
  * 			1 in case of error.
  * Arguments: arr_to_sort - array to be sorted.
  * 			  num_elements - number of elements in the array.
- * Complexity: O(n log n) - O(n)
+ * Complexity: O(n log n) (going over each half of the array (2(T(n/2)))
+ * 			   and merging the entire array (n) => T(n)=2(T(n/2))+n => O(nlogn))
  */
 int MergeSort(int *arr_to_sort, size_t num_elements);
 
 /************** utility functions: *****************/
 
-int RecursiveMergeSort(int *array, size_t base, size_t upper);
+static int RecursiveMergeSort(int *array, size_t base, size_t upper);
 
-int Merge(int *array, size_t base, size_t middle, size_t upper);
+static int Merge(int *array, size_t base, size_t middle, size_t upper);
 
-void PrintArray(int array[], size_t num_elements);
+static void PrintArray(int array[], size_t num_elements);
 
 /*******************************/
 
@@ -49,18 +51,21 @@ int MergeSort(int *arr_to_sort, size_t num_elements)
 	size_t base = 0;
 	size_t upper = (num_elements - 1);
 
+	assert(arr_to_sort && num_elements);
+
 	return (RecursiveMergeSort(arr_to_sort, base, upper));
 }
 
 /*******************************/
 
-int RecursiveMergeSort(int *array, size_t base, size_t upper)
+static int RecursiveMergeSort(int *array, size_t base, size_t upper)
 {
-	if (base < upper)
+	if (base < upper) 
 	{
 		size_t middle = base + ((upper - base) / 2);
 
 		RecursiveMergeSort(array, base, middle);
+		
 		RecursiveMergeSort(array, (middle + 1), upper);
 		
 		return (Merge(array, base, middle, upper));
@@ -71,7 +76,7 @@ int RecursiveMergeSort(int *array, size_t base, size_t upper)
 
 /*******************************/
 
-int Merge(int *array, size_t base, size_t middle, size_t upper)
+static int Merge(int *array, size_t base, size_t middle, size_t upper)
 {
 	int index_left = 0;
 	int index_right = 0;
@@ -149,7 +154,7 @@ int Merge(int *array, size_t base, size_t middle, size_t upper)
 
 /*******************************/
 
-void PrintArray(int array[], size_t num_elements)
+static void PrintArray(int array[], size_t num_elements)
 {
 	size_t iterator = 0;
 	

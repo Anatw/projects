@@ -20,6 +20,7 @@ typedef struct sll_node
  * Return: Pointer to the new beggining of the list.
  * Receive: node - Pointer to the the node to start fliping from.
  * Time Complexity: O(n)
+ * Space complexity: O(n)
  */
 Node *FlipList(Node *node);
 

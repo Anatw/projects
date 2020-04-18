@@ -1,9 +1,12 @@
 /*******************************************************************************
 					  		 Written by Anat Wax
-						   14-15 of April 3rd, 2020
-							Reviewer: Haim Sa'adia
+						    14-15 of April, 2020
+						   Reviewer: Haim Sa'adia
 *******************************************************************************/
 #include <stdio.h> /* printf(), size_t */
+#include <assert.h> /* assert() */
+
+#define UNUSED(x) (void)(x)
 
 /*
  * Algorithem devides the list to two based on a pivot point (last element).
@@ -18,7 +21,9 @@
  *                   - 0 if first == second. in that case, the order of sorting
  *                          is undefined.
  *            arg - argument fo the Compar function.
- * Complexity: O(n log n)
+ * Complexity: O(n log n) - O(n^2) (best case scenario - the pivot is always 
+ *             the mid-size element in the array. Worst case scenario -
+ *             the pivot is always the smallest/larggest element in the array).
  */
 void Qsort(void *base, size_t nmemb, size_t size,
            int (*Compar)(const void *first, const void *second,
@@ -26,19 +31,19 @@ void Qsort(void *base, size_t nmemb, size_t size,
 
 /************* utility functions: ****************/
 
-void QuickSortRecursive(int array[], int base, int top,
+static void QuickSortRecursive(int array[], int base, int top,
                         int (*Compar)(const void *first, const void *second,
                         void *arg), void *arg);
 
-int Compar(const void *first, const void *second, void *arg);
+static int Compar(const void *first, const void *second, void *arg);
 
-int Partition (int array[], int base, int top,
+static int Partition (int array[], int base, int top,
                int (*compar)(const void *first, const void *second,
                void *arg), void *arg);
 
-void PrintArray(int array[], size_t num_elements);
+static void PrintArray(int array[], size_t num_elements);
 
-void Swap(int *a, int *b);
+static void Swap(int *a, int *b);
 
 /*****************************/
 
@@ -62,16 +67,19 @@ void Qsort(void *base, size_t nmemb, size_t size,
            int (*Compar)(const void *first, const void *second,
            void *arg), void *arg)
 {
-   QuickSortRecursive(base, 0, (nmemb - 1), Compar, arg);
+    UNUSED(size);
+    QuickSortRecursive(base, 0, (nmemb - 1), Compar, arg);
 }
 
 /*****************************/
 
-void QuickSortRecursive(int array[], int base, int top,
+static void QuickSortRecursive(int array[], int base, int top,
                         int (*Compar)(const void *first, const void *second,
                         void *arg), void *arg)
 {
     int partition = 0;
+
+    assert(array && Compar);
 
     if (base < top)
     {
@@ -84,7 +92,7 @@ void QuickSortRecursive(int array[], int base, int top,
 
 /*****************************/
 
-int Partition (int array[], int base, int top,
+static int Partition (int array[], int base, int top,
                int (*compar)(const void *first, const void *second,
                void *arg), void *arg)
 {
@@ -108,7 +116,7 @@ int Partition (int array[], int base, int top,
 
 /*****************************/
 
-void PrintArray(int array[], size_t num_elements)
+static void PrintArray(int array[], size_t num_elements)
 {
 	size_t iterator = 0;
 	
@@ -121,14 +129,15 @@ void PrintArray(int array[], size_t num_elements)
 
 /*****************************/
 
-int Compar(const void *first, const void *second, void *arg)
+static int Compar(const void *first, const void *second, void *arg)
 {
+    UNUSED(arg);
     return (*(int *)first - *(int *)second);
 }
 
 /*****************************/
 
-void Swap(int *a, int *b)
+static void Swap(int *a, int *b)
 {
 	int temp = *a;
 	*a = *b;

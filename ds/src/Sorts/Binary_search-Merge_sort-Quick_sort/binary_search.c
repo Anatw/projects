@@ -4,11 +4,12 @@
 							Reviewer: Haim Sa'adia
 *******************************************************************************/
 #include <stdio.h> /* printf(), size_t */
+#include <assert.h> /* assert() */
 
 #define NOT_FOUND (101010101)
 
 /*
- * Algorithem to recursuvely find data in a binary search.
+ * Algorithem to recursuvely find data in a sorted binary search.
  * Return: if found - the index in the array where the data was found. If not,
  *         the number: 1010101010101.
  * Arguments: array - array to search data in.
@@ -20,7 +21,7 @@
 int RecursiveBinarySearch(int array[], size_t base, size_t size, int data);
 
 /*
- * Algorithem to iterativly find data in a binary search.
+ * Algorithem to iterativly find data in a sorted binary search.
  * Return: if found - the index in the array where the data was found. If not,
  *         the number: 1010101010101.
  * Arguments: array - array to search data in.
@@ -48,6 +49,8 @@ int RecursiveBinarySearch(int array[], size_t base, size_t size, int data)
 {
     int middle = base + ((size - base) / 2);
 
+    assert(array && size);
+
     if (base <= size)
     {
         if (data == array[middle])
@@ -74,6 +77,8 @@ int IterativeBinarySearch(int array[], size_t base, size_t size, int data)
 {
     int middle = 0;
     
+    assert(array && size);
+
     while (base <= size)
     {
         middle = base + ((size - base) / 2);

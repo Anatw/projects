@@ -56,4 +56,38 @@ void CountingSort(int array[], size_t array_length);
  */
 void RadixSort(int array[], size_t array_length);
 
+/*
+ * Algorithem to reqursivly seperate and than merge while sorting of an array.
+ * Return - 0 in case of success.
+ * 			1 in case of error.
+ * Arguments: arr_to_sort - array to be sorted.
+ * 			  num_elements - number of elements in the array.
+ * Complexity: O(n log n) (going over each half of the array (2(T(n/2)))
+ * 			   and merging the entire array (n) => T(n)=2(T(n/2))+n => O(nlogn))
+ */
+int MergeSort(int *arr_to_sort, size_t num_elements);
+
+
+/*
+ * Algorithem devides the list to two based on a pivot point (last element).
+ * than each half (left - smaller than pivot, and right - larger than pivot)
+ * is quick-sorted recursivly.
+ * Arguments: base - array to sort.
+ *            nmemb - number of elements in array.
+ *            size - size of an element of the array.
+ *            compar - return int:
+ *                   - smaller than 0 if  first < second.
+ *                   - bigger than zero if first > second.
+ *                   - 0 if first == second. in that case, the order of sorting
+ *                          is undefined.
+ *            arg - argument fo the Compar function.
+ * Complexity: O(n log n) - O(n^2) (best case scenario - the pivot is always 
+ *             the mid-size element in the array. Worst case scenario -
+ *             the pivot is always the smallest/larggest element in the array).
+ */
+void Qsort(void *base, size_t nmemb, size_t size,
+           int (*Compar)(const void *first, const void *second,
+           void *arg), void *arg);
+
+
 #endif /* SORTS_H */

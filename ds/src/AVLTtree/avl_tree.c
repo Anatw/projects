@@ -14,6 +14,8 @@ operate recursivly on a specific node instead of the entire avl tree.
 
 #define FREE(x) ((free(x), (x = NULL)))
 
+/******************************************************************************/
+
 typedef enum
 {
 	LEFT,	 /* 0 */
@@ -36,11 +38,49 @@ struct AVLTree
 	int (*cmp_func)(const void *first, const void *second);
 }; /* avl_t */
 
-/**************************** utiliy funcs: ***********************************/
+
+/************************ recursive utility functions: ************************/
+/* for AVLCreate: */
+static node_t *AVLCreateNode(const void *data);
+/* for AVLDestroy: */
+static void DeleteNode(node_t *current);
+
+/* for AVLInsert: */
+static size_t NodeHeight(node_t *node);
+static int AVLMaxOfTwo(int first, int second);
+static int AVLGetBalance(node_t *current);
+static node_t *RotateLeft(node_t *current);
+static node_t *RotateRight(node_t *current);
+static node_t *AVLBalanceTree(node_t *current);
+static node_t *AVLInsertNode(node_t *current, node_t *new_node, void *data,
+							 int (*cmp_func)(const void *first,
+							 				 const void *second));
+
+/* for AVLFind: */
+static node_t *AVLFindNode(node_t *node, void *data,
+						   int (*cmp_func)(const void *first,
+						   				   const void *second));
+		   				   				   				   
+/* for AVLCount: */					   				   
+static size_t CountNodes(node_t *current);
+
+/* for AVLForEach: */
+int ForEachIterator(node_t *current, avl_operation_t operation, void *arg);
+
+/* for AVLRemove: */
+static node_t *FindPrev(node_t *current);
+static node_t *AVLRemoveNode(node_t *current, const void *data,
+							 int (*cmp_func)(const void *first,
+							 				 const void *second));
+
+/*********************** printing tree - utiliy funcs: ************************/
 
 static int CheckAndPrintTree(node_t *root);
 
 /******************************************************************************/
+/******************************* functions: ***********************************/
+/******************************************************************************/
+
 
 static node_t *AVLCreateNode(const void *data)
 {
@@ -117,7 +157,7 @@ void AVLDestroy(avl_t *tree)
 }
 
 /******************************************************************************/
-/*************************** insert utility functions *************************/
+/********************* AVLInsert utility functions ****************************/
 
 static size_t NodeHeight(node_t *node)
 {
@@ -267,7 +307,7 @@ static node_t *AVLInsertNode(node_t *current, node_t *new_node, void *data,
 	return (current);
 }
 
-/*********************************/
+/******************************* AVLInsert: ***********************************/
 
 int AVLInsert(avl_t *tree, void *data)
 {
@@ -283,7 +323,7 @@ int AVLInsert(avl_t *tree, void *data)
 	}
 
 	/* if tree is empty: */
-	if (NULL == tree->root)
+	if (AVLIsEmpty(tree))
 	{
 		tree->root = new_node;
 		/*	new_node->height += 1; */
@@ -291,8 +331,9 @@ int AVLInsert(avl_t *tree, void *data)
 	else
 	{
 		AVLInsertNode(tree->root, new_node, data, tree->cmp_func);
-		tree->root = AVLBalanceTree(tree->root);
 	}
+
+	tree->root = AVLBalanceTree(tree->root);
 
 	return (0);
 }
@@ -313,7 +354,7 @@ size_t AVLHeight(const avl_t *tree)
 	return (NodeHeight(tree->root) - 1);
 }
 
-/******************************************************************************/
+/******************* AVLFind - recursive utility function: ********************/
 
 static node_t *AVLFindNode(node_t *node, void *data,
 						   int (*cmp_func)(const void *first,
@@ -345,7 +386,7 @@ static node_t *AVLFindNode(node_t *node, void *data,
 	}
 }
 
-/*************************************/
+/**************************** AVLFind: ****************************************/
 
 void *AVLFind(const avl_t *tree, const void *data)
 {
@@ -362,15 +403,6 @@ void *AVLFind(const avl_t *tree, const void *data)
 	{
 		return (AVLFindNode(return_node, (void *)data, tree->cmp_func));
 	}
-}
-
-/******************************************************************************/
-
-void *AVLGetData(const bst_iter_t iterator)
-{
-	assert(iterator);
-
-	return (iterator->data);
 }
 
 /******************************************************************************/
@@ -442,7 +474,7 @@ int AVLForEach(avl_t *tree, avl_operation_t operation, void *arg)
 	return (status);
 }
 
-/******************************************************************************/
+/***************** AVLRemove - recursive utility function: ********************/
 
 /* left and than right till NULL */
 static node_t *FindPrev(node_t *current)
@@ -520,7 +552,7 @@ static node_t *AVLRemoveNode(node_t *current, const void *data,
 	return (current);
 }
 
-/*****************************/
+/**************************** AVLRemove ***************************************/
 
 void AVLRemove(avl_t *tree, const void *data)
 {

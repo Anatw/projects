@@ -48,7 +48,7 @@ int IsPower2a(unsigned int n)
 }
 
 
-/* ispower2 without a loop: */
+/* ispower2 without a : */
 /* every number that is a power of 2 will always have only one bit on! */
 int IsPower2b(unsigned int n)
 {

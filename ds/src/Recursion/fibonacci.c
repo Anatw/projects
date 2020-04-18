@@ -11,7 +11,8 @@
  * Return: int - the Fibonacci number corresponding to the location.
  * 		   (index) entered.
  * Argument: element_index: the index location of the Fibonacci number to seek.
- * comlexity: O(2n)
+ * Time comlexity: O(2n)
+ * Space complexity: O(n)
  */
 int FibonacciRecursive(int element_index);
 
@@ -20,7 +21,8 @@ int FibonacciRecursive(int element_index);
  * Return: int - the Fibonacci number corresponding to the location.
  * 		   (index) entered.
  * Argument: element_index: the index location of the Fibonacci number to seek.
- * comlexity: O(n)
+ * Time comlexity: O(n)
+ * Space complexity: O(n)
  */
 int FibonacciNonRecursive(int element_index);
 

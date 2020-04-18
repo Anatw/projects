@@ -8,14 +8,59 @@
 
 #define STRING_SIZE (2000)
 
+/* 
+ * Strlen: get the length of a string recursively.
+ * Arguments: string - pointer to a string
+ * Return: size_t with the size
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ */
 size_t Strlen(char *string);
 
+/* 
+ * Strcmp: compare two strings recursively.
+ * Arguments: string1, string2 - pointers to strings to compare
+ * Return: - 0 if the strings equal.
+ * 		    else, returns the ascii difference in the first different letter,
+ * 			that will be:
+ *		   - different latter in string1 is smaller than string2.
+ *		   - different latter in string1 is larger than string2.
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ */
 int Strcmp(char *string1, char *string2);
 
+/* 
+ * Strcpy: Copy string from source to destination.
+ * Arguments: destination - pointer to the starting point of the destination
+ * 						    for copy.
+ *            source - pointer to the string to be coppied.
+ * Return: pointer to destination.
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ */
 char *Strcpy(char *destination, char *source);
 
+/* 
+ * Strcat: Concatenate two strings.
+ * Arguments: destination - pointer to the starting point of the new string.
+ * 							I'ts size must be adequate for both strings.
+ *            source - the string to be added right after destination.
+ * Return: pointer to destination.
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ */
 char *Strcat(char *destination, char *source);
 
+/* 
+ * Strstr: Check for occurrence of str2 (needle) in str1(haystack).
+ * Arguments: haystack - string to search in.
+ *            needle - string to search in str1(haystack).
+ * Return: a pointer to the first occurrence of str2 in str1, 
+ * 		   or a NULL pointer if str2 is not part of str1.
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ */
 char *Strstr(char *haystack, const char *needle);
 
 /************************************************/
@@ -55,24 +100,23 @@ size_t Strlen(char *string)
 	}
 	
 	++counter;
-	Strlen(++string);
+	return (Strlen(++string));
 }
 
 /******************************************************************************/
 
 int Strcmp(char *string1, char *string2)
 {
-	if (string1 != string2)
+	if (*string1 != *string2)
+	{
+		return (*string1 - *string2);
+	}
+	else if ('\0' == *string1 && '\0' == *string2)
 	{
 		return (0);
 	}
 	
-	if ('\0' != *string1 && '\0' != *string2)
-	{
-		return (1);
-	}
-	
-	Strcmp(++string1, ++string2);
+	return (Strcmp(++string1, ++string2));
 }
 
 /******************************************************************************/

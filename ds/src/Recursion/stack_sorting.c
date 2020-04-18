@@ -17,8 +17,6 @@ struct stack
 
 /*************** utility function to creat and manage the stack: **************/
 
-void initStack(struct stack **s);
-
 int isEmpty(struct stack *s);
 
 void push(struct stack **s, int x);
@@ -57,7 +55,6 @@ int main ()
 	int data5 = 7;
 	struct stack *top = NULL;
 	
-	initStack(&top); 
     push(&top, data1); 
     push(&top, data2); 
     push(&top, data3); 
@@ -74,12 +71,6 @@ int main ()
 	return (0);
 }
 
-/* Utility function to initialize stack */
-void initStack(struct stack **stack)
-{ 
-    *stack = NULL; 
-} 
-  
 /* Utility function to chcek if stack is empty */
 int isEmpty(struct stack *stack) 
 { 

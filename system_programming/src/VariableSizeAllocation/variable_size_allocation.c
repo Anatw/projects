@@ -68,6 +68,7 @@ void *VSAAlloc(vsa_t *vsa_pool, size_t size_needed)
 	block_t *block_p = NULL;
 	block_t *new_block = NULL;
 	size_t temp_block_size = 0;
+	/* setting size_needed to start in a word-allignment orientation: */
 	size_needed = (((size_needed - 1) / WORD) + 1) * WORD;
 	
 	assert(vsa_pool);
@@ -77,7 +78,7 @@ void *VSAAlloc(vsa_t *vsa_pool, size_t size_needed)
 	block_p = vsa_pool;
 	new_block = vsa_pool;
 	
-	/* if there is no block big enoughh for size_needed */
+	/* if there is no block big enough for size_needed */
 	if (VSALargestBlockAvailable(vsa_pool) < (size_t)size_needed)
 	{
 		return (NULL);
@@ -85,7 +86,12 @@ void *VSAAlloc(vsa_t *vsa_pool, size_t size_needed)
 
 	while (LASTBLOCK != block_p->block_size)
 	{
-		/* block is free but not enough for size_needed */
+		/* while block is free but not enough for 'size_needed' - unite free
+		/* adjacent blocks. This block keep uniting free adjacent blocks even
+		/* if the size matches the size_needed, until it discovers an occupied
+		/* block. It can be easely changed by adding at the end of the block an
+		/* if statement to check if the block_size is big enoughh for
+		/* size_needed, and if so - break. */
 		while (0 < block_p->block_size &&
 			   size_needed > (block_p->block_size + temp_block_size) && 
 			   LASTBLOCK != block_p->block_size)
@@ -122,8 +128,8 @@ void *VSAAlloc(vsa_t *vsa_pool, size_t size_needed)
 			
 			return (block_p + 1); /* the block right after the header */
 		}
-		/* the block is in the exact size or bigger than for size_needed: */
-		else if ((ssize_t)size_needed <= block_p->block_size)
+		/* the bloc_size equals size_needed: */
+		else if ((ssize_t)size_needed == block_p->block_size)
 		{
 			block_p->block_size *= SWITCHMODE;
 			#ifndef _NDEBUG

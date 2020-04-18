@@ -18,6 +18,10 @@
 
 void PrintArray(int array[], size_t array_length);
 
+static int Compar(const void *first, const void *second, void *arg);
+
+/*******************************/
+
 int main()
 {
 	int array[ARRAY_SIZE] = {0};
@@ -54,4 +58,12 @@ void PrintArray(int array[], size_t array_length)
 	{
 		printf("%d\n", array[index]);
 	}
+}
+
+/*****************************/
+
+static int Compar(const void *first, const void *second, void *arg)
+{
+    UNUSED(arg);
+    return (*(int *)first - *(int *)second);
 }

@@ -1,20 +1,39 @@
 /*******************************************************************************
 					  	 Written by Anat Wax
-						  March 30-31, 2020
-						Reviewer: Amir Saraf
+			    March 30-31, 2020 - Reviewer: Amir Saraf
+		MergeSort + Qsort: 14-15 of April, 2020 - Reviewer: Haim Sa'adia
 *******************************************************************************/
 #include <stddef.h> /* size_t */
 #include <unistd.h> /* ssize_t */
 #include <time.h> /* clock_t, clock() */
-#include <stdio.h> /* printf() */
+#include <stdio.h> /* printf(), size_t */
 #include <assert.h> /* assert() */
 #include <stdlib.h> /* malloc(), calloc() ,free() */
 
 #include "sorts.h"
 
 #define BASE (10)
+#define FREE(x) ((free(x), (x = NULL)))
+#define UNUSED(x) (void)(x)
 
-/*************************** helping functions ********************************/
+/********************* MergeSort utility functions: ***************************/
+
+static int RecursiveMergeSort(int *array, size_t base, size_t upper);
+
+static int Merge(int *array, size_t base, size_t middle, size_t upper);
+
+/************************ Qsort utility functions: ****************************/
+
+static void QuickSortRecursive(int array[], int base, int top,
+                        int (*Compar)(const void *first, const void *second,
+                        void *arg), void *arg);
+
+
+static int Partition (int array[], int base, int top,
+               int (*compar)(const void *first, const void *second,
+               void *arg), void *arg);
+
+/*************************** utility functions ********************************/
 /* 
  * sorting function for the redix function - sirt the array by a specific digit.
  * Arguments: array - pointer to an unsorrted array to be sorted.
@@ -25,7 +44,7 @@
 static void RadixCountSort(int arr[], int array_length, int position);
 
 /* Function to swap the value of two pointers using a temporary variable */
-void Swap(int *xp, int *yp) 
+static void Swap(int *xp, int *yp) 
 { 
     int temp = *xp; 
     *xp = *yp;
@@ -33,7 +52,7 @@ void Swap(int *xp, int *yp)
 } 
 
 /* function that return the maximum value in an array of ints */
-int GetMax(int array[], int array_length)
+static int GetMax(int array[], int array_length)
 {
 	int max_value = 0;
 	int index = 0;
@@ -254,7 +273,169 @@ static void RadixCountSort(int array[], int array_length, int position)
 	free(output);
 }
 
-/************************ functions gravwyard: ********************************/
+/******************************************************************************/
+
+int MergeSort(int *arr_to_sort, size_t num_elements)
+{
+	size_t base = 0;
+	size_t upper = (num_elements - 1);
+
+	assert(arr_to_sort && num_elements);
+
+	return (RecursiveMergeSort(arr_to_sort, base, upper));
+}
+
+/*********************** MergeSort utility functions: *************************/
+
+static int RecursiveMergeSort(int *array, size_t base, size_t upper)
+{
+	if (base < upper) 
+	{
+		size_t middle = base + ((upper - base) / 2);
+
+		RecursiveMergeSort(array, base, middle);
+		
+		RecursiveMergeSort(array, (middle + 1), upper);
+		
+		return (Merge(array, base, middle, upper));
+	}
+
+	return (0);
+}
+
+/*******************************/
+
+static int Merge(int *array, size_t base, size_t middle, size_t upper)
+{
+	int index_left = 0;
+	int index_right = 0;
+	int new_index = 0;
+	int left_size = middle - base + 1;
+	int right_size = upper - middle;
+	/* temp utility arrays to store the two halfs of arr_to_sort:*/
+	int *array_left = (int *)calloc(left_size, sizeof(int));
+	int *array_right = NULL;
+
+	if (!array_left)
+	{
+		return (1);
+	}
+
+	array_right = (int *)calloc(right_size, sizeof(int));
+	if (!array_right)
+	{
+		FREE(array_left);
+		return (1);
+	}
+	/* Keep deviding left side until reaching to */ 
+	/* an element unit. Return for right side:   */
+	for (index_left = 0; index_left < left_size; ++index_left)
+	{
+		array_left[index_left] = array[base + index_left];
+	}
+
+	for (index_right = 0; index_right < right_size; ++index_right)
+	{
+		array_right[index_right] = array[index_right + middle + 1];
+	}
+	/* preperation for merging state: */
+	index_left = 0;
+	index_right = 0;
+	new_index = base;
+
+	/* inserting the elements into the array in sorted order: */
+	while (index_left < left_size && index_right < right_size)
+	{
+		if (array_left[index_left] <= array_right[index_right])
+		{
+			array[new_index] = array_left[index_left];
+			++index_left;
+		}
+		else
+		{
+			array[new_index] = array_right[index_right];
+			++index_right;
+		}
+		
+		++new_index;
+	}
+
+	/*if there are any remaining elements in one of the arrays - copy tham */
+	while (index_left < left_size)
+	{
+		array[new_index] = array_left[index_left];
+		++index_left;
+		++new_index;
+	}
+
+	while (index_right < right_size)
+	{
+		array[new_index] = array_right[index_right];
+		++index_right;
+		++new_index;
+	}
+
+	FREE(array_left);
+	FREE(array_right);
+	
+	return (0);
+}
+
+/******************************************************************************/
+
+void Qsort(void *base, size_t nmemb, size_t size,
+           int (*Compar)(const void *first, const void *second,
+           void *arg), void *arg)
+{
+    UNUSED(size);
+    QuickSortRecursive(base, 0, (nmemb - 1), Compar, arg);
+}
+
+/************************* Qsort utility functions: ***************************/
+
+static void QuickSortRecursive(int array[], int base, int top,
+                        int (*Compar)(const void *first, const void *second,
+                        void *arg), void *arg)
+{
+    int partition = 0;
+
+    assert(array && Compar);
+
+    if (base < top)
+    {
+        partition = Partition(array, base, top, Compar, arg);
+        
+        QuickSortRecursive(array, base, (partition - 1), Compar, arg);
+        QuickSortRecursive(array, (partition + 1), top, Compar, arg);
+    }
+}
+
+/*****************************/
+
+static int Partition (int array[], int base, int top,
+               int (*compar)(const void *first, const void *second,
+               void *arg), void *arg)
+{
+    int pivot = array[top];
+    int index = (base - 1);
+    int array_index = 0;
+
+    for (array_index = base; array_index <= (top - 1); ++array_index)
+    {
+        /* if current element is smaller the pivot - swap to left */
+        if (0 > (compar(&array[array_index], &pivot, arg)))
+        {
+            ++index;
+            Swap(&array[index], &array[array_index]);
+        }
+    }
+    /* insert pivot to place: */
+    Swap(&array[index + 1], &array[top]);
+    return (index + 1);
+}
+
+
+/************************ functions graveyard: ********************************/
 /*
 void CountingSort(int array[], size_t array_length)
 {

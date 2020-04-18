@@ -10,17 +10,13 @@
 
 typedef int (*avl_operation_t)(void *data, void *arg);
 typedef struct AVLTree avl_t;
-typedef struct node_s *bst_iter_t;
 
 /*
 * Receive: cmp_func:
-*          Recieve: data1, data2 - data to compare.
-*                   param - parameter for the function to work with.
-*          Return: 1 if data1 is bigger than data2.
+*          Recieve: first, second - data to compare.
+*          Return: 1 if first is bigger than second.
 *                  0 if they are equal.
-*                  -1 if data2 is smaller than data1.
-*		   param - the parameter cpm_func recieve is given again seperatly for
-*		   		   use within the function.
+*                  -1 if second is smaller than first.
 * Return: pointer to avl_t managing struct.
 * Errors: return NULL if error occured.
 * Time Complexity: O(1)
@@ -73,7 +69,7 @@ int AVLIsEmpty(const avl_t *tree);
  * Arguments: tree - pointer to the avl_t tree to commit changes on.
  *            operation:
  *                     Recieve: data - to commit operation on.
- *                              param - parameter for the function to work with.
+ *                              arg - parameter for the function to work with.
  *                     Return: 0 to continue actions, any other number if not.
  *             arg - parameter for the function to work with.
  * Return: 0 if operation committed successfuly on all the elements in the tree;
@@ -86,7 +82,7 @@ int AVLForEach(avl_t *tree, avl_operation_t operation, void *arg);
  * Get the current higest hight from root to leaf.
  * Return: highest hight of the tree from root to leaf.
  * Arguments: pointer to avl_t tree.
- * Compexity: O(log n)
+ * Compexity: O(1)
  */
 size_t AVLHeight(const avl_t *tree);
 
@@ -99,10 +95,10 @@ size_t AVLHeight(const avl_t *tree);
  */
 void *AVLFind(const avl_t *tree, const void *data);
 
-/************************ utility funcions: ************************/
+/************************* utility functions: *********************************/
 
-void *AVLGetData(const bst_iter_t iterator);
-
+ /* inorder traversal - part of CheckAndPrintTree function */
 void InOrderTraversalPrint(avl_t *tree);
+
 
 #endif /* AVL_TREE_H */

@@ -22,7 +22,7 @@ circularbuffer_t *CBCreate(size_t capacity);
 
 /* purpose: implementation with offsetof() 									  */
 /* return value: circularbuffer_t = a variable in the struct of cb  		  */
-/* capacity - the requested size fotr thr buffer 							  */
+/* capacity - the requested size for the buffer 							  */
 /* Complexity: O(1) 														  */
 circularbuffer_t *CBCreate_offset(size_t capacity);
 
