@@ -322,7 +322,7 @@ void *BSTGetData(const bst_iter_t iterator)
 
 int BSTIsEqual(const bst_iter_t iter1, const bst_iter_t iter2)
 {
-	assert (itera1 && iter2);
+	assert (iter1 && iter2);
 	
 	return (iter1 == iter2);
 }

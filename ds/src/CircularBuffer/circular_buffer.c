@@ -61,7 +61,6 @@ void CBDestroy(circularbuffer_t *cb)
 	cb = NULL;
 }
 
-
 ssize_t CBWrite(circularbuffer_t *cb, const void *buf, size_t count)
 {
 	unsigned int write_bytes = 0;
@@ -98,9 +97,9 @@ ssize_t CBRead(circularbuffer_t *cb, void *buf, size_t count)
 	assert(count <=  cb->size);
 	assert(count > 0);
 	
-	/* front moves only in the Read() function. */
-	/* if front is now at the last cell, it	    */
-	/* should move to position 0 of the array;  */
+	/* front moves only in the Read() function. if front is now at the last */
+	/* cell, it	should move to position 0 of the array: */
+
 	while(read_values < count && (0 != cb->size))
 	{
 		p_buf[read_values] = cb->array[cb->front];

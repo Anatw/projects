@@ -25,7 +25,7 @@ vector_t *VectorCreate(size_t capacity)
 	vector_t *dynamic_array = NULL;
 	assert(0 < capacity);
 
-	dynamic_array = (vector_t *)malloc(sizeof(vector_t))
+	dynamic_array = (vector_t *)malloc(sizeof(vector_t));
 	
 	if (NULL == dynamic_array)
 	{

@@ -32,7 +32,12 @@ stack_t *StackCreateTwoMalloc(size_t size)
 stack_t *StackCreate(size_t size)
 {
 	stack_t *new_stack = (stack_t *)malloc(sizeof(stack_t) +
-		(size * sizeof(void *)));
+						 (size * sizeof(void *)));
+
+	if (!new_stack)
+	{
+		return (NULL);
+	}
 		
 	(new_stack->container) = (void *)(new_stack + sizeof(stack_t));
 	(new_stack->stack_top) = new_stack->container;
