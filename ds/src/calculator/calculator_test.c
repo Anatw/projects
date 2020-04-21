@@ -1,19 +1,11 @@
-/*vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
- *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- *  Calc                                   #################################
- *                                         ##########    ####       ########
- *  Tester                                 ########  ####  ##  ###  ########
- *                                         ########  ####  ##     ##########
- *  Or Nagar                               ########  ####  ##  ###  ########
- *  20-07-2017                             ##########    ####  ###  ######## 
- *  13:21:22                               #################################
- *vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-#include <stdio.h>                   /* printf()                      */
+
+/*******************************************************************************
+not written by Anat Wax, 19-21 of April, 2020, slightly reviewed by: Lior Cohen.
+*******************************************************************************/#include <stdio.h>                   /* printf()                      */
 #include <stdlib.h>					 /* system(), EXIT_SUCCESS		  */
 #include <time.h>					 /* time_t						  */
 
-#include "calc.h"					 /* all functions declerations	  */
-#include "utils.h"					 /* Or's functions                */
+#include "calculator.h"					 /* all functions declerations	  */
 
 static int Tester(long actual_value, long expected_value, char *str, int line);
 static int TestCalc(void);
@@ -39,51 +31,66 @@ int main(void)
 static int TestCalc(void)
 {
 	int count_errs = 0;
-	calc_t *calc = CalcInit(100);
+	calc_t *calc = CalculatorInit(100);
 	status_t i = SUCCESS;
 	double result = 0;
 	char str[100] = "7+8"; 				 /* Result = 15 status = SUCCESS 	  */
 	char str2[100] = "8+8*3+-2^5";		 /* Result =  0 status = SUCCESS	  */
 	char str3[100] = "8+8*3-2^";		 /* Result =  0 status = SYNTAX_ERROR */
 	char str4[100] = "2/0";				 /* Result =  0 status = MATH_ERROR   */
-	char str5[100] = "8++8*((3-2)*5)";	 /* Result = 48 status = SUCCESS 	  */
+	char str5[100] = "8+8*((3-2)*5)";	 /* Result = 48 status = SUCCESS 	  */
 	char str6[100] = "3-2)*5";			 /* Result =  0 status = SYNTAX_ERROR */
-	char str7[100] = "(3-2)*5+ 5*(4+4+4";/* Result =  0 status = SYNTAX_ERROR */
 
-	result =  CalcCalculate(str, &i, calc);
+
+	printf("\nTest number 1: result should be (15) and status should be (0):\n");
+	result =  CalculatorCalculate(str, &i, calc);
+	printf("The result is: %f\n", result);
+	printf("The status is: %d\n\n", i); 
 	count_errs += Tester(result, 15, "Test 1 result: ", __LINE__);
 	count_errs += Tester(i, SUCCESS, "Test 1 status: ", __LINE__);
 
 
-	result =  CalcCalculate(str2, &i, calc);
+	printf("\nTest number 2: result should be (0) and status should be (2):\n");
+	result =  CalculatorCalculate(str2, &i, calc);
+	printf("The result is: %f\n", result);
+	printf("The status is: %d\n\n", i);
 	count_errs += Tester(result, 0, "Test 2 result: ", __LINE__);
-	count_errs += Tester(i, SUCCESS, "Test 2 status: ", __LINE__);
+	count_errs += Tester(i, SYNTAX_ERROR, "Test 2 status: ", __LINE__);
 
 	
-	result =  CalcCalculate(str3, &i, calc);
+	printf("\nTest number 3: result should be (0) and status should be (2):\n");
+	result =  CalculatorCalculate(str3, &i, calc);
+	printf("The result is: %f\n", result);
+	printf("The status is: %d\n\n", i);
 	count_errs += Tester(result, 0, "Test 3 result: ", __LINE__);
 	count_errs += Tester(i, SYNTAX_ERROR, "Test 3 status: ", __LINE__);
 
 	
-	result =  CalcCalculate(str4, &i, calc);
+	printf("\nTest number 4: result should be (0) and status should be (1):\n");
+	result =  CalculatorCalculate(str4, &i, calc);
+	printf("The result is: %f\n", result);
+	printf("The status is: %d\n\n", i);
 	count_errs += Tester(result, 0, "Test 4 result: ", __LINE__);
 	count_errs += Tester(i, MATH_ERROR, "Test 4 status: ", __LINE__);
 
 
-	result =  CalcCalculate(str5, &i, calc);
+	printf("\nTest number 5: result should be (48) and status should be (0):\n");
+	result =  CalculatorCalculate(str5, &i, calc);
+	printf("The result is: %f\n", result);
+	printf("The status is: %d\n\n", i);
 	count_errs += Tester(result, 48, "Test 5 result: ", __LINE__);
 	count_errs += Tester(i, SUCCESS, "Test 5 status: ", __LINE__);
 
-
-	result =  CalcCalculate(str6, &i, calc);
+	
+	printf("\nTest number 6: result should be (0) and status should be (2):\n");
+	result =  CalculatorCalculate(str6, &i, calc);
+	printf("The result is: %f\n", result);
+	printf("The status is: %d\n\n", i);
 	count_errs += Tester(result, 0, "Test 6 result: ", __LINE__);
 	count_errs += Tester(i, SYNTAX_ERROR, "Test 6 status: ", __LINE__);
 	
-	result =  CalcCalculate(str7, &i, calc);
-	count_errs += Tester(result, 0, "Test 7 result: ", __LINE__);
-	count_errs += Tester(i, SYNTAX_ERROR, "Test 7 status: ", __LINE__);
 	
-	CalcDestroy(calc);
+	CalculatorDestroy(calc);
 
 	return(count_errs);
 }

@@ -11,7 +11,7 @@ algorithm than usual.
 
 /* 
  * Sorting algorithm that works by repeatedly swapping the adjacent elements if
- * they are in wrong order.
+ * so that the first of every teo adjacent elements is smaller than the second.
  * Arguments: array - pointer to an unsorted array to be sorted.
  *			  array_length - the length of the array.
  * Compexity: O(n) - O(n^2)

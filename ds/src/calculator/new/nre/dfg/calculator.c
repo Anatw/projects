@@ -1,25 +1,14 @@
-/*******************************************************************************
-Implementation of a calculater which can calculate (only) single-digit numbers,
-and only positive numbers. the calculator can handle the mathematical
-operations: +, -, *, /, ^, (, ). The mathematical question will be entered to
-the calculator in a form of a string.
-In case of an error the calaulator resault will be 0, and a code with the 
-specific error will be saved in the status_t variable.
-
-					  		 Written by Anat Wax
-						    19-21 of April, 2020
-							Reviewer: Lior Cohen
-*******************************************************************************/
-#include <stdlib.h> /* calloc(), free(), size_t, fabs() */
+#include <stdlib.h> /* malloc(), free(), size_t, fabs() */
 #include <string.h> /* size_t, atoi() */
 #include <stdio.h>  /* printf() */
+#include <math.h>
 
 #include "calculator.h"
 #include "stack.h"
 
 #define ASCII_RANGE (256)
 #define FREE(x) ((free(x), (x = NULL)))
-#define RETURN_ERR (0)
+#define RETURN_ERR (1010101010101)
 #define UNUSED(y) ((void)(y))
 
 typedef enum
@@ -45,8 +34,8 @@ typedef enum
 
 typedef struct
 {
-    /* We use char** and not char* in order for the handler to increment 
-    the runner char* pointer. */
+    /* We use char** and not char* in order for the handler to increment the runner
+    char* pointer. */
     void (*handler)(const char **char_ptr, status_t *status, calc_t *calc);
     state_t next_state;
 } state_entry_t;
@@ -78,22 +67,16 @@ static void EmptyStacks(calc_t *calc);
 static double ClosingHandler(state_t state, status_t *out_param_status,
                              calc_t *calc);
 
-static void OperationHandler(const char **character, status_t *status,
-                             calc_t *calc);
-static void ClosingBrackets(const char **character, status_t *status,
-                            calc_t *calc);
-static void OpeningBrackets(const char **brackets, status_t *status,
-                            calc_t *calc);
+static void OperationHandler(const char **character, status_t *status, calc_t *calc);
+static void ClosingBrackets(const char **character, status_t *status, calc_t *calc);
+static void OpeningBrackets(const char **brackets, status_t *status, calc_t *calc);
 static void NumHandler(const char **digit, status_t *status, calc_t *calc);
 static void calcCreateOperators(operator_t operators[ASCII_RANGE]);
 static void calcCreateTable(state_entry_t table[][ASCII_RANGE]);
 static double calcMainHandler(const char *str, status_t *out_param_status,
-                              calc_t *calc);
+                                    calc_t *calc);
 
-
-/******************************************************************************/
-/************************* fundamental functions: *****************************/
-/******************************************************************************/
+/****************************** functions: ************************************/
 
 calc_t *CalculatorInit(size_t max_length)
 {
@@ -101,7 +84,7 @@ calc_t *CalculatorInit(size_t max_length)
     stack_t *num_stack = NULL;
     stack_t *op_stack = NULL;
 
-    calc = (calc_t *)calloc(1, sizeof(calc_t));
+    calc = (calc_t *)malloc(sizeof(calc_t));
     if (!calc)
     {
         return (NULL);
@@ -149,8 +132,7 @@ double CalculatorCalculate(const char *str, status_t *out_param_status,
 
     if (*out_param_status != SUCCESS)
     {
-        MATH_ERROR == *out_param_status ? printf("MATH_ERROR\n") :
-                                          printf("SYNTAX_ERROR\n");
+        MATH_ERROR == *out_param_status ? printf("MATH_ERROR\n") : printf("SYNTAX_ERROR\n");
         EmptyStacks(calc);
         return (RETURN_ERR);
     }
@@ -158,12 +140,8 @@ double CalculatorCalculate(const char *str, status_t *out_param_status,
     return (result);
 }
 
-/******************************************************************************/
-/*************************** utility functions: *******************************/
-/******************************************************************************/
-
 static double calcMainHandler(const char *str, status_t *out_param_status,
-                              calc_t *calc)
+                                    calc_t *calc)
 {
     state_t state = WAIT_FOR_NUM;
     *out_param_status = SUCCESS;
@@ -171,8 +149,7 @@ static double calcMainHandler(const char *str, status_t *out_param_status,
     while (*str != '\0')
     {
         /* this part is calling the function 'OperationHandler': */
-        calc->table[state][(unsigned char)*str].handler(&str, out_param_status,
-                                                        calc);
+        calc->table[state][(unsigned char)*str].handler(&str, out_param_status, calc);
 
         if (SUCCESS != *out_param_status)
         {
@@ -183,26 +160,18 @@ static double calcMainHandler(const char *str, status_t *out_param_status,
         ++str;
     }
 
-    if (WAIT_FOR_NUM == state) 
-    {
-        *out_param_status = SYNTAX_ERROR;
-        return (RETURN_ERR);
-    }
     /* if ('\0' == *str): */
     return (ClosingHandler(state, out_param_status, calc));
 }
 
 /************************* utility functions: *********************************/
 
-static void SyntaxErrorHandler(const char **character, status_t *status,
-                               calc_t *calc)
+static void SyntaxErrorHandler(const char **character, status_t *status, calc_t *calc)
 {
     UNUSED(character);
     UNUSED(calc);
     *status = SYNTAX_ERROR;
 }
-
-/******************************************************************************/
 
 static status_t CalcErrorHandler(double *num1, double num2)
 {
@@ -210,8 +179,6 @@ static status_t CalcErrorHandler(double *num1, double num2)
     UNUSED(num2);
     return (SYNTAX_ERROR);
 }
-
-/******************************************************************************/
 
 static void calcCreateTable(state_entry_t table[][ASCII_RANGE])
 {
@@ -282,8 +249,6 @@ static void calcCreateTable(state_entry_t table[][ASCII_RANGE])
     table[0]['9'].next_state = WAIT_FOR_OP;
 }
 
-/******************************************************************************/
-
 static void calcCreateOperators(operator_t operators[ASCII_RANGE])
 {
     int i = 0;
@@ -310,16 +275,12 @@ static void calcCreateOperators(operator_t operators[ASCII_RANGE])
     operators['^'].priority = POW;
 }
 
-/******************************************************************************/
-
 static status_t calcAdd(double *num1, double num2)
 {
     *num1 += num2;
 
     return (SUCCESS);
 }
-
-/******************************************************************************/
 
 static status_t calcSubtract(double *num1, double num2)
 {
@@ -328,8 +289,6 @@ static status_t calcSubtract(double *num1, double num2)
     return (SUCCESS);
 }
 
-/******************************************************************************/
-
 static status_t calcMultiply(double *num1, double num2)
 {
     *num1 *= num2;
@@ -337,14 +296,11 @@ static status_t calcMultiply(double *num1, double num2)
     return (SUCCESS);
 }
 
-/******************************************************************************/
-
 static status_t calcDevide(double *num1, double num2)
 {
     if (0 == num2)
     {
-        *num1 = RETURN_ERR;
-        return (MATH_ERROR);
+        return (SYNTAX_ERROR);
     }
 
     *num1 /= num2;
@@ -352,41 +308,43 @@ static status_t calcDevide(double *num1, double num2)
     return (SUCCESS);
 }
 
-/******************************************************************************/
-
 static status_t calcPower(double *num1, double num2)
 {
-    int i = 0;
-    double num = 1;
-    int is_negative = 0;
+    int index = 0;
 
-    if (0 > num2 && 0 == *num1)
+    if (0 == num2)
     {
-        *num1 = RETURN_ERR;
-        return (MATH_ERROR);
+        return (1);
+    }
+    /* number in negative power is a mathematical error: */
+    else if (0 == *num1 && 0 < num2)
+    {
+        return (SYNTAX_ERROR);
     }
 
     if (num2 < 0)
     {
-        num2 *= -1;
-        is_negative = 1;
+        num2 = fabs(num2);
+        while (num2 != 0)
+        {
+            *num1 = 1 / *num1;
+            --num2;
+        }
+
+        return (SUCCESS);
     }
 
-    for (i = 0; i < num2; ++i)
+    for (index = 0; index < num2; ++index)
     {
-        num *= *num1;
+        *num1 *= *num1;
     }
-
-    *num1 = is_negative ? 1 / num : num;
 
     return (SUCCESS);
 }
 
-/******************************************************************************/
-
 static void NumHandler(const char **digit, status_t *status, calc_t *calc)
 {
-    double *number = (double *)calloc(1, sizeof(double));
+    double *number = (double *)malloc(sizeof(double));
     if (NULL == number)
     {
         *status = MEMORY_ERROR;
@@ -398,19 +356,13 @@ static void NumHandler(const char **digit, status_t *status, calc_t *calc)
     *status = SUCCESS;
 }
 
-/******************************************************************************/
-
-static void OpeningBrackets(const char **brackets, status_t *status,
-                            calc_t *calc)
+static void OpeningBrackets(const char **brackets, status_t *status, calc_t *calc)
 {
-    *status = SUCCESS;
-    StackPush(*(char **)brackets, calc->op_stack);
+    UNUSED(status);
+    StackPush(brackets, calc->op_stack);
 }
 
-/******************************************************************************/
-
-static void ClosingBrackets(const char **character, status_t *status,
-                            calc_t *calc)
+static void ClosingBrackets(const char **character, status_t *status, calc_t *calc)
 {
     double num2 = 0;
     unsigned char oper = 0;
@@ -421,11 +373,9 @@ static void ClosingBrackets(const char **character, status_t *status,
     {
         oper = *((unsigned char *)StackPeek(calc->op_stack));
         num2 = *((double *)StackPeek(calc->num_stack));
-        free(StackPeek(calc->num_stack));
         StackPop(calc->num_stack);
 
-        *status = calc->operators[oper].calc_func(StackPeek(calc->num_stack),
-                                                  num2);
+        calc->operators[oper].calc_func(StackPeek(calc->num_stack), num2);
 
         StackPop(calc->op_stack);
 
@@ -441,13 +391,10 @@ static void ClosingBrackets(const char **character, status_t *status,
     StackPop(calc->op_stack);
 }
 
-/******************************************************************************/
-
-static void OperationHandler(const char **character, status_t *status,
-                             calc_t *calc)
+static void OperationHandler(const char **character, status_t *status, calc_t *calc)
 {
     unsigned char operation = 0;
-    double *number2 = 0;
+    double number2 = 0;
     *status = SUCCESS;
 
     if (StackIsEmpty(calc->op_stack))
@@ -461,34 +408,29 @@ static void OperationHandler(const char **character, status_t *status,
 
     /* if the new operator (character) is smaller or equal to the */
     /* top operator inside the stack (operator): */
-    if (calc->operators[operation].priority >=
-        calc->operators[(unsigned char)**character].priority)
+     if (calc->operators[operation].priority >=
+         calc->operators[(unsigned char)**character].priority)
     {
         while (!StackIsEmpty(calc->op_stack))
         {
+            operation = *((char *)StackPeek(calc->op_stack));
+            
             if ((calc->operators[operation].priority >=
-                 calc->operators[(unsigned char)**character].priority) &&
+                calc->operators[(unsigned char)**character].priority) &&
                 ('(' != *((char *)StackPeek(calc->op_stack))))
             {
-                operation = *((char *)StackPeek(calc->op_stack));
-                number2 = ((double *)StackPeek(calc->num_stack));
+                number2 = *((double *)StackPeek(calc->num_stack));
                 StackPop(calc->num_stack);
 
-                calc->operators[operation].calc_func(StackPeek(calc->num_stack),
-                                                               *number2);
+                calc->operators[operation].calc_func(StackPeek(calc->num_stack), number2);
                 /* pop old operation sign and push the new one */
                 StackPop(calc->op_stack);
-
-                free(number2);
-                number2 = NULL;
             }
         }
     }
 
-    StackPush(*(char **)character, calc->op_stack);
+    StackPush(character, calc->op_stack);
 }
-
-/******************************************************************************/
 
 static double ClosingHandler(state_t state, status_t *out_param_status,
                              calc_t *calc)
@@ -509,35 +451,25 @@ static double ClosingHandler(state_t state, status_t *out_param_status,
         free(StackPeek(calc->num_stack));
         StackPop(calc->num_stack);
 
-        *out_param_status = calc->operators[oper].
-                            calc_func(StackPeek(calc->num_stack), result);
+        calc->operators[oper].calc_func(StackPeek(calc->num_stack), result);
         StackPop(calc->op_stack);
-
-       /* if (SUCCESS != *out_param_status)
-        {
-            return (RETURN_ERR);
-        }*/
     }
 
     result = *((double *)StackPeek(calc->num_stack));
-    free(StackPeek(calc->num_stack));
     StackPop(calc->num_stack);
 
     return (result);
 }
 
-/******************************************************************************/
-
 static void EmptyStacks(calc_t *calc)
 {
     while (!StackIsEmpty(calc->num_stack))
     {
-        free(StackPeek(calc->num_stack));
         StackPop(calc->num_stack);
     }
 
     while (!StackIsEmpty(calc->op_stack))
     {
-        StackPop(calc->op_stack);
+        StackPop(calc->num_stack);
     }
 }

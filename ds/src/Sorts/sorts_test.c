@@ -15,6 +15,7 @@
 #define COUNTING_ARRAY_SIZE (100)
 #define DIGITS_NUM (7)
 #define BASE (10)
+#define UNUSED(x) (void)(x)
 
 void PrintArray(int array[], size_t array_length);
 

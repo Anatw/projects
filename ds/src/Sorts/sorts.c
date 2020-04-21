@@ -251,7 +251,7 @@ static void RadixCountSort(int array[], int array_length, int position)
   
 	for (index = 0; index < array_length; ++index)
 	{
-		count[ (array[index]/position)%10 ]++;
+		++count[(array[index]/position)%10];
 	}
 		  
 	for (index = 1; index < 10; ++index)
@@ -259,10 +259,10 @@ static void RadixCountSort(int array[], int array_length, int position)
 		count[index] += count[index - 1];
 	} 
 
-	for (index =array_length- 1; index >= 0; --index) 
+	for (index = array_length- 1; index >= 0; --index) 
 	{ 
-		output[count[(array[index] / position) % 10 ] - 1] = array[index]; 
-		count[(array[index] / position) % 10]--; 
+		output[count[(array[index] / position) % 10] - 1] = array[index]; 
+		--count[(array[index] / position) % 10]; 
 	} 
 
 	for (index = 0; index < array_length; ++index)

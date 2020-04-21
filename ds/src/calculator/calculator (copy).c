@@ -1,18 +1,7 @@
-/*******************************************************************************
-Implementation of a calculater which can calculate (only) single-digit numbers,
-and only positive numbers. the calculator can handle the mathematical
-operations: +, -, *, /, ^, (, ). The mathematical question will be entered to
-the calculator in a form of a string.
-In case of an error the calaulator resault will be 0, and a code with the 
-specific error will be saved in the status_t variable.
-
-					  		 Written by Anat Wax
-						    19-21 of April, 2020
-							Reviewer: Lior Cohen
-*******************************************************************************/
-#include <stdlib.h> /* calloc(), free(), size_t, fabs() */
+#include <stdlib.h> /* malloc(), free(), size_t, fabs() */
 #include <string.h> /* size_t, atoi() */
 #include <stdio.h>  /* printf() */
+#include <math.h>
 
 #include "calculator.h"
 #include "stack.h"
@@ -90,10 +79,7 @@ static void calcCreateTable(state_entry_t table[][ASCII_RANGE]);
 static double calcMainHandler(const char *str, status_t *out_param_status,
                               calc_t *calc);
 
-
-/******************************************************************************/
-/************************* fundamental functions: *****************************/
-/******************************************************************************/
+/****************************** functions: ************************************/
 
 calc_t *CalculatorInit(size_t max_length)
 {
@@ -101,7 +87,7 @@ calc_t *CalculatorInit(size_t max_length)
     stack_t *num_stack = NULL;
     stack_t *op_stack = NULL;
 
-    calc = (calc_t *)calloc(1, sizeof(calc_t));
+    calc = (calc_t *)malloc(sizeof(calc_t));
     if (!calc)
     {
         return (NULL);
@@ -158,10 +144,6 @@ double CalculatorCalculate(const char *str, status_t *out_param_status,
     return (result);
 }
 
-/******************************************************************************/
-/*************************** utility functions: *******************************/
-/******************************************************************************/
-
 static double calcMainHandler(const char *str, status_t *out_param_status,
                               calc_t *calc)
 {
@@ -202,16 +184,12 @@ static void SyntaxErrorHandler(const char **character, status_t *status,
     *status = SYNTAX_ERROR;
 }
 
-/******************************************************************************/
-
 static status_t CalcErrorHandler(double *num1, double num2)
 {
     UNUSED(num1);
     UNUSED(num2);
     return (SYNTAX_ERROR);
 }
-
-/******************************************************************************/
 
 static void calcCreateTable(state_entry_t table[][ASCII_RANGE])
 {
@@ -282,8 +260,6 @@ static void calcCreateTable(state_entry_t table[][ASCII_RANGE])
     table[0]['9'].next_state = WAIT_FOR_OP;
 }
 
-/******************************************************************************/
-
 static void calcCreateOperators(operator_t operators[ASCII_RANGE])
 {
     int i = 0;
@@ -310,16 +286,12 @@ static void calcCreateOperators(operator_t operators[ASCII_RANGE])
     operators['^'].priority = POW;
 }
 
-/******************************************************************************/
-
 static status_t calcAdd(double *num1, double num2)
 {
     *num1 += num2;
 
     return (SUCCESS);
 }
-
-/******************************************************************************/
 
 static status_t calcSubtract(double *num1, double num2)
 {
@@ -328,16 +300,12 @@ static status_t calcSubtract(double *num1, double num2)
     return (SUCCESS);
 }
 
-/******************************************************************************/
-
 static status_t calcMultiply(double *num1, double num2)
 {
     *num1 *= num2;
 
     return (SUCCESS);
 }
-
-/******************************************************************************/
 
 static status_t calcDevide(double *num1, double num2)
 {
@@ -351,8 +319,6 @@ static status_t calcDevide(double *num1, double num2)
 
     return (SUCCESS);
 }
-
-/******************************************************************************/
 
 static status_t calcPower(double *num1, double num2)
 {
@@ -382,11 +348,9 @@ static status_t calcPower(double *num1, double num2)
     return (SUCCESS);
 }
 
-/******************************************************************************/
-
 static void NumHandler(const char **digit, status_t *status, calc_t *calc)
 {
-    double *number = (double *)calloc(1, sizeof(double));
+    double *number = (double *)malloc(sizeof(double));
     if (NULL == number)
     {
         *status = MEMORY_ERROR;
@@ -398,16 +362,12 @@ static void NumHandler(const char **digit, status_t *status, calc_t *calc)
     *status = SUCCESS;
 }
 
-/******************************************************************************/
-
 static void OpeningBrackets(const char **brackets, status_t *status,
                             calc_t *calc)
 {
-    *status = SUCCESS;
+    UNUSED(status);
     StackPush(*(char **)brackets, calc->op_stack);
 }
-
-/******************************************************************************/
 
 static void ClosingBrackets(const char **character, status_t *status,
                             calc_t *calc)
@@ -440,8 +400,6 @@ static void ClosingBrackets(const char **character, status_t *status,
     /* pop the opening brackets: */
     StackPop(calc->op_stack);
 }
-
-/******************************************************************************/
 
 static void OperationHandler(const char **character, status_t *status,
                              calc_t *calc)
@@ -488,8 +446,6 @@ static void OperationHandler(const char **character, status_t *status,
     StackPush(*(char **)character, calc->op_stack);
 }
 
-/******************************************************************************/
-
 static double ClosingHandler(state_t state, status_t *out_param_status,
                              calc_t *calc)
 {
@@ -525,8 +481,6 @@ static double ClosingHandler(state_t state, status_t *out_param_status,
 
     return (result);
 }
-
-/******************************************************************************/
 
 static void EmptyStacks(calc_t *calc)
 {
