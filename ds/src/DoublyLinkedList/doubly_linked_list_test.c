@@ -8,7 +8,7 @@
 #include "doubly_linked_list.h"
 
 int DLLIntCompare(const void *x, const void *y);
-int DLLAddParam(void *param, void *data);
+int DLLAddParam(void *param, const void *data);
 
 
 int main()
@@ -131,7 +131,7 @@ int DLLIntCompare(const void *x, const void *y)
 	return ((*(int *)x == *(int *)y) ? 1 : 0);
 }
 
-int DLLAddParam(void *param, void *data)
+int DLLAddParam(void *param, const void *data)
 {
 	*(int *)data = *(int *)param + *(int *)data;
 	

@@ -127,7 +127,7 @@ iter_t DLLFind(const iter_t from, const iter_t to, const void *data,
  * conduct on the 'from'-'to' members						
  * Complexity: O(n) */
 int DLLForEach(const iter_t from, const iter_t to, int (*OprFunc)(void 
-			   *operand1, void *operand2), const void *param);
+			   *operand1, const void *operand2), const void *param);
 /* the function insert a number of connected nodes into a different list. The
  * function re-connect the list from which the nodes were taken from.
  * returns: the last member (cell) that was coppied.
