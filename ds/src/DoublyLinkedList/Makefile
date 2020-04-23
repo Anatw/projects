@@ -19,12 +19,16 @@ OBJECTS = $(NAME)_test.o $(NAME).o
 
 # 1/ Compiling with debuger option and running the executable
 _test: $(OBJECTS)
-	@ $(gd) $(OBJECTS) -o $(NAME)$@
+	@ $(gd) $(OBJECTS) -o $(NAME)a.out
 	./$(NAME)$@
+
+testwithoutrun: $(OBJECTS)
+	@ $(gd) $(OBJECTS) -o $(NAME)a.out
+
 
 # 4/ Deploying the files - sending %.o files to .obj
 deploy: $(OBJECTS)
-	@ $(gc) $(OBJECTS) -o $(NAME)$@
+	@ $(gc) $(OBJECTS) -o $(NAME)a.out
 	mv $(OBJECTS) ../../obj
 
 %.o: %.c $(DEPS)
@@ -42,7 +46,7 @@ ll: $(TEST)
 	@ $(lldb) ./$(TEST) 
 
 # 3/ Room Service
-.PHONY: clean
+.PHONY: clean, testwithoutrun
 clean:
 	rm -rf *.o *.out $(NAME)test $(NAME)deploy
 

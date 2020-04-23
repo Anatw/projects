@@ -4,6 +4,7 @@ the hash table is an array of dll_t members
 #include <stddef.h> /* offsetof(), size_t */
 #include <stdlib.h> /* malloc(), calloc(), free(), size_t, abs() */
 #include <assert.h> /* assert() */
+#include <math.h>   /* pow(), sqrt() */
 
 #include "hash_table.h"
 #include "doubly_linked_list.h"
@@ -12,13 +13,13 @@ the hash table is an array of dll_t members
 
 struct hash_table
 {
-    size_t(*hash_func)(const void *data);
-    int(*cmp_func)(const void *data1, const void *data2);
+    size_t (*hash_func)(const void *data);
+    int (*cmp_func)(const void *data1, const void *data2);
     dll_t **table;
     size_t table_size;
 };
 
-/************************* functions: ************************/
+/***************************** functions: *************************************/
 
 hash_t *HashCreate(int (*cmp_func)(const void *data1, const void *data2),
                    size_t (*hash_func)(const void *data),
@@ -26,18 +27,31 @@ hash_t *HashCreate(int (*cmp_func)(const void *data1, const void *data2),
 {
     hash_t *table_manager = (hash_t *)malloc(sizeof(hash_t));
     size_t i = 0;
-    assert (table_size > 0);
+    size_t j = 0;
+    assert(table_size > 0);
 
     if (NULL == table_manager)
     {
         return (NULL);
     }
 
-    for (i = 0; i < (table_size - 1); ++i)
+    table_manager->table = (dll_t **)malloc((sizeof(dll_t *)) * table_size);
+    if (NULL == table_manager->table)
+    {
+        FREE(table_manager);
+        return (NULL);
+    }
+
+    for (i = 0; i < table_size; ++i)
     {
         table_manager->table[i] = DLLCreate();
-        if (NULL ==  table_manager->table[i])
+        if (NULL == table_manager->table[i])
         {
+            for (j = 0; j < i; ++j)
+            {
+                FREE(table_manager->table[j]);
+            }
+
             FREE(table_manager);
             return (NULL);
         }
@@ -50,33 +64,43 @@ hash_t *HashCreate(int (*cmp_func)(const void *data1, const void *data2),
     return (table_manager);
 }
 
+/******************************************************************************/
+
 void HashDestroy(hash_t *table)
 {
     size_t i = 0;
     assert(table);
-    
+
     for (i = 0; i < table->table_size; ++i)
     {
         DLLDestroy(table->table[i]);
     }
 
+    FREE(table->table);
     FREE(table);
 }
 
+/******************************************************************************/
+
 int HashInsert(hash_t *table, void *data)
 {
-    size_t key = table->hash_func(data);
+    size_t key = 0;
     iter_t new_node = NULL;
 
+    assert(table);
+
+    key = table->hash_func(data);
     new_node = DLLPushBack(table->table[key], data);
 
-    if (NULL == new_node)
+    if (DLLIsSameIter(new_node, DLLEnd(table->table[key])))
     {
         return (1);
     }
 
     return (0);
 }
+
+/******************************************************************************/
 
 void HashRemove(hash_t *table, const void *data)
 {
@@ -88,19 +112,20 @@ void HashRemove(hash_t *table, const void *data)
     iterator = DLLBegin(table->table[key]);
 
     /* rotate through the dll list and find the given data: */
-    while (!DLLIsEmpty(table->table[key]))
+    for (;
+         !DLLIsSameIter(iterator, DLLEnd(table->table[key]));
+         iterator = DLLNext(iterator))
     {
-        while (0 != table->cmp_func(DLLGetData(iterator), data))
+        if (0 == table->cmp_func(DLLGetData(iterator), data))
         {
-            iterator = DLLNext(iterator);
+            DLLRemove(iterator);
+
+            break;
         }
     }
-    
-    if (0 == table->cmp_func(DLLGetData(iterator), data))
-    {
-        DLLRemove(iterator);
-    }
 }
+
+/******************************************************************************/
 
 void *HashFind(const hash_t *table, const void *data)
 {
@@ -111,23 +136,20 @@ void *HashFind(const hash_t *table, const void *data)
     key = table->hash_func(data);
     iterator = DLLBegin(table->table[key]);
 
-    while (!DLLIsEmpty(table->table[key]))
+    for (;
+         !DLLIsSameIter(iterator, DLLEnd(table->table[key]));
+         iterator = DLLNext(iterator))
     {
-        while (0 != table->cmp_func(DLLGetData(iterator), data))
+        if (0 == table->cmp_func(DLLGetData(iterator), data))
         {
-            iterator = DLLNext(iterator);
+            return (DLLGetData(iterator));
         }
     }
-    
-    if (0 == table->cmp_func(DLLGetData(iterator), data))
-    {
-        return (iterator);
-    }
-    else
-    {
-        return (NULL);
-    }
+
+    return (NULL);
 }
+
+/******************************************************************************/
 
 int HashIsEmpty(const hash_t *table)
 {
@@ -135,8 +157,11 @@ int HashIsEmpty(const hash_t *table)
 
     return (0 == HashSize(table) ? 1 : 0);
 }
+
+/******************************************************************************/
+
 int HashForEach(hash_t *table,
-                int (*op_func)(void *data, const void *param),
+                int (*op_func)(void *data, void *param),
                 const void *param)
 {
     size_t i = 0;
@@ -151,8 +176,10 @@ int HashForEach(hash_t *table,
                             op_func, param);
     }
 
-	return (status);
+    return (status);
 }
+
+/******************************************************************************/
 
 size_t HashSize(const hash_t *table)
 {
@@ -160,10 +187,12 @@ size_t HashSize(const hash_t *table)
     iter_t iterator = 0;
     size_t counter = 0;
 
+    assert(table);
+
     for (i = 0; i < table->table_size; ++i)
     {
         iterator = DLLBegin(table->table[i]);
-        
+
         while (NULL != DLLGetData(iterator))
         {
             iterator = DLLNext(iterator);
@@ -174,7 +203,42 @@ size_t HashSize(const hash_t *table)
     return (counter);
 }
 
-/*
-    DLLFind(DLLBegin(table->table[i]), DLLEnd(table->table[i]),
-                     data, table->cmp_func(data, DLLGetData(iterator)));
-*/
+/******************************************************************************/
+
+double HashLoad(hash_t *table)
+{
+    assert(table);
+
+    return ((double)HashSize(table) / (double)table->table_size);
+}
+
+/******************************************************************************/
+
+/* 1. calculate the Mean of nodes for the whole table.
+   2. In every dll list, subtract the Mean from the size of the list and
+      power the resolt [(n - Mean)^2].
+   3. Work out the Mean of THOSE numbers... */
+double HashSD(hash_t *table)
+{
+    size_t i = 0;
+    iter_t iterator = 0;
+    size_t counter = 0;
+    size_t mean = 0;
+    size_t result = 0;
+
+    assert(table);
+
+    mean = HashLoad(table);
+
+    for (i = 0; i < table->table_size; ++i)
+    {
+        if (!DLLIsEmpty(table->table[i]))
+        {
+            counter = DLLSize(table->table[i]);
+            result += pow(counter - mean, 2);
+            iterator = DLLNext(iterator);
+        }
+    }
+
+    return (sqrt(result / table->table_size));
+}

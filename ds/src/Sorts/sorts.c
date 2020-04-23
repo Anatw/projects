@@ -313,7 +313,7 @@ static int Merge(int *array, size_t base, size_t middle, size_t upper)
 	int left_size = middle - base + 1;
 	int right_size = upper - middle;
 	/* temp utility arrays to store the two halfs of arr_to_sort:*/
-	int *array_left = (int *)calloc(left_size, sizeof(int));
+	int *array_left = (int *)malloc(sizeof(int) * left_size);
 	int *array_right = NULL;
 
 	if (!array_left)
@@ -321,7 +321,7 @@ static int Merge(int *array, size_t base, size_t middle, size_t upper)
 		return (1);
 	}
 
-	array_right = (int *)calloc(right_size, sizeof(int));
+	array_right = (int *)malloc(sizeof(int) * right_size);
 	if (!array_right)
 	{
 		FREE(array_left);

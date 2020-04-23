@@ -310,7 +310,7 @@ void DLLPrint(const dll_t *list)
 
 int DLLForEach(const iter_t from,
 			   const iter_t to,
-			   int (*DLLAddParam)(void *operand1, const void *operand2),
+			   int (*DLLAddParam)(void *operand1, void *operand2),
 			   const void *param)
 {
 	void *param_p = (void *)param;

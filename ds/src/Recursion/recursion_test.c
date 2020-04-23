@@ -4,27 +4,28 @@
 						   Reviewer: Noffar Gil
 *******************************************************************************/
 #include <stdio.h> /* printf() */
-#include <assert.h> /* assert() */
-#include <stdlib.h> /* malloc() */
+
+#include "recursion.h"
 
 #include "/home/anat/git/anat-wax/ds/include/singly_linked_list.h"
 
-typedef struct sll_node
+/* static void SLLPrint(Node *node); */
+
+/******************************************************************************/
+
+int main ()
 {
-	int data;  /* pointer to the data the node contain */
-	struct sll_node *next; /* pointer to the next node */
-} Node;
+	int next_fib = 14;
+	
+	printf("recursive: the next Fibonacci number after %d is: %d\n",
+			next_fib, FibonacciRecursive(next_fib));
 
+	printf("non-recursive: the next Fibonacci number after %d is: %d\n",
+			next_fib, FibonacciNonRecursive(next_fib));
+
+	return (0);
+}
 /*
- * Flip List: Flips a singly linked list from start to end.
- * Return: Pointer to the new beggining of the list.
- * Receive: node - Pointer to the the node to start fliping from.
- * Time Complexity: O(n)
- * Space complexity: O(n)
- */
-Node *FlipList(Node *node);
-
-static void SLLPrint(Node *node);
 
 int main ()
 {
@@ -34,7 +35,7 @@ int main ()
 	int d = 4;
 	int e = 5;
 	
-	/* Creating a very simple singly linked list */
+	/ Creating a very simple singly linked list /
 	Node *list_head = (Node *)malloc(sizeof(Node));
 	Node *list_second = (Node *)malloc(sizeof(Node));
 	Node *list_third = (Node *)malloc(sizeof(Node));
@@ -59,29 +60,11 @@ int main ()
 	
 	FlipList(list_head);
 	
-	/* After fliping the list */
+	/ After fliping the list /
 	printf("After fliping the list: \n");
 	SLLPrint(list_last);
 	
 	return (0);
-}
-
-Node *FlipList(Node *node)
-{
-	Node *head = NULL;
-
-	assert(node);
-
-	if (NULL == node || NULL == node->next)
-	{
-		return (node);		
-	}
-	
-	head = FlipList(node->next);
-	node->next->next = node;
-	node->next = NULL;
-	
-	return (head);
 }
 
 static void SLLPrint(Node *node)
@@ -94,3 +77,10 @@ static void SLLPrint(Node *node)
 	printf("%d->", node->data);
 	printf("NULL\n\n");
 }
+
+
+*********************************************/
+
+
+
+

@@ -90,7 +90,7 @@ int HashIsEmpty(const hash_t *table);
 * Time Complexity: O(n)
 */
 int HashForEach(hash_t *table,
-                int (*op_func)(void *data, const void *param),
+                int (*op_func)(void *data, void *param),
                 const void *param);
 
 /* 

@@ -1,7 +1,0 @@
-
-
-
-
-
-
-int ThinkOfaNum(int num);

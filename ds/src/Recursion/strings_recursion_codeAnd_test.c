@@ -143,7 +143,7 @@ char *Strcat(char *destination, char *source)
 {
 	static int counter = 0;
 		
-	if ('\0' == *source)
+	if ('\0' == *source) /* add fix fot rhe case of {'1', '2', 0, '6', '7'}; */
 	{
 		return (destination - counter);
 	}
