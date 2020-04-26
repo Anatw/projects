@@ -53,7 +53,7 @@ queue_t *QueueCreate()
 
 int QueueEnqueu(queue_t *queue, void *data)
 {
-	iter_t new_data = SLLInsert(SLLTail(queue->list), data);
+	iter_t new_data = SLLInsert(SLLEnd(queue->list), data);
 	
 	/* if queue is full (new iter == tail) - return 1 (error) */
 	if (1 == SLLIsSameIter(new_data, SLLBegin(queue->list)))

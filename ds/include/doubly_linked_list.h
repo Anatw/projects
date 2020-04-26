@@ -62,7 +62,8 @@ iter_t DLLPushBack(const dll_t *list, void *data);
 void *DLLPopFront(dll_t *list);
 
 /* insert a new node to the beginning of the list
- * Return 0 if successfully pushed, else return 1 
+ * Return: pointer to the iterator entered. if fails - returns pointer
+ * 		   to the last node.
  * list: a pointer to list 'list'
  * data: the data the user wish to enter to he new node.
  * Time Complexity: O(1) */

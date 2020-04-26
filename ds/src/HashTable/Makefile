@@ -1,51 +1,33 @@
-# General
-NAME := hash_table#object files defenition
-TEST := $(NAME)_test#the test file
-LINKFILES := ../../obj/doubly_linked_list.o
+# Makefile - Version 4
+NAME:=hash_table
+CC=gcc
+CFLAGS=-ansi -pedantic-errors -Wall -Wextra -g#gd#
+F_RELEASE:= -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#
+DEPS=hash_table.h
+INC_DIR:=-I ../../include
+OBJ_LIB:=../../obj/
 
+LIB := doubly_linked_list.o
+OBJ := $(NAME)_test.c $(NAME).c
 
-# Compiler Settings:
-cc = gcc
-gc = $(cc) -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3 
-gd = $(cc) -ansi -pedantic-errors -Wall -Wextra -g
-valgrind = valgrind --leak-check=yes --track-origins=yes#check valgring
-gdbtui = gdb -tui#use gdb tui as debbugger
-lldb = lldb#use lldb tui as debbugger
+# $@ -> the file name of the target of the rule
+# $< -> the first item in the Dependencies list
+# Compiles each of the object files as separate targets
+%.o: %.c $(DEPS)
+	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS) -lm
 
-# Path for the header files - Other directories headers
-INCLUDES = -I../../include
-
-# General defenitions
-OBJECTS = $(NAME)_test.o $(NAME).o
-
-# 1/ Compiling with debuger option and running the executable
-_test: $(OBJECTS)
-	@ $(gd) $(OBJECTS) $(LINKFILES) -lm -o a.out
+# -o $@ -> Tells make to put the output in a file named after the target
+# $^ 	-> all of the file names in $(OBJ) separated by a space
+test: $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lm
 	./a.out
 
-testwithoutrun: $(OBJECTS)
-	@ $(gd) $(OBJECTS) $(LINKFILES) -lm -o a.out
+testwithoutrun: $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lm
 
-# 4/ Deploying the files - sending %.o files to .obj
-deploy: $(OBJECTS)
-	@ $(gc) $(OBJECTS) $(LINKFILES) -o $(NAME)
-	mv $(OBJECTS) ../../obj
+.PHONY: clean
 
-%.o: %.c 
-	@ $(gd) $(INCLUDES) -c -o $@ $<
-
-# 2/ Compiling with everything and valgrind after
-vlg: $(TEST)
-	@ $(valgrind) ./$(TEST)
-	
-gt: $(TEST)
-	@ $(gdbtui) ./$(TEST)
-
-# make ll
-ll: $(TEST) 
-	@ $(lldb) ./$(TEST) 
-
-# 3/ Room Service
-.PHONY: clean, testwithoutrun
+# Target to clean files created during compilation
 clean:
-	rm -rf *.o *.out $(NAME)test $(NAME)deploy
+	rm -f *.o hellomake Makefile
+	mv Makefile.orig Makefile

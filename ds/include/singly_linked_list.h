@@ -65,7 +65,7 @@ void SLLSetData(const iter_t iterator, void *data);
 
 /* Functionality: returns an iterator to te end of the list 				*/
 /* Complexity: O(1) 														*/
-/* */iter_t SLLTail(const SLL_t *list);
+/* */iter_t SLLEnd(const SLL_t *list);
 
 /* Functionality: check if two iterators point at the same node			    */
 /* 'iter1' - the first iterator to compare to 'iter2' 						*/

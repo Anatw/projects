@@ -1,6 +1,10 @@
-/*************************************************************************
-the hash table is an array of dll_t members
-**************************************************************************/
+/*******************************************************************************
+the hash table is an array of dll_t variables.
+
+					  		 Written by Anat Wax
+						   23-25 of April, 2020
+							Reviewer: Esti Binder
+*******************************************************************************/
 #include <stddef.h> /* offsetof(), size_t */
 #include <stdlib.h> /* malloc(), calloc(), free(), size_t, abs() */
 #include <assert.h> /* assert() */
@@ -19,7 +23,7 @@ struct hash_table
     size_t table_size;
 };
 
-/***************************** functions: *************************************/
+/******************************* functions: ***********************************/
 
 hash_t *HashCreate(int (*cmp_func)(const void *data1, const void *data2),
                    size_t (*hash_func)(const void *data),
@@ -142,7 +146,15 @@ void *HashFind(const hash_t *table, const void *data)
     {
         if (0 == table->cmp_func(DLLGetData(iterator), data))
         {
-            return (DLLGetData(iterator));
+            if (DLLEnd(table->table[key]) != DLLPushFront(table->table[key],
+                                                          (void *)data))
+            {
+                DLLRemove(iterator);
+                return ((void *)data);
+            }
+            /* If there was a problem with DLLPushFront - return 
+               the data in the last valid node of the current dll: */
+            return (DLLGetData(DLLPrev(DLLEnd(table->table[key]))));
         }
     }
 
@@ -165,15 +177,19 @@ int HashForEach(hash_t *table,
                 const void *param)
 {
     size_t i = 0;
-    iter_t iterator = 0;
     int status = 0;
 
-    iterator = DLLBegin(table->table[i]);
+    assert(table);
 
-    for (i = 0; i < table->table_size; ++i, iterator = DLLNext(iterator))
+    for (i = 0; i < table->table_size; ++i)
     {
         status = DLLForEach(DLLBegin(table->table[i]), DLLEnd(table->table[i]),
                             op_func, param);
+        
+        if (0 != status)
+        {
+            break;
+        }
     }
 
     return (status);
@@ -213,32 +229,31 @@ double HashLoad(hash_t *table)
 }
 
 /******************************************************************************/
-
-/* 1. calculate the Mean of nodes for the whole table.
-   2. In every dll list, subtract the Mean from the size of the list and
-      power the resolt [(n - Mean)^2].
-   3. Work out the Mean of THOSE numbers... */
-double HashSD(hash_t *table)
+/*
+ * Steps to calculate standard deviation:
+ * 1. calculate the Mean of nodes for the whole table.
+ * 2. In every dll list, subtract the Mean from the size of the list and
+ *    power the resolt [(n - Mean)^2].
+ * 3. Work out the Mean of THOSE numbers...
+ */
+double HashSD(hash_t *hash)
 {
-    size_t i = 0;
-    iter_t iterator = 0;
-    size_t counter = 0;
-    size_t mean = 0;
-    size_t result = 0;
+	size_t key = 0;
+	double average = 0;
+	double total_pow_sum = 0;
+	size_t list_size = 0;
 
-    assert(table);
+	assert(hash);
 
-    mean = HashLoad(table);
+	average = HashLoad(hash);
 
-    for (i = 0; i < table->table_size; ++i)
-    {
-        if (!DLLIsEmpty(table->table[i]))
-        {
-            counter = DLLSize(table->table[i]);
-            result += pow(counter - mean, 2);
-            iterator = DLLNext(iterator);
-        }
-    }
+	for (key = 0; key < hash->table_size; ++key)
+	{
+		list_size = DLLSize(hash->table[key]);
+		total_pow_sum += pow(list_size - average, 2);
+	}
 
-    return (sqrt(result / table->table_size));
+	total_pow_sum /= hash->table_size;
+
+	return (sqrt(total_pow_sum));
 }
