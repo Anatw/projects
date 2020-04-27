@@ -23,7 +23,7 @@ void Swap(int *a, int *b)
 }
 
 
-int CmpFunc(const void *first, const void *second)
+int IntCmpFunc(const void *first, const void *second)
 {
 	if (*(int *)first > *(int *)second)
 	{

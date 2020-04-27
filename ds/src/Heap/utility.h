@@ -11,6 +11,6 @@
 
 void PrintArray(int array[], size_t num_elements);
 void Swap(int *a, int *b);
-int CmpFunc(const void *first, const void *second);
+int IntCmpFunc(const void *first, const void *second);
 
 #endif /* UTILITY_H */
