@@ -15,7 +15,7 @@ int IsDevidableFive(const void *data, const void *param);*/
 
 int main()
 {
-   /* int data1 = 6;
+    int data1 = 6;
     int data2 = 93;
     int data3 = 5;
     int data4 = 34;
@@ -78,12 +78,12 @@ int main()
     printf("\n\npeek: %d\n", *(int *)HeapPeek(heap));
 
     HeapDestroy(heap);
-    printf("ehcck\n");*/
+    printf("ehcck\n");
     return (0);
 }
 
 /* returns 0 if succedded, 1 if failed. */
-/*int IsDevidable(const void *data, const void *param)
+int IsDevidable(const void *data, const void *param)
 {
     if (0 == (*(int *)data % *(int *)param))
     {
@@ -114,4 +114,4 @@ int IsDevidableFive(const void *data, const void *param)
     }
 
     return (0);
-}*/
+}
