@@ -142,9 +142,10 @@ void HeapifyUp(heap_t *heap, size_t current)
     while (ZERO < heap->cmp_func(VectorGetElement(heap->vector, current),
                                  VectorGetElement(heap->vector, currents_parent)))
     {
+        /* If the child is greater than parent, swap */
         SwapData(heap->vector, current, currents_parent);
 
-        /* If the child is greater than parent, swap */
+        /* if we got to the root - break: */
         if (0 == currents_parent)
         {
             break;

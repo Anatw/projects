@@ -17,7 +17,7 @@ typedef struct hash_table hash_t;
 * Hash Table Create: Create managing struct
 * Receive: hash_func
 *               * Receive: data - data to hash.
-*               * Return: size_t with the index to insert into.
+*               * Return: size_t with the index to insert into. the key should be given uniformly between 0 and the size of the table.
 *          cmp_func
 *               * Receive: data1, data2 - data to compare.
 *               * Return: 1 if data1 is bigger than data2.
@@ -97,7 +97,7 @@ int HashForEach(hash_t *table,
 * Hash Table Size: Get table size.
 * Receive: table - a hash table to get its size.
 * Return: size_t with table size.
-* Time Complexity: O(n)
+* Time Complexity: O(table_size) (given by user...)
 */
 size_t HashSize(const hash_t *table);
 
