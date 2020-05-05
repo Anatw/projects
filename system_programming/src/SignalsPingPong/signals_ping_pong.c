@@ -87,13 +87,14 @@ int main()
     
     child_process = fork();
 
+    if (child_process < 0)
+    {
+        printf("error in fork\n");
+        return (1);
+    }
+
     while (1)
     {
-        if (child_process < 0)
-        {
-            printf("error in fork\n");
-            return (1);
-        }
         else if (0 == child_process)
         {
             if (child_flag)
@@ -110,8 +111,8 @@ int main()
                 kill(child_process, SIGUSR1);
             }
         }
-        
     }
+    
     return (0);
 }
 #endif /* EXERCISE2 */

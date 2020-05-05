@@ -6,7 +6,7 @@ Comment and un-comment the defines to see both phases (one at a time).
 						   April 29th, 2020
 						  Reviewer: Yoni Naor
 *******************************************************************************/
-#include <stdlib.h>
+#include <stdlib.h>    /* system() */
 #include <sys/types.h> /* pid_t */
 #include <stdio.h>     /* printf() */
 #include <unistd.h>    /* execvp(), fork() */
@@ -22,7 +22,7 @@ void ChildFunc();
 #ifdef PhaseOne
 int main()
 {
-   pid_t child_proccess = 0;
+    pid_t child_proccess = 0;
     int child_pid = 0;
     int i = 1;
     char *args[] = {"./dummy_prog", NULL};
@@ -64,7 +64,8 @@ int main()
     while (counter > 0)
     {
         printf("say 'who is your daddy?'\nME... one more time...\n\n");
-        system("./dummy_prog"); /* this is the same as */
+        /* this is the same as writing whats insid the paranthesis in the traminal...:*/
+        system("./dummy_prog");
         --counter;
     }
     
