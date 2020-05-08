@@ -28,6 +28,7 @@ typedef struct block_header
 
 size_t FSASuggestSize(size_t num_blocks, size_t block_size)
 {
+	/* thaking care of the allignment for every inner-block in the pool, the headers and the general managing struct: */
 	size_t size_needed = sizeof(fsa_t) + (num_blocks * sizeof(block_t) +
     					 ((((block_size - 1) / WORD) + 1) * WORD * num_blocks));
   
@@ -53,7 +54,7 @@ fsa_t *FSAInit(void *memory, size_t seg_size, size_t block_size)
 	
 	printf("size f block size: %ld\n", memory_pool->block_size);
 	
-	for (bytes_counter = memory_pool->next_free ;
+	for (bytes_counter = memory_pool->next_free;
 		 bytes_counter < seg_size;
 		 ++block_counter, bytes_counter += memory_pool->block_size)
 	{

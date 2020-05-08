@@ -13,7 +13,7 @@ the hash table is an array of dll_t variables.
 #include "hash_table.h"
 #include "doubly_linked_list.h"
 
-#define FREE(x) (if (NULL != p); (free(x), (x = NULL)))
+#define FREE(x) ((free(x)), (x = NULL)))
 
 struct hash_table
 {
@@ -29,11 +29,13 @@ hash_t *HashCreate(int (*cmp_func)(const void *data1, const void *data2),
                    size_t (*hash_func)(const void *data),
                    size_t table_size)
 {
-    hash_t *table_manager = (hash_t *)malloc(sizeof(hash_t));
+    hash_t *table_manager = NULL;
     size_t i = 0;
     size_t j = 0;
+
     assert(table_size > 0);
 
+    *table_manager = (hash_t *)malloc(sizeof(hash_t));
     if (NULL == table_manager)
     {
         return (NULL);

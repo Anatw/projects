@@ -20,27 +20,19 @@ Comment and un-comment the defines to see both phases (one at a time).
  #include <fcntl.h>           /* For O_* constants */
  #include <stdatomic.h> /* atomic_int */
 
-#include "queue.h"
+#include "producer_consumer_queue.h"
 #include "singly_linked_list.h"
 
-/*#define EX1*/
-#define EX2
-/*#define EX3*/
 
 #define NUM_THREADS (5)
 #define BUFFER_SIZE (7)
 
-pthread_mutex_t lock;
-queue_t *global_queue = NULL;
+pthread_mutex_t lock_producer;
+pthread_mutex_t lock_consumer;
 circularbuffer_t *global_buffer = NULL;
-#ifdef EX2
-sem_t semaphore;
-#endif /*EX2*/
 
-#ifdef EX3
-sem_t produer_sem;
+sem_t producer_sem;
 sem_t consumer_sem;
-#endif /*EX3*/
 
 void *ProducerFunc(void *data);
 void *ConsumerFunc(void *unsued);
@@ -53,27 +45,16 @@ int main()
     pthread_t consumer_thread[NUM_THREADS] = {0};
 
     int data[NUM_THREADS] = {1, 4, 6, 3, 9};
-    
-    #ifdef EX2
-    sem_init(&semaphore, O_CREAT, 0);
-    #endif /*EX2*/
-    
-    #ifdef EX3
-    sem_init(&produer_sem, O_CREAT, BUFFER_SIZE);
+
+    sem_init(&producer_sem, O_CREAT, BUFFER_SIZE);
     sem_init(&consumer_sem, O_CREAT, 0);
-    #endif /*EX3*/
 
-    pthread_mutex_init(&lock, NULL);
+    pthread_mutex_init(&lock_producer, NULL);
+    pthread_mutex_init(&lock_consumer, NULL);
 
-    #ifdef EX2
-    global_queue = QueueCreate();
-    #endif /*EX2*/
-
-    #ifdef EX3
     global_buffer = CBCreate(BUFFER_SIZE);
-    #endif /*EX3*/
-    
-    if (NULL == global_queue)
+
+    if (NULL == global_buffer)
     {
         printf("ERROR in queue_create");
         return (1);
@@ -83,13 +64,13 @@ int main()
     {
         if (0 != pthread_create(&producer_thread[i], NULL, &ProducerFunc, &data[i]))
         {
-            printf("ERROR in pthread_create (producer_thread) (in i %d)\n", i);
+            printf("ERROR in pthread_create (Producer_thread) (in i %d)\n", i);
             return (1);
         }
 
         if (0 != pthread_create(&consumer_thread[i], NULL, &ConsumerFunc, NULL))
         {
-            printf("ERROR in pthread_create (producer_thread) (in i %d)\n", i);
+            printf("ERROR in pthread_create (Consumer_thread) (in i %d)\n", i);
             return (1);
         }
     }
@@ -100,62 +81,26 @@ int main()
         pthread_join(consumer_thread[i], NULL);
     }
 
-    #ifdef EX2
-    sem_destroy(&semaphore);
-    #endif /*EX2*/
+    sem_destroy(&producer_sem);
+    sem_destroy(&consumer_sem);
 
-    #ifdef EX3
     CBDestroy(global_buffer);
-    #endif /*EX3*/
-
-    QueueDestroy(global_queue);
 
     return (0);
 }
 
-#ifdef EX1
 
 void *ProducerFunc(void *data)
 {
-    while (1)
-    {
-        pthread_mutex_lock(&lock);
-        QueueEnqueu(global_queue, data);
-        pthread_mutex_unlock(&lock);
-        printf("data entered: %d\n", *(int *)data);
-    }
-    
-    return (NULL);
-}
-
-void *ConsumerFunc(void *unused)
-{
-    (void)unused;
-
+    /* the semaphore makes sure that the consumer and producer wont collide, and the two different mutexes makes sure that each producer thread and each consumer thread will work one at a time */
     while(1)
     {
-        pthread_mutex_lock(&lock);
-        QueueDequeu(global_queue);
-        pthread_mutex_unlock(&lock);
-        printf("data dequed\n");
-    }
-
-    return (NULL);
-}
-
-#endif /*EX1*/
-
-#ifdef EX2
-
-void *ProducerFunc(void *data)
-{
-    while (1)
-    {
-        pthread_mutex_lock(&lock);
-        QueueEnqueu(global_queue, data);
-        sem_post(&semaphore);
-        pthread_mutex_unlock(&lock);
+        sem_wait(&producer_sem);
+        pthread_mutex_lock(&lock_consumer);
+        CBWrite(global_buffer, (int *)data);
+        pthread_mutex_unlock(&lock_consumer);
        
+        sem_post(&consumer_sem);
         printf("data entered: %d\n", *(int *)data);
     }
     
@@ -164,57 +109,19 @@ void *ProducerFunc(void *data)
 
 void *ConsumerFunc(void *unused)
 {
+    int display = 0;
     (void)unused;
     
     while(1)
     {
-        sem_wait(&semaphore);
-        pthread_mutex_lock(&lock);
-        QueueDequeu(global_queue);
-        pthread_mutex_unlock(&lock);
+        sem_wait(&consumer_sem);
+        pthread_mutex_lock(&lock_producer);
+        display = CBRead(global_buffer);
+        pthread_mutex_unlock(&lock_producer);
 
-        printf("data dequed\n");
+        sem_post(&producer_sem);
+        printf("data dequed  ========>  %d\n", display);
     }
 
     return (NULL);
 }
-
-#endif /*EX2*/
-
-#ifdef EX3
-
-void *ProducerFunc(void *data)
-{
-    sem_post(&semaphore);
-    
-    while (1)
-    {
-        pthread_mutex_lock(&lock);
-        CBWrite(global_buffer, data);
-        pthread_mutex_unlock(&lock);
-       
-        printf("data entered: %d\n", *(int *)data);
-    }
-    
-    return (NULL);
-}
-
-void *ConsumerFunc(void *unused)
-{
-    (void)unused;
-    
-    sem_wait(&semaphore);
-
-    while(1)
-    {
-        pthread_mutex_lock(&lock);
-        QueueDequeu(global_queue);
-        pthread_mutex_unlock(&lock);
-
-        printf("data dequed\n");
-    }
-
-    return (NULL);
-}
-
-#endif /*EX3*/
