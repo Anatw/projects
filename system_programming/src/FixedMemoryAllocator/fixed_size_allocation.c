@@ -52,7 +52,7 @@ fsa_t *FSAInit(void *memory, size_t seg_size, size_t block_size)
 							  sizeof(block_t);
 	memory_pool->next_free = sizeof(fsa_t);
 	
-	printf("size f block size: %ld\n", memory_pool->block_size);
+	printf("size of block size: %ld\n", memory_pool->block_size);
 	
 	for (bytes_counter = memory_pool->next_free;
 		 bytes_counter < seg_size;
@@ -124,13 +124,18 @@ size_t FSACountFree(const fsa_t *fsa_pool)
 	block_t *next_block = NULL;
 	char *p_byte = (char *)fsa_pool;
 	
+	/* mobing all variables to the next free block: */
 	offset = fsa_pool->next_free;
 	p_byte += fsa_pool->next_free;
 	next_block = (block_t *)p_byte;
 
 	while ((size_t)NULL != offset)
 	{
-		++counter;
+		/* Count only free blocks (not pointing to themselfs): */
+		if ((p_byte - next_block->next_free) != (char *)fsa_pool)
+		{
+			++counter;
+		}
 		
 		p_byte = (char *)fsa_pool;
 		p_byte += offset;

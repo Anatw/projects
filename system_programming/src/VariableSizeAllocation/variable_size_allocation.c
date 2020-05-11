@@ -23,7 +23,7 @@ typedef struct block_header block_t;
 
 struct block_header
 {
-	ssize_t block_size; /* positive value = free; negetive value = not free */
+	ssize_t block_size; /* positive value = free; negative value = occupied */
 	#ifndef _NDEBUG
 	long valid; /* ment to validate that we point to a header and not data */
 	#endif
@@ -44,9 +44,10 @@ block_t *VSAInit(void *memory, size_t seg_size)
 	assert(memory);
 	
 	vsa_pool = (vsa_t *)memory;
-	/* size - begin and end blocks: */
+	/* size minus begin (vas_t) and end (block_t) blocks (both are the same size): */
 	vsa_pool->block_size = new_seg - (sizeof(vsa_t) * 2);
 	
+	/* insetring a hearer indicating it is the ladt block right at the end of the pool: */
 	byte_p = (char *)vsa_pool;
 	byte_p += vsa_pool->block_size + sizeof(vsa_t); 
 	last_block = (block_t *)byte_p;
@@ -67,33 +68,26 @@ void *VSAAlloc(vsa_t *vsa_pool, size_t size_needed)
 	char *byte_p = NULL;
 	block_t *block_p = NULL;
 	block_t *new_block = NULL;
-	size_t temp_block_size = 0;
-	/* setting size_needed to start in a word-allignment orientation: */
+	/* setting size_needed to start in a word-allignment orientation (I'm using "size_needed - 1" and than adding back that one for the case that size_needed is devidable by WORD - in which case the resault will be zero - wring...): */
 	size_needed = (((size_needed - 1) / WORD) + 1) * WORD;
 	
 	assert(vsa_pool);
 	
-	/* move all pointer to the beginning of the memory pool: */
+	/* move all pointer to the beginning of the memory pool - the managing struct, the vsa_t, is also indicating as the first header - an actual block header: */
 	byte_p = (char *)vsa_pool;
 	block_p = vsa_pool;
 	new_block = vsa_pool;
-	
-	/* if there is no block big enough for size_needed */
-	if (VSALargestBlockAvailable(vsa_pool) < (size_t)size_needed)
-	{
-		return (NULL);
-	}
 
 	while (LASTBLOCK != block_p->block_size)
 	{
 		/* while block is free but not enough for 'size_needed' - unite free
-		/* adjacent blocks. This block keep uniting free adjacent blocks even
-		/* if the size matches the size_needed, until it discovers an occupied
-		/* block. It can be easely changed by adding at the end of the block an
-		/* if statement to check if the block_size is big enoughh for
-		/* size_needed, and if so - break. */
+		 adjacent blocks. This block keep uniting free adjacent blocks even
+		 if the size matches the size_needed, until it discovers an occupied
+		 block. It can be easely changed by adding at the end of the block an
+		 if statement to check if the block_size is big enough for
+		 size_needed, and if so - break. */
 		while (0 < block_p->block_size &&
-			   size_needed > (block_p->block_size + temp_block_size) && 
+			   (ssize_t)size_needed > (block_p->block_size) && 
 			   LASTBLOCK != block_p->block_size)
 		{
 			byte_p += block_p->block_size + sizeof(block_t);

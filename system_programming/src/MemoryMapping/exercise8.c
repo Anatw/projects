@@ -20,9 +20,10 @@
 
 /**** Initializing synchronization vraiables: ****/
 pthread_cond_t guard = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lock;
 sem_t semaphore;
 pthread_cond_t condition = PTHREAD_COND_INITIALIZER;
+int x = 5;
 
 atomic_int massage = 0;
 int counter = 0;
@@ -36,9 +37,18 @@ int main()
     pthread_t producer;
     pthread_t consumer_string[NUM_CONSUMER] = {0};
     int i = 0;
+    /*sleep (120);*/
 
     pthread_mutex_init(&lock, NULL);
     pthread_cond_init(&condition, NULL);
+
+    printf("producer address: %p\t\n", &producer);
+    printf("consumer_string address: %p\t\n", consumer_string);
+    printf("i address: %p\t\n", &i);
+    printf("guard address: %p\t\n", &guard);
+    printf("lock address: %p\t\n", &lock);
+    printf("semaphore address: %p\t\n", &semaphore);
+    printf("condition address: %p\t\n", &condition);
 
     sem_init(&semaphore, O_CREAT, 0);
     if (pthread_create(&producer, NULL, &ProducerFunc, NULL))
@@ -72,11 +82,15 @@ int main()
 
 void *ProducerFunc(void *unused)
 {
-    UNUSED(unused);
-
+    
+    int variables = 0;
     sem_post(&semaphore);
     pthread_mutex_lock(&lock);
     massage = 4;
+    UNUSED(unused);
+
+    printf("ProducerFunc - variables address: %p\t\n", &variables);
+    printf("ProducerFunc - pthread_mutex_lock address: %p\t\n", &pthread_mutex_lock);
     
     /* Enter this while-loop only if this is the beggining of the program and no producer thread has executed yet: */
     while (0 == counter)
@@ -93,11 +107,22 @@ void *ProducerFunc(void *unused)
 
 void *ConsumerFunc(void *unused)
 {
+    int variables = 0;
+    /* this variable is visibale only inside a thread - TLS area: */
+    static pthread_key_t key;
     UNUSED(unused);
+    pthread_key_create(&key, NULL);
+    
     
     sem_wait(&semaphore);
     ++counter;
     printf("Thread #%d, massage: %d\n", counter, (massage + counter));
+
+ printf("ProducerFunc - (local)variables address: %p\t\n", &variables);
+    printf("ConsumerFunc - sem_wait address: %p\t\n", &sem_wait);
+    printf("ConsumerFunc - semaphore address: %p\t\n", &semaphore);
+    printf("ConsumerFunc - key address: %p\t\n", &key);
+ 
     
     if (NUM_CONSUMER == counter)
     {

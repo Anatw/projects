@@ -2,7 +2,8 @@
 #include <stdlib.h> /* malloc(), free() */
 #include <stdio.h> /* printf() */
 #include <ctype.h> /* tolower() */
-#include "/usr/lib/libdoblinklist.so"
+
+#include "../../lib/libds.so"
 
 #define NUM (8)
 

@@ -38,11 +38,12 @@ int main()
 	
 	printf("alocated at %p\n", memory);
 	mem_pool = FSAInit(memory, size_needed, BLOCK_SIZE);
+	printf("number of free blocks is %ld\n", FSACountFree(mem_pool));
 	
 	data = FSAAlloc(mem_pool);
 	data = array;
 	
-	while (index  < (BLOCK_SIZE / sizeof(array[0])))
+	while (index  < (int)(BLOCK_SIZE / sizeof(array[0])))
 	{
 		printf("%d\n", *(data + index));
 		++index;

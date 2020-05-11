@@ -68,6 +68,11 @@ int main()
         pthread_create(&new_thread, NULL, WriteToArray, NULL);
     }
 
+    for (i = 0; i < ARRAY_SIZE; ++i)
+    {
+        pthread_join(&new_thread, NULL);
+    }
+
     sleep(10);
     /*for (i = ARRAY_SIZE - 1; i >= 0; --i)
     {
@@ -121,6 +126,11 @@ int main()
         return_value = 1;
     }
 
+    for (i = 0; i < ARRAY_SIZE; ++i)
+    {
+        pthread_join(&new_thread, NULL);
+    }
+
     time_end = time(NULL);
     printf("\n\nthis program took %ld seconds to run\n",
            (time_end - time_begin));
@@ -159,6 +169,11 @@ int main()
         {
             pcreate_return = pthread_create(&new_thread, NULL, WriteToArrayAndDetachTread, NULL);
         }
+    }
+
+    for (i = 0; i < ARRAY_SIZE; ++i)
+    {
+        pthread_join(&new_thread, NULL);
     }
 
     time_end = time(NULL);

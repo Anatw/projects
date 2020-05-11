@@ -13,6 +13,7 @@ one UID in the exact time.
 #include <sys/types.h> /* pid_t */
 #include <time.h> /* time() */
 #include <unistd.h> /* getpid() */
+#include <pthread.h> /* pthread_t, pthread_create(), ptherad_mutex_t, pthread_mutex_init(), pthread_mutex_unlock() */
 
 
 typedef struct uid
@@ -20,6 +21,7 @@ typedef struct uid
 	pid_t pid;
 	time_t time;
 	size_t count;
+	/*pthread_mutex_t lock;*/
 } Uid_t;
 
 /* Create a new UID.

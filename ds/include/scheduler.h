@@ -12,7 +12,7 @@
 typedef struct scheduler scheduler_t;
 
 /*
- * after you've built the schedualer, this function will run it in cicles until
+ * after you've built the schedualer, this function will run it in cycles until
  * stoped.
  * Returns status (why functions stopped?):
  * 					0:stopped

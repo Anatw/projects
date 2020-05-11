@@ -1,10 +1,8 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
-
-                            Simple Watchdog
+        Multiple producers, Multiple consumers with Atomic Counters
                           Written by Anat Wax
-                            May th, 2020
-                          Reviewer: 
+                            May 7th, 2020
+                          Reviewer: Amir Paz
 *******************************************************************************/
 
  #include <stdio.h> /* printf(), size_t */
@@ -16,16 +14,18 @@ Comment and un-comment the defines to see both phases (one at a time).
 #include "queue.h"
 #include "singly_linked_list.h"
 
-
+/**** Defining macros: ****/
 #define NUM_THREADS (5)
 #define BUFFER_SIZE (7)
 
+/**** Initializing synchronization vraiables: ****/
 pthread_mutex_t lock;
 queue_t *global_queue = NULL;
 
 atomic_int producer_guard = BUFFER_SIZE;
 atomic_int consumer_guard = 0;
 
+/**** Declaring threads functions: ****/
 void *ProducerFunc(void *data);
 void *ConsumerFunc(void *unsued);
 
@@ -74,6 +74,7 @@ int main()
     return (0);
 }
 
+/**** Defining threads functions: ****/
 
 /* works while buffer_size is bigger or equals to zero */
 void *ProducerFunc(void *data)
@@ -94,6 +95,8 @@ void *ProducerFunc(void *data)
     
     return (NULL);
 }
+
+/************************************/
 
 void *ConsumerFunc(void *unused)
 {
