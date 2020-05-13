@@ -68,7 +68,7 @@ int main()
 	printf("The size of the tree is %ld nodes\n", BSTSize(tree));
 	
 	printf("is tree empty? %s\n",(1 == BSTIsEmpty(tree) ? "yes" : "no"));
-	
+	printf("the max depth of path from root to leaf in the BST is %ld\n", MaxDepth(BSTBegin(tree)));
 	
 	
 	/*printf("BSTNext: of - 5: %d\n", *(int *)BSTGetData(BSTNext(begin_node2)));*/
@@ -86,10 +86,10 @@ int main()
 		printf("%d\n", *(int *)BSTGetData(iterator));
 	}*/
 	printf("The size of the tree is %ld nodes\n", BSTSize(tree));
+	printf("the max depth of path from root to leaf in the BST is %ld\n", MaxDepth(BSTBegin(tree)));
 	BSTDestroy(tree);
 	
-	
-		return (0);
+	return (0);
 }
 
 /* returns 1 if should go right and -1 if should go right, 0 if equal */

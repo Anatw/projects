@@ -3,7 +3,7 @@
 #include <stdio.h> /* printf() */
 #include <ctype.h> /* tolower() */
 
-#include "../../lib/libds.so"
+#include "../../lib/libds.so" /* this is not valid! must connext an h file relevent and add -L to the lib file */
 
 #define NUM (8)
 

@@ -156,5 +156,12 @@ int BSTForEach(const bst_iter_t from,
                int (*opr_func)(const void *data, const void *param),
                const void *param);
 
-#endif /* BINARY_STREE_H */
+/******************************************/
 
+/* Depth = the number of edges in a path between a leaf and the root.
+Hight of a leaf is 0. 
+   Complexity: O(n)*/
+size_t MaxDepth(const bst_iter_t root);
+
+
+#endif /* BINARY_STREE_H */

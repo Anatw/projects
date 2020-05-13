@@ -513,3 +513,22 @@ int BSTIsEmpty(const bst_t *tree)
 
 	return (NULL == tree->root_stub.nodes[RIGHT] ? 1 : 0);
 }
+
+/******************************************************************************/
+/******************************************************************************/
+
+ssize_t MaxDepth(const bst_iter_t current_node)
+{
+    static ssize_t left_depth = 0;
+    static ssize_t right_depth = 0;
+
+    if (NULL == current_node)
+    {
+        return (-1);
+    }
+    
+    left_depth = MaxDepth(current_node->nodes[LEFT]);
+    right_depth = MaxDepth(current_node->nodes[RIGHT]);
+
+    return (left_depth > right_depth ? (left_depth + 1) : (right_depth + 1));
+}
