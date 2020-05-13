@@ -35,21 +35,23 @@ int main(int argc, char *argv[])
     WatchdogStart(argv[0], NULL);
 
     printf("I'm here (1)\n");
-    sleep(1);
+    sleep(4);
     printf("still here(2)\n");
-    sleep(1);
+    sleep(4);
     printf("still me! (3)\n");
-    sleep(1);
+    sleep(4);
+    printf("OK, I'll wait... (3)\n");
+    sleep(10);
     printf("YooHoo!! (4)\n");
-    sleep(50);
+    sleep(4);
     printf("hello there (5)\n");
-    sleep(1);
+    sleep(4);
     printf("ahoi (6)\n");
-    sleep(1);
+    sleep(4);
     printf("hey, you, it's still me (7)\n");
-    sleep(1);
+    sleep(4);
     printf("closing now... (8)\n");
-    sleep(1);
+    
 
     /* watchdog stop */
 
