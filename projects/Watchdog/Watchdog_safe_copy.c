@@ -34,25 +34,24 @@ char *watchdog_args[2];
 
 int main(int argc, char *argv[])
 {
-    /*char program_name[64];
+    char program_name[64];
     struct sigaction action;
     watchdog_args[0] = program_name;
     watchdog_args[1] = NULL;
-    strcpy(program_name, argv[1]);
-    strcat(program_name, " &");*/
+    strcpy(program_name, argv[1]); /* initializing user's program name */
+    strcat(program_name, " &");
     UNUSED(argc);
 
+    memset(&action, 0, sizeof(action));
+    action.sa_handler = &SignalHandlers;
+    sigaction(SIGUSR1, &action, NULL);
+    
     #ifndef DNDBUG
     printf("Watchdog_prog.c: main: watchdog process pid: %d\n", getpid());
     printf("Watchdog_prog.c: main: ppid: %d\n", getppid());
     #endif
     
-    PostToSem();
     #ifndef DNDBUG
-    printf("Watchdog_prog.c: finished PostToSem\n");
-    #endif
-
-    /*#ifndef DNDBUG
     printf("Watchdog_prog: creating 'dog_thread'\n");
     #endif
     if (pthread_create(&dog_thread, NULL, &DogSchedInit, watchdog_args))
@@ -62,21 +61,21 @@ int main(int argc, char *argv[])
         #endif
 
         return (1);
-    }*/
-/*
+    }
+
     #ifndef DNDBUG
     printf("Watchdog_prog: joining the thread 'dog_thread'\n");
     #endif
-    pthread_join(dog_thread, NULL);*/
+    pthread_join(dog_thread, NULL);
     /* whe user want's to stop the watchdog - he will send a SIGUSR2 to the watchdog, and theo the semaphore, and than sem_e*/
 
     return (0);
 }
-/*
+
 void *DogSchedInit(void *watchdog_args)
-{*/
- /* pid_t parent_pid = getppid();*/
-/*
+{
+  pid_t parent_pid = getppid();
+
   #ifndef DNDBUG
   printf("Watchdog_prog: enetered DogSchedInit\n");
   #endif
@@ -84,7 +83,12 @@ void *DogSchedInit(void *watchdog_args)
   #ifndef DNDBUG
   printf("Watchdog_prog.c: I've just initialised my watchdog scheduler:\n");
   #endif
-
+  
+  PostToSem();
+  #ifndef DNDBUG
+  printf("Watchdog_prog.c: finished PostToSem\n");
+  #endif
+    
   printf("line 80\n");
   RunSched(dog_scheduler);
   #ifndef DNDBUG
@@ -92,4 +96,4 @@ void *DogSchedInit(void *watchdog_args)
   #endif
 
   return (NULL);
-}*/
+}

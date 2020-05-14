@@ -24,7 +24,7 @@ Comment and un-comment the defines to see both phases (one at a time).
 
 
 #include "utility.h"
-#include "Watchdog_prog.h"
+#include "Watchdog.h"
 
 int main(int argc, char *argv[])
 {
@@ -33,10 +33,10 @@ int main(int argc, char *argv[])
     printf("creating a watchdog\n");
     UNUSED(argc);
 
-    WatchdogStart(argv[0], NULL);
+    WatchdogStart(argv[0]);
     for (i = 50; i > 0; --i)
     {
-      printf("****************************i = %d ******************\n", i);
+      printf("*************************** i = %d ******************\n", i);
       sleep(5);
       /*printf("I'm here (1)\n");
       sleep(4);
