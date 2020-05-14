@@ -28,29 +28,34 @@ Comment and un-comment the defines to see both phases (one at a time).
 
 int main(int argc, char *argv[])
 {
+    int i = 50;
     printf("This is the main process\n");
     printf("creating a watchdog\n");
     UNUSED(argc);
 
     WatchdogStart(argv[0], NULL);
-
-    printf("I'm here (1)\n");
-    sleep(4);
-    printf("still here(2)\n");
-    sleep(4);
-    printf("still me! (3)\n");
-    sleep(4);
-    printf("OK, I'll wait... (3)\n");
-    sleep(10);
-    printf("YooHoo!! (4)\n");
-    sleep(4);
-    printf("hello there (5)\n");
-    sleep(4);
-    printf("ahoi (6)\n");
-    sleep(4);
-    printf("hey, you, it's still me (7)\n");
-    sleep(4);
-    printf("closing now... (8)\n");
+    for (i = 50; i > 0; --i)
+    {
+      printf("****************************i = %d ******************\n", i);
+      sleep(5);
+      /*printf("I'm here (1)\n");
+      sleep(4);
+      printf("still here(2)\n");
+      sleep(4);
+      printf("still me! (3)\n");
+      sleep(4);
+      printf("OK, I'll wait... (3)\n");
+      sleep(10);
+      printf("YooHoo!! (4)\n");
+      sleep(4);
+      printf("hello there (5)\n");
+      sleep(4);
+      printf("ahoi (6)\n");
+      sleep(4);
+      printf("hey, you, it's still me (7)\n");
+      sleep(4);
+      printf("closing now... (8)\n");*/
+    }
     
 
     /* watchdog stop */

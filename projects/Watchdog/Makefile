@@ -27,9 +27,12 @@ all:test
 #watchdog_prog
 #watchdog_test
 test:
-	@$(CC) $(F_DEBUG) $(NAME_P).c $(NAME).c scheduler.c $(INC_DIR) -o $(NAME_P)  -pthread
-	@$(CC) $(F_DEBUG) $(NAME)_$@.c $(NAME).c scheduler.c $(INC_DIR) -o a.out  -pthread
-	@./a.out
+	$(CC) $(F_DEBUG) $(WNO) Watchdog_prog.c  Watchdog.c scheduler.o doubly_linked_list.o priority_queue.o uid.o task.o sorted_linked_list.o -L. -lsched -l pthread 
+	$(CC) $(F_DEBUG) $(WNO) Watchdog_test.c  Watchdog.c scheduler.o doubly_linked_list.o priority_queue.o uid.o task.o sorted_linked_list.o -L. -lsched -l pthread
+
+	#@$(CC) $(F_DEBUG) $(NAME_P).c $(NAME).c scheduler.c $(INC_DIR) -o $(NAME_P)  -pthread
+	#@$(CC) $(F_DEBUG) $(NAME)_$@.c $(NAME).c scheduler.c $(INC_DIR) -o a.out  -pthread
+	#@./a.out
 
 # Room Service #
 clean:

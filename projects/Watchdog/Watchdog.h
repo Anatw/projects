@@ -19,4 +19,9 @@ void WatchdogStop();
 void *UserThread(void *program_name);
 void PostToSem();
 
+void SignalHandlers(int signal);
+void RestartProcesses();
+int GeneralSendPulse(void *pid);
+int GeneralCheckPulse(void *program_name);
+
 #endif /* WATCHDOG_H */

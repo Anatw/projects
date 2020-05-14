@@ -8,7 +8,7 @@ This is the process of the Watchdog. It uses functions from the "watchdog.c" fil
                             May th, 2020
                           Reviewer: 
 *******************************************************************************/
-
+#define _XOPEN_SOURCE 700 /* this addes posix to the library - X/Open 7, incorporating POSIX 2008 - to use with the "struct sigaction action;" */
     #include <stdlib.h> /* malloc(), free(), abs(), size_t */
     #include <unistd.h> /* ssize_t, sleep(), execvp(), fork() */
 #include <stdio.h> /* printf(), size_t */
@@ -18,7 +18,7 @@ This is the process of the Watchdog. It uses functions from the "watchdog.c" fil
 #include <semaphore.h> /* sem_init(), se,_destroy(), sem_wait(), sem_post(), sem_trywait(), sem_getvalue() */
 #include <fcntl.h>     /* For O_* constants */
 #include <stdatomic.h> /* atomic_int */
-#include <signal.h>    /* sig_atomic_t, kill() */
+#include <signal.h>    /* sig_atomic_t, kill(), sigaction() */
 
 #include "utility.h"
 #include "Watchdog.h"
@@ -38,9 +38,12 @@ int main()
     struct sigaction action;
     char *program_name = "./Watchdog_prog";
     memset(&action, 0, sizeof(action));
-    action.sa_handler = &DogSignalHandler;
+    action.sa_handler = &SignalHandlers;
     sigaction(SIGUSR1, &action, NULL);
-    
+    #ifndef DNDBUG
+    printf("Watchdog_prog.c: main: watchdog process pid: %d\n", getpid());
+    printf("Watchdog_prog.c: main: ppid: %d\n", getppid());
+    #endif
     #ifndef DNDBUG
     printf("Watchdog_prog: creating 'dog_thread'\n");
     #endif
@@ -77,7 +80,7 @@ void *DogSchedInit(void *program_name)
   printf("Watchdog_prog.c: finished PostToSem\n");
   #endif
     
-  printf("line 69\n");
+  printf("line 80\n");
   RunSched(dog_scheduler);
   #ifndef DNDBUG
   printf("Watchdog_process.out: I've just ran my scheduler:\n");
@@ -86,8 +89,3 @@ void *DogSchedInit(void *program_name)
   return (NULL);
 }
 
-void DogSignalHandler(int signal)
-{
-    UNUSED(signal);
-    printf("Watchdog_prog: SIGUER1 receieved from user\n");
-}
