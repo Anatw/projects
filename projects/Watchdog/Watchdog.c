@@ -314,7 +314,7 @@ void RestartProcesses(char **args)
         stop_scheduler = 1;
         system(args[1]);
         /* send a self kill the same caller proccess = watchdog_prog - because a new watchdog will be created in the new user process: */
-        /*raise(SIGSTOP);*/
+        raise(SIGSTOP);
     }
     /* If I'm "a.out" this means watchdog_process has died */
     else /* (strcmp("a.out", __progname) == 0) */
@@ -325,7 +325,7 @@ void RestartProcesses(char **args)
 
         is_dog_ready = sem_open("dog_sem", O_EXCL , 0666, 0);
         /* In case the process is still working but for some reason is not sending signals correctly - kill it before re-running it: */
-        kill(watchdog_pid, SIGSTOP);
+        /*kill(watchdog_pid, SIGSTOP);*/
         /* Re-run the watchdog_prog program: */
         /*WatchdogStart(__progname);*/
         if ((temp_watchdog_pid = fork()) == 0)
