@@ -55,6 +55,11 @@ int main(int argc, char *argv[])
       printf("hey, you, it's still me (7)\n");
       sleep(4);
       printf("closing now... (8)\n");*/
+
+      if (i == 40)
+      {
+        WatchdogStop();
+      }
     }
     
 

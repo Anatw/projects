@@ -32,7 +32,7 @@ sem_t *is_dog_ready;
 scheduler_t *dog_scheduler = NULL;
 char *watchdog_args[2];
 
-int main(int argc, char *argv[])
+int main()
 {
     /*char program_name[64];
     struct sigaction action;
@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
     watchdog_args[1] = NULL;
     strcpy(program_name, argv[1]);
     strcat(program_name, " &");*/
-    UNUSED(argc);
 
+printf("3\n");
     #ifndef DNDBUG
     printf("Watchdog_prog.c: main: watchdog process pid: %d\n", getpid());
     printf("Watchdog_prog.c: main: ppid: %d\n", getppid());
