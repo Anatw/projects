@@ -1,69 +1,79 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
+Comment the DNDBUG option to deliberately crash the main user process - so that the watchdog can revive it.
 
-                            Simple Watchdog
+                          Watchdog - test file
                           Written by Anat Wax
-                            May th, 2020
-                          Reviewer: 
+                       May 10th - May 16th, 2020
+                         Reviewer: Haim Sa'adia
 *******************************************************************************/
-    #include <stddef.h> /* offsetof(), size_t */
-    #include <stdlib.h> /* malloc(), free(), abs(), size_t */
-    #include <assert.h> /* assert() */
-    #include <time.h> /* time, size_t, srand() */
-    #include <unistd.h> /* ssize_t, sleep(), execvp(), fork() */
-    #include <stdio.h> /* printf(), size_t */
-    #include <string.h> /* size_t, atoi() */
-    #include <sys/types.h> /* pid_t */
-    #include <sys/wait.h> /* wait() */
-    #include <signal.h>    /* sig_atomic_t, kill() */
-    #include <pthread.h> /* pthread_t, pthread_create(), ptherad_mutex_t, pthread_mutex_init(), pthread_mutex_unlock() */
-
-    #include <semaphore.h> /* sem_init(), se,_destroy(), sem_wait(), sem_post(), sem_trywait(), sem_getvalue() */
-    #include <fcntl.h>           /* For O_* constants */
-    #include <stdatomic.h> /* atomic_int */
-
-
+#include <stdio.h> /* printf() */
+#include <time.h> /* time, srand() */
+#include <unistd.h> /* sleep() */
+    
 #include "utility.h"
 #include "Watchdog.h"
 
+/*#define DNDBUG*/
+
+int CrashMyProccess();
+
 int main(int argc, char *argv[])
 {
-    int i = 50;
-    printf("This is the main process\n");
-    printf("creating a watchdog\n");
+    #ifndef DNDBUG
+    int num = 0;
+    #endif
+    
+    printf("~~ Entering the user main process ~~\n\n");
+    
     UNUSED(argc);
+    
+    #ifndef DNDBUG
+    srand(time(0));
+    num = (rand() % 100) + 1; /* num is now a number between 1 and 100 */
+    #endif
 
     WatchdogStart(argv[0]);
-    for (i = 50; i > 0; --i)
+    sleep(10);
+    printf("I'm here (1)\n");
+    sleep(10);
+    printf("still here(2)\n");
+    sleep(10);
+    printf("still me! (3)\n");
+    sleep(10);
+    printf("OK, I'll wait... (4)\n");
+    sleep(10);
+    printf("YooHoo!! (5)\n");
+    sleep(10);
+
+    #ifndef DNDBUG
+    if (0 == (num % 3)) /* 25% of crashing */
     {
-      printf("*************************** i = %d ******************\n", i);
-      sleep(5);
-      /*printf("I'm here (1)\n");
-      sleep(4);
-      printf("still here(2)\n");
-      sleep(4);
-      printf("still me! (3)\n");
-      sleep(4);
-      printf("OK, I'll wait... (3)\n");
-      sleep(10);
-      printf("YooHoo!! (4)\n");
-      sleep(4);
-      printf("hello there (5)\n");
-      sleep(4);
-      printf("ahoi (6)\n");
-      sleep(4);
-      printf("hey, you, it's still me (7)\n");
-      sleep(4);
-      printf("closing now... (8)\n");*/
-
-      if (i == 40)
-      {
-        WatchdogStop();
-      }
+      printf("\n\nPAY ATTANTION: A.OUT: Intending to crush your main programm!\n\n");
+      CrashMyProccess();
     }
+    #endif
     
+    printf("hello there (6)\n");
+    sleep(4);
+    printf("ahoi (7)\n");
+    sleep(4);
+    printf("hey, you, it's still me (8)\n");
+    sleep(4);
+    printf("closing now... (9)\n");
+    printf("~&~&~&~& Lets do this again! &~&~&~&~\n");
+    sleep(10);
+    printf("I'm here (1)\n");
+    sleep(10);
+    printf("still here(2)\n");
+    sleep(10);
+    printf("still me! (3)\n");
+    sleep(10);
+    printf("OK, I'll wait... (4)\n");
+    sleep(10);
+    printf("YooHoo!! (5)\n");
 
-    /* watchdog stop */
+    WatchdogStop();
+    printf("Closing now!!!!\n");
 
     return (0);
 }

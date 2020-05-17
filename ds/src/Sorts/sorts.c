@@ -145,7 +145,6 @@ void InsertionSort(int array[], size_t array_length)
 {
 	size_t index = 1;
 	ssize_t prev = 0;
-	size_t current = *(array + index);
 	clock_t start_t, end_t;
 		
 	start_t = clock();
@@ -153,8 +152,8 @@ void InsertionSort(int array[], size_t array_length)
 	for (index = 1; index < array_length; ++index)
 	{
 		prev = index - 1;
-		current = *(array + index);
 		
+		/* Swap inside the current couple if needed, and go back till the baggining of the array - swapping as needed: */
 		while (prev >= 0 && *(array + prev) > *(array + index))
 		{
 			Swap((array + prev), (array + index));
@@ -162,8 +161,6 @@ void InsertionSort(int array[], size_t array_length)
 			prev -= 1;
 			index = prev + 1;
 		}
-		
-		*(array + prev + 1) = current;
 	}
 	
 	end_t = clock();

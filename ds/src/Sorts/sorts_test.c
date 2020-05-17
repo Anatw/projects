@@ -11,7 +11,7 @@
 
 #include "sorts.h"
 
-#define ARRAY_SIZE (5000)
+#define ARRAY_SIZE (500)
 #define COUNTING_ARRAY_SIZE (100)
 #define DIGITS_NUM (7)
 #define BASE (10)
@@ -38,12 +38,13 @@ int main()
 	PrintArray(array, ARRAY_SIZE);
 	
 	
-	/*SelectionSort(array, ARRAY_SIZE);
+	/*SelectionSort(array, ARRAY_SIZE);*/
 	InsertionSort(array, ARRAY_SIZE);
-	BubbleSort(array, ARRAY_SIZE);*/
+	/*BubbleSort(array, ARRAY_SIZE);*/
 	printf("performing CountingSort:\n\n\n\n\n");
-	CountingSort(array, ARRAY_SIZE);
-	
+	/*CountingSort(array, ARRAY_SIZE);*/
+
+
 	/*RadixSort(array, ARRAY_SIZE);
 	printf("after: \n\n\n\n\n\n\n");*/
 	PrintArray(array, ARRAY_SIZE);

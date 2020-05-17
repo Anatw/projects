@@ -11,7 +11,7 @@ algorithm than usual.
 
 /* 
  * Sorting algorithm that works by repeatedly swapping the adjacent elements if
- * so that the first of every teo adjacent elements is smaller than the second.
+ * so that the first of every two adjacent elements is smaller than the second.
  * Arguments: array - pointer to an unsorted array to be sorted.
  *			  array_length - the length of the array.
  * Compexity: O(n) - O(n^2)
@@ -31,13 +31,12 @@ void SelectionSort(int array[], size_t array_length);
  * Sort an array by comparing every two consecutive elements, placing the
  * smaller in it's correct place in the array.
  * Arguments: array - pointer to an unsorted array to be sorted.
- *			  array_length - the length of the array.
  * Compexity: O(n) - O(n^2)
  */
 void InsertionSort(int array[], size_t array_length);
 
 /*
- * counting the number of objects having distinct key values (using a lut
+ * Counting the number of objects having distinct key values (using a lut
  * table), adding the numbers and than placing the values using the arithmatic
  * made in the previous steps.
  * Arguments: array - pointer to an unsorted array to be sorted.
@@ -57,7 +56,7 @@ void CountingSort(int array[], size_t array_length);
 void RadixSort(int array[], size_t array_length);
 
 /*
- * Algorithem to reqursivly seperate and than merge while sorting of an array.
+ * Algorithem to recursivly seperate and than merge while sorting of an array.
  * Return - 0 in case of success.
  * 			1 in case of error.
  * Arguments: arr_to_sort - array to be sorted.
