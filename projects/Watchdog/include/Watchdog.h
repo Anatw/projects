@@ -13,18 +13,20 @@ Please ay attention:
 #define WATCHDOG_H
 
 /*
- * Function to activate the watchdog - a process that will make sure your program is not exiting unless you use the function WatchdogStop().
+ * Function to activate the watchdog - a process that will make sure your 
+ * program is not exiting unless you use the function WatchdogStop().
  * return: status - 0 - watchdog process launch with success.
  *                  1 - an error has occured while running the process.
  * Arguments: program_name - pointer to string literal of your program name.
- * Compexity: 
+ * Compexity: O(1)
  */
  
 int WatchdogStart(char *program_name);
 
 /*
- * Function to stop the watchdog. Thie function doesn't stop your process, just the watchdog itself.
- * Compexity: 
+ * Function to stop the watchdog. Thie function doesn't stop your process, just 
+ * the watchdog itself.
+ * Compexity: O(1)
  */
  void WatchdogStop();
 
