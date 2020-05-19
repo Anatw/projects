@@ -7,7 +7,7 @@ Comment and un-comment the defines unser "Exercise sections" to see each phase (
                           Reviewer: Amir Paz
 *******************************************************************************/
     #include <stddef.h> /* offsetof(), size_t */
-    #include <stdlib.h> /* malloc(), free(), abs() */ //* size_t, *//
+    #include <stdlib.h> /* malloc(), free(), abs() */
     #include <assert.h> /* assert() */
     #include <time.h> /* time, size_t, srand() */
     #include <unistd.h> /* ssize_t, sleep(), execvp(), fork() */
@@ -55,9 +55,12 @@ atomic_int ready_for_consumer = 0; /* if this is 1 - the function can run */
 
 int main()
 {   
+    int index = 0;
     pthread_t producer_thread = 0;
     pthread_t consumer_thread = 0;
-    int index = 0;
+    
+    printf("index address = %p\n", &index);
+    printf("consumer_thread = %p\n", &consumer_thread);
 
     if (0 != pthread_create(&producer_thread, NULL, &ProducerFunc, &index))
     {
@@ -231,9 +234,10 @@ void *ProducerFunc(void *index)
 
 void *ConsumerFunc(void *unused)
 {
-  UNUSED(unused);
+  
   int index = 0;
   size_t counter = 0;
+  UNUSED(unused);
 
   while (1)
   {

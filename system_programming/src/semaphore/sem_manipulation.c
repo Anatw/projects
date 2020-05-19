@@ -1,5 +1,5 @@
 /*******************************************************************************
-This program create a semaphore using the Posix API.
+This program create a semaphore using the Possix API.
 Please note, is you decrease the value in the samaphore belloe it's capacity (INIT_VALUE), it will get into "eait" condition and the programm will be frozen on this condition (you must use cntl + C to terminate the program and start an etirely new semaphore under a new semaphore name).
 
                                Semaphore
