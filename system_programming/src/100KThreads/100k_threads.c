@@ -41,7 +41,7 @@ MAX_SIZE_POSSIBLE = 15 : this program took 19 seconds to run (after cancelling s
 /*#define EXER1*/
 /*#define EXER2*/
 /*#define EXER3*/
-/*#define EXER4*/
+#define EXER4
 #define EXER5_6
 
 

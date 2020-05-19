@@ -23,9 +23,10 @@ Uid_t UIDCreate()
 	
 	pthread_mutex_init(&new_uid.lock, NULL);
 
-	pthread_mutex_lock(&new_uid.lock);
 	new_uid.pid = getpid(); /* syscall(SYS_gettid); - give us the thread pid */
 	new_uid.time = time(NULL); /* current_time */
+	
+	pthread_mutex_lock(&new_uid.lock);
 	new_uid.count = count;
 	pthread_mutex_unlock(&new_uid.lock);
 

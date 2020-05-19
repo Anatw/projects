@@ -1,6 +1,7 @@
 /*******************************************************************************
-Please ay attention:
-1. if either your progarm (when beeing watched by the watchdog), or the watchdog proocess are crashing (and relaunching by the current watchdog library), when your process finished running complitly you might need to press "enter" or any other key to return to the terminal.
+Please pay attention:
+1. if either your progarm (when beeing watched by the watchdog), or the watchdog proocess are crashing (and relaunching by the current watchdog
+library),when your process finished running complitely you might need to press the "enter" key to return to the terminal.
 2. the signal SIGUSER1 is in use of this programm - you can not use it in your code.
 
                           Watchdog - test file
