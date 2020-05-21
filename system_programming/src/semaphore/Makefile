@@ -1,5 +1,5 @@
 # Makefile - Version 4
-NAME:=semaphore
+NAME:=sem_manipulation
 CC=gcc
 CFLAGS=-pedantic-errors -Wall -Wextra -g#gd#
 F_RELEASE:=-pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#

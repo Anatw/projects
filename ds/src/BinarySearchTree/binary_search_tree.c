@@ -32,9 +32,9 @@ children_e direction;
 
 typedef struct bst_node
 {
-	struct bst_node *parent;
-	struct bst_node *nodes[2];
 	void *data;
+	struct bst_node *nodes[2];
+	struct bst_node *parent;
 } bst_node_t; /* *bst_iter_t */
 
 /******************************************************************************/

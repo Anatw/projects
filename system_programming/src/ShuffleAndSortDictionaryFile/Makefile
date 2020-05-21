@@ -5,7 +5,7 @@ CFLAGS=-ansi -pedantic-errors -Wall -Wextra -g#gd#
 F_RELEASE:=-ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#
 DEPS=#hash_table.h
 INC_DIR:=-I ../../include
-OBJ_LIB:=../../obj/sorts.o ../../obj/utility.o
+OBJ_LIB:=../../obj/utility.o
 
 OBJ :=$(NAME).c #$(NAME)_test.c
 
@@ -13,7 +13,7 @@ OBJ :=$(NAME).c #$(NAME)_test.c
 # $< -> the first item in the Dependencies list
 # Compiles each of the object files as separate targets
 %.o: %.c $(DEPS)
-	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS)  -lpthread -pthread -fopenmp
+	$(CC) $(OBJ) sorts.c $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS)  -lpthread -pthread -fopenmp
 
 # -o $@ -> Tells make to put the output in a file named after the target
 # $^ 	-> all of the file names in $(OBJ) separated by a space
@@ -21,11 +21,11 @@ OBJ :=$(NAME).c #$(NAME)_test.c
 # -fopenmp added for pragme in openmp
 test: $(OBJ)
 	@echo "new session:\n\n\n\n\n\n\n\n\n\n\n\n"
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB) -o a.out -lpthread -pthread -fopenmp
+	$(CC) $(CFLAGS) $(OBJ) sorts.c $(INC_DIR) $(OBJ_LIB) -o a.out -lpthread -pthread -fopenmp
 	./a.out
 
 testwithoutrun: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB) -o a.out -lpthread -pthread -fopenmp
+	$(CC) $(CFLAGS) $(OBJ) sorts.c $(INC_DIR) $(OBJ_LIB) -o a.out -lpthread -pthread -fopenmp
 
 .PHONY: clean
 

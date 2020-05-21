@@ -20,7 +20,7 @@
 
 static int RecursiveMergeSort(int *array, size_t base, size_t upper);
 
-static int Merge(int *array, size_t base, size_t middle, size_t upper);
+int Merge(int *array, size_t base, size_t middle, size_t upper);
 
 /************************ Qsort utility functions: ****************************/
 
@@ -302,7 +302,7 @@ static int RecursiveMergeSort(int *array, size_t base, size_t upper)
 
 /*******************************/
 
-static int Merge(int *array, size_t base, size_t middle, size_t upper)
+int Merge(int *array, size_t base, size_t middle, size_t upper)
 {
 	int index_left = 0;
 	int index_right = 0;

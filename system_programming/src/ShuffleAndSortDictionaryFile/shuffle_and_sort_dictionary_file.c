@@ -19,16 +19,16 @@ MERGE_SORT:
 Total time 1 thread:  190741.000000
 Total time 2 thread:  129772.000000
 Total time 4 thread:  123278.000000   BEST 
+*Total time 4 thread: 64387.000000
 Total time 8 thread:  127298.000000
 Total time 12 thread: 124420.000000
-*Total time 12 thread: 116653.000000
 
 Q_SORT:
 Total time 1 thread:  18694855.000000
-*Total time 1 thread: 31027410.000000
+
 Total time 2 thread:  14690227.000000
 Total time 4 thread:  12596452.000000   BEST 
-*Total time 4 thread: 17610090.000000
+
 Total time 8 thread:  13086875.000000
 Total time 12 thread: 19360527.000000
 *******************************************************************************/
@@ -40,15 +40,15 @@ Total time 12 thread: 19360527.000000
 #include "sorts.h"
 #include "utility.h"
 
-/*#define DNDBUG*/
+#define DNDBUG
 
 /*#define COUNTING_SORT*/
 /*#define BUBBLE_SORT*/    /* Too slow to run on my machine */
 /*#define SELECTION_SORT*/ /* Too slow to run on my machine */
 /*#define INSERTION_SORT*/ /* Too slow to run on my machine */
 /*#define RADIX_SORT*/
-/*#define MERGE_SORT*/
-#define Q_SORT /* Takes some time to run, patience... */
+#define MERGE_SORT
+/*#define Q_SORT*/ /* Takes some time to run, patience... */
     
 static void ReadDictionary(int *dictionary);
 static void *SortData(void *begin);
@@ -59,7 +59,7 @@ static int QsortCompare(const void *first, const void *second, void *arg);
 
 #define SIZE (102305)
 #define WORD (30)
-#define NUM_THREADS (1)
+#define NUM_THREADS (4)
 #define DICTIONARY_COPIES (2)
 #define TOTAL_SIZE (204610)
 
@@ -72,8 +72,11 @@ int main()
 {
     size_t i = 0;
     size_t begin = 0;
+    size_t middle = 0;
+    size_t end = 2;
     int new_thread_number = 0;
     clock_t start_t, end_t;
+    size_t remainder = NUM_THREADS % 2;
 		
 	start_t = clock();
 
@@ -103,43 +106,65 @@ int main()
             #endif
         }
     }
-
+    sleep(10);
     for (i = 0; i < NUM_THREADS; ++i)
     {
         if (0 != pthread_join(thread[i], NULL))
-            {
-                printf("ERROR in creating new thread!\n");
-            }
+        {
+            printf("ERROR in creating new thread!\n");
+        }
     }
+    /*i = 0;
+    while (i < NUM_THREADS)
+    {
+        new_thread_number = i + 1;
+        begin = end - 1;
+        end = ((total_size / NUM_THREADS) * new_thread_number) * 2;
+        middle = (SIZE / 2);
 
-    /* Merging the entire big_data array: */
-    #ifdef COUNTING_SORT
-    CountingSort(big_data, total_size);
-    #endif /* COUNTING_SORT */
-    
-    #ifdef BUBBLE_SORT
-    BubbleSort(big_data, total_size);
-    #endif /* BUBBLE_SORT */
+        if (end < total_size &&
+            end > (total_size / NUM_THREADS) * (NUM_THREADS - 1))
+        {
+            end = total_size;
+        }
 
-    #ifdef SELECTION_SORT
-    SelectionSort(big_data, total_size);
-    #endif /* SELECTION_SORT */
+                    printf("begin = %ld\n", begin);
+            printf("end = %ld\n", begin);
+        Merge(big_data, begin, end, middle);
 
-    #ifdef INSERTION_SORT
-    InsertionSort(big_data, total_size);
-    #endif /* INSERTION_SORT */
+        i += 2;
+    }*/
+/*
+    Merge(big_data, 0, (2 * (SIZE / NUM_THREADS)) - 1, (SIZE / 2) - 1); 
+    Merge(big_data, 2 * (SIZE / NUM_THREADS),  (3 * (SIZE / NUM_THREADS)) -1, SIZE - 1); 
+    Merge(big_data, 0, (2 * (SIZE / NUM_THREADS)) -1, SIZE - 1); */
+   /* 
+i = 0;
+    while (!is_sorted)
+    {
+        is_sorted = 1;
+        while (i < (NUM_THREADS - remainder))
+        {
+            new_thread_number = i + 1;
+            begin = end - 1;
+            end = ((total_size / NUM_THREADS) * new_thread_number) * 2;
 
-    #ifdef RADIX_SORT
-    RadixSort(big_data, total_size);
-    #endif /* RADIX_SORT */
+            if (end < total_size &&
+                end > (total_size / NUM_THREADS) * (NUM_THREADS - 1))
+            {
+                end = total_size;
+            }
 
-    #ifdef MERGE_SORT
-    MergeSort(big_data, total_size);
-    #endif /* MERGE_SORT */
+            printf("begin = %ld\n", begin);
+            printf("end = %ld\n", begin);
 
-    #ifdef Q_SORT
-    Qsort(big_data, total_size, total_size, QsortCompare, NULL);
-    #endif /* Q_SORT */
+
+
+            is_sorted = 0;
+        }
+    }*/
+
+
 
     /* Printing the sorted array */
     #ifdef DNDBUG
