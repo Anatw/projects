@@ -1,33 +1,32 @@
 # Makefile - Version 4
-NAME:=multy_threaded_counting_sort
-CC=gcc
-CFLAGS=-ansi -pedantic-errors -Wall -Wextra -g#gd#
-F_RELEASE:=-ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#
+NAME:=simple_string
+CC=g++
+CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
+F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#
 DEPS=#hash_table.h
-INC_DIR:=-I ../../include
-OBJ_LIB:=../../obj/
+INC_DIR:=#-I ../../include
+OBJ_LIB:=#../../obj/
 
-LIB :=sorts.o
-OBJ :=$(NAME).c #$(NAME)_test.c
+LIB := #doubly_linked_list.o
+OBJ :=$(NAME).cpp #$(NAME)_test.cpp
 
 # $@ -> the file name of the target of the rule
 # $< -> the first item in the Dependencies list
 # Compiles each of the object files as separate targets
 %.o: %.c $(DEPS)
-	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS) -lpthread -fopenmp -D _POSIX_C_SOURCE=199309
+	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS)  -lpthread -pthread -fopenmp
 
 # -o $@ -> Tells make to put the output in a file named after the target
 # $^ 	-> all of the file names in $(OBJ) separated by a space
 # -pthread added for the # -pthread added for the posix threads API.
 # -fopenmp added for pragme in openmp
-# -D _POSIX_C_SOURCE=199309 - is for the CLOCK_MONOTONIC.
 test: $(OBJ)
 	@echo "new session:\n\n\n\n\n\n\n\n\n\n\n\n"
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -D _POSIX_C_SOURCE=199309L -fopenmp
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp
 	./a.out
 
 testwithoutrun: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -D _POSIX_C_SOURCE=199309 -fopenmp
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp
 
 .PHONY: clean
 

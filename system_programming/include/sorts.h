@@ -65,7 +65,7 @@ void RadixSort(int array[], size_t array_length);
  * 			   and merging the entire array (n) => T(n)=2(T(n/2))+n => O(nlogn))
  */
 int MergeSort(int *arr_to_sort, size_t num_elements);
-
+int Merge(int *array, size_t base, size_t middle, size_t upper);
 
 /*
  * Algorithem devides the list to two based on a pivot point (last element).

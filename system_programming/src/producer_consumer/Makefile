@@ -1,5 +1,5 @@
 # Makefile - Version 4
-NAME:=new_producer#producer_consumer
+NAME:=producer_consumer#producer_consumer
 CC=gcc
 CFLAGS=-pedantic-errors -Wall -Wextra -g#gd#
 F_RELEASE:=-pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#

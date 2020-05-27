@@ -2,7 +2,7 @@
         One producer, Many consumers with Condition Variable
                           Written by Anat Wax
                             May 7th, 2020
-                          Reviewer: Amir Paz
+                          Reviewer:
 *******************************************************************************/
 
 #include <stdio.h> /* printf(), size_t */

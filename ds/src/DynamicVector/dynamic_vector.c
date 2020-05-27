@@ -15,7 +15,7 @@
 
 struct dynamic_vector
 {
-	void **array; 	  /* pointer to the beggining of the dynamic_array */
+	void **array; 	  /* pointer to the beginning of the dynamic_array */
 	size_t capacity;  /* current possible length				 	   */
 	size_t size;	  /* actual current dynamic_array length 		   */
 }; /* vector_t */
@@ -87,10 +87,10 @@ int VectorPushBack(vector_t *vector, void *value)
 	
 	if (vector->size == vector->capacity)
 	{
-		vector->capacity = VectorReserve(vector, (vector->capacity * TWO));
-		/*vector->capacity *= TWO; 
-		(vector->array) = (void *)realloc(vector->array,
-							vector->capacity * sizeof(size_t)); */
+		if (ERROR == VectorReserve(vector, (vector->capacity * TWO)))
+        {
+            return (ERROR);
+        }
 	}
 	
 	++(vector->size);
@@ -129,6 +129,7 @@ void *VectorGetElement(vector_t *vector, size_t index)
 	return (vector->array[index]);
 }
 
+/******************************************************************************/
 
 void VectorPopBack(vector_t *vector)
 {

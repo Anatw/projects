@@ -4,22 +4,13 @@ Comment and un-comment the defines unser "Exercise sections" to see each phase (
                            producer-consumer
                           Written by Anat Wax
                             May 5-6th, 2020
-                          Reviewer: Amir Paz
+                          Reviewer: 
 *******************************************************************************/
-    #include <stddef.h> /* offsetof(), size_t */
-    #include <stdlib.h> /* malloc(), free(), abs() */
-    #include <assert.h> /* assert() */
-    #include <time.h> /* time, size_t, srand() */
-    #include <unistd.h> /* ssize_t, sleep(), execvp(), fork() */
-    #include <stdio.h> /* printf(), size_t */
-    #include <string.h> /* size_t, atoi() */
-    #include <sys/types.h> /* pid_t */
-    #include <sys/wait.h> /* wait() */
-    #include <pthread.h> /* pthread_t, pthread_create() */
-    #include <semaphore.h> /* sem_init(), se,_destroy(), sem_wait(), sem_post(), sem_trywait(), sem_getvalue() */
-    #include <fcntl.h>           /* For O_* constants */
-    #include <stdatomic.h> /* atomic_int */
-
+#include <stdio.h> /* printf(), size_t */
+#include <pthread.h> /* pthread_t, pthread_create() */
+#include <semaphore.h> /* sem_init(), se,_destroy(), sem_wait(), sem_post(), sem_trywait(), sem_getvalue() */
+#include <fcntl.h>           /* For O_* constants */
+#include <stdatomic.h> /* atomic_int */
 
 #include "utility.h"
 
@@ -97,9 +88,10 @@ void *ProducerFunc(void *index)
 
 void *ConsumerFunc(void *unused)
 {
-  UNUSED(unused);
   int index = 0;
   size_t counter = 0;
+
+  UNUSED(unused);
 
   while (1)
   {
@@ -139,9 +131,10 @@ void *ProducerFunc(void *index)
 
 void *ConsumerFunc(void *unused)
 {
-  UNUSED(unused);
   int index = 0;
   size_t counter = 0;
+
+  UNUSED(unused);
   
   while (1)
   {
@@ -219,12 +212,11 @@ void *ProducerFunc(void *index)
   {
       if (READY == ready_for_producer)
       {
+        __sync_lock_release(&ready_for_consumer);
         for (*(int *)index = 0; *(int *)index < ARRAY_SIZE; ++*(int *)index)
         {
             array[*(int *)index] += 1;
         }
-
-        __sync_lock_release(&ready_for_consumer);
         __sync_lock_test_and_set(&ready_for_producer, DONE);
       }
   }
@@ -234,15 +226,16 @@ void *ProducerFunc(void *index)
 
 void *ConsumerFunc(void *unused)
 {
-  
   int index = 0;
   size_t counter = 0;
+
   UNUSED(unused);
 
   while (1)
   {
       if (READY == ready_for_consumer)
       {
+        __sync_lock_release(&ready_for_producer);
         counter = 0;
 
         for (index = 0; index < ARRAY_SIZE; ++index)
@@ -250,10 +243,9 @@ void *ConsumerFunc(void *unused)
             counter += array[index];
         }
 
-        printf("the sum of all the values inside the array id: %ld\n", counter);
-
-        __sync_lock_release(&ready_for_producer);
         __sync_lock_test_and_set(&ready_for_consumer, DONE);
+
+        printf("the sum of all the values inside the array id: %ld\n", counter);
       }
   }
 

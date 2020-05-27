@@ -2,7 +2,7 @@
 This program build a dynamic vector (dynamic array) in the capacity requested by
 the user (using realloc). The user can push or pop to the top of the array, set
 a specific index in the array, shrink the capacity of the array to a specific
-size, reserve a specific capacity and frees all malloc.
+size, reserve a specific capacity and free (destroy) all malloc.
 
 					  	 Written by Anat Wax
 						  February 27, 2020
