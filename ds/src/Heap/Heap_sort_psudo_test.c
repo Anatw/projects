@@ -1,6 +1,8 @@
 /*******************************************************************************
-Psaudo code for HeapSort function thath can handle increasing/decreasing order
+Psaudo code for HeapSort function that can handle increasing/decreasing order
 of tree.					  	 
+Yehuda remarks - add a recursive heapify after every Seap so the the tree is sorted all the way to the leafs.
+
                            Written by Anat Wax
 						  April 27th, 2020
 						Reviewer: Yehuda Levavi
@@ -12,7 +14,7 @@ typedef enum
     INCREASING =  1
 } order_t;
 
-
+/* I'm assuming the the heap has already been heapify. */
 void HeapSort(int *base, size_t nmemb, order_t order)
 {
    index = middle element of the heap (nmemb / 2).
@@ -64,7 +66,7 @@ void HeapSort(int *base, size_t nmemb, order_t order)
         }
         else
         {
-            breack;
+            break;
         }
    }
 }

@@ -6,4 +6,6 @@
 !*.h
 !*gitignore
 !*Makefile
+!*.cpp
+!*.hpp
 !**/
