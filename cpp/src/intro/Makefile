@@ -1,5 +1,5 @@
 # Makefile - Version 4
-NAME:=Q28
+NAME:=Q38
 CC=g++
 CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
 F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#

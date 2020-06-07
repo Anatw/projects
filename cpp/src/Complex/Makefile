@@ -1,5 +1,5 @@
 # Makefile - Version 4
-NAME:=simple_string#intro-Q26
+NAME:=complex
 CC=g++
 CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
 F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#
@@ -14,7 +14,7 @@ OBJ :=$(NAME).cpp $(NAME)_test.cpp
 # $< -> the first item in the Dependencies list
 # Compiles each of the object files as separate targets
 %.o: %.c $(DEPS)
-	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS)  -lpthread -pthread -fopenmp
+	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS)  -lpthread -pthread -fopenmp -O
 
 # -o $@ -> Tells make to put the output in a file named after the target
 # $^ 	-> all of the file names in $(OBJ) separated by a space
@@ -22,11 +22,11 @@ OBJ :=$(NAME).cpp $(NAME)_test.cpp
 # -fopenmp added for pragme in openmp
 test: $(OBJ)
 	@echo "new session:\n\n\n\n\n\n\n\n\n\n\n\n"
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp -O
 	./a.out
 
 testwithoutrun: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp -O
 
 .PHONY: clean
 

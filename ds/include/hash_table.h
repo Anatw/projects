@@ -18,7 +18,7 @@ typedef struct hash_table hash_t;
 * Receive: hash_func
 *               * Receive: data - data to hash.
 *               * Return: size_t with the index to insert into. the key should be given uniformly between 0 and the size of the table.
-*          cmp_func
+*          cmp_func - function to be used in need of comparison - such as in "find" function - to check wether the data in the table equal the desired data by the user.
 *               * Receive: data1, data2 - data to compare.
 *               * Return: 1 if data1 is bigger than data2.
 *                         0 if they equal.

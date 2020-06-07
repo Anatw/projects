@@ -1,14 +1,14 @@
 # Makefile - Version 4
-NAME:=simple_string#intro-Q26
-CC=g++
-CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
-F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#
+NAME:=DS3_Q4
+CC=gcc
+CFLAGS=-ansi -pedantic-errors -Wall -Wextra -g#gd#
+F_RELEASE:=-ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#
 DEPS=#hash_table.h
-INC_DIR:=#-I ../../include
+INC_DIR:=-I ../../include
 OBJ_LIB:=#../../obj/
 
 LIB := #doubly_linked_list.o
-OBJ :=$(NAME).cpp $(NAME)_test.cpp
+OBJ :=$(NAME).c #$(NAME)_test.c
 
 # $@ -> the file name of the target of the rule
 # $< -> the first item in the Dependencies list
@@ -22,8 +22,8 @@ OBJ :=$(NAME).cpp $(NAME)_test.cpp
 # -fopenmp added for pragme in openmp
 test: $(OBJ)
 	@echo "new session:\n\n\n\n\n\n\n\n\n\n\n\n"
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp
-	./a.out
+	@$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp
+	@./a.out
 
 testwithoutrun: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lpthread -pthread -fopenmp
