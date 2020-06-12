@@ -115,6 +115,7 @@ static void DrawFunction()
     water1.Draw();
 
     lily_pad.Draw();
+    end_pad.Draw();
 
     for (int i = 0; i < NUM_LOGS; ++i)
     {
