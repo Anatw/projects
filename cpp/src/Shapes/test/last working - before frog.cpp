@@ -27,7 +27,6 @@ Color white(50, 50, 50);
 Color green(40, 40, 40);
 Color yellow_fill(134283520, 1, 1);
 Color green_fill(134217984, 1, 1);
-Color magenta_fill(134283265, 1, 1);
 
 // Global flags:
 int stop_screen = 0;
@@ -37,14 +36,15 @@ int log1_change_dir = 250;
 int log6_change_dir = 400;
 int log6_flag = 0;
 
+// frog:
+int x_frog = 500;
+int y_frog = 930;
+
 int log_width = 50;
 int log_length = 180;
 
 int x_water1 = 500;
 int y_water1 = 500;
-
-int lily_width = 90;
-int lily_length = 370;
 
 Color fill_log(134283520, 1, 1); // YELLOW - FILL
 
@@ -65,32 +65,13 @@ enum direction
     RIGHT = 2
 };
 
-typedef struct Frog
-{
-    Point *initial_position;
-    Circle *frog;
-    int current_log;
-    int num_lives;
-} frog_t;
-
-frog_t frog;
-Rectangle lily_pad(Point(500, 930), -3, magenta_fill, lily_width, lily_length);
-
 #define NUM_LOGS (6)
-int distance = (frame_length - (100 * 2)) / NUM_LOGS;
 
 log_t logs[NUM_LOGS];
 
-static void InitializeFrog()
-{
-    frog.initial_position = new Point(500, 930);
-    frog.frog = new Circle(*frog.initial_position, 0.0, green_fill, 30);
-    frog.current_log = 0;
-    frog.num_lives = 3;
-}
-
 static void InitializeLogs()
 {
+    int distance = (frame_length - (100 * 2)) / NUM_LOGS;
     srand(time(NULL));
 
     for (int i = 0; i < NUM_LOGS; ++i)
@@ -113,14 +94,14 @@ static void DrawFunction()
     Rectangle water1(water1_pos, 0, turqois, 1000, 1000);
     water1.Draw();
 
-    lily_pad.Draw();
-
     for (int i = 0; i < NUM_LOGS; ++i)
     {
         logs[i].log->Draw();
     }
 
-    frog.frog->Draw();
+    Point frog_pos(x_frog, y_frog);
+    Circle frog(frog_pos, 0, green_fill, 30);
+    frog.Draw();
 }
 
 void MousFunc(Circle &circle)
@@ -155,41 +136,31 @@ static int KeyboardFunction(unsigned char key, int x, int y)
     std::cout << "Keyboard: "
               << "02x" << key << ", " << x << ", " << y
               << std::endl;
-
     if (key == 0x1b /* ESC */)
     {
         return -1;
     }
     else if (key == 'w')
     {
-        int new_y = frog.frog->GetPosition().GetY() - (distance + (distance * frog.current_log));
-        Point change_frog_y(frog.frog->GetPosition().GetX(), new_y);
-        frog.frog->SetPosition(change_frog_y);
+        y_frog -= 5;
     }
     else if (key == 'd')
     {
-        int new_x = frog.frog->GetPosition().GetX() + 5;
-        Point change_frog_x(new_x, frog.frog->GetPosition().GetY());
-        frog.frog->SetPosition(change_frog_x);
+        x_frog += 5;
     }
     else if (key == 's')
     {
-        int new_y = frog.frog->GetPosition().GetY() + (distance + (distance * frog.current_log));
-        Point change_frog_y(frog.frog->GetPosition().GetX(), new_y);
-        frog.frog->SetPosition(change_frog_y);
+        y_frog += 5;
     }
     else if (key == 'a')
     {
-        int new_x = frog.frog->GetPosition().GetX() - 5;
-        Point change_frog_x(new_x, frog.frog->GetPosition().GetY());
-        frog.frog->SetPosition(change_frog_x);
+        x_frog -= 5;
     }
 
-    if (frog.frog->GetPosition().GetY() <= won)
+    if (y_frog <= won)
     {
         std::cout << "Good job! You've won!!!" << std::endl;
         stop_screen = 1;
-        return -1;
     }
 
     return 0;
@@ -274,8 +245,6 @@ static int TimerFunction()
         }
     }
 
-    // Reset the log flag if the log has crossed the middle of the frame
-    //(meaning it had enough time in the game and can change direction):
     for (i = 0; i < NUM_LOGS; ++i)
     {
         // Check if log is crossing the middle of the frame (x axe)
@@ -286,53 +255,33 @@ static int TimerFunction()
         }
     }
 
-    int half_log_w = log_width / 2;
-    int half_log_l = log_length / 2;
-    int half_lily_l = lily_length / 2;
-    int half_lily_w = lily_width / 2;
+    // }
 
-    // If frog is jumping on a log - stick it to the log
-    for (i = 0; i < NUM_LOGS; ++i)
-    {
-        // Frog is insde the boundery of the lily_pad:
-        if (frog.frog->GetPosition().GetX() >= (lily_pad.GetPosition().GetX() - half_lily_l) &&
-            frog.frog->GetPosition().GetX() <= (lily_pad.GetPosition().GetX() + half_lily_l) &&
-            frog.frog->GetPosition().GetY() >= (lily_pad.GetPosition().GetY() - half_lily_w) &&
-            frog.frog->GetPosition().GetY() <= (lily_pad.GetPosition().GetY() + half_lily_w))
-        {
-            return 1;
-        }
-        // Frog is inside the boundery of a log:
-        else if (frog.frog->GetPosition().GetX() >= (logs[i].log->GetPosition().GetX() - half_log_l) &&
-                 frog.frog->GetPosition().GetX() <= (logs[i].log->GetPosition().GetX() + half_log_l) &&
-                 frog.frog->GetPosition().GetY() >= (logs[i].log->GetPosition().GetY() - half_log_w) &&
-                 frog.frog->GetPosition().GetY() <= (logs[i].log->GetPosition().GetY() + half_log_w))
-        {
-            Point frog_new_pos(logs[i].log->GetPosition().GetX(), logs[i].log->GetPosition().GetY());
-            frog.frog->SetPosition(frog_new_pos);
+    // int half_log_w = log_width / 2;
+    // int half_log_l = log_length / 2;
 
-            return 1;
-        }
-    }
-    for (i = 0; i < NUM_LOGS; ++i)
-    {
-        if (frog.frog->GetPosition().GetX() < (logs[i].log->GetPosition().GetX() - (half_log_l + 5)) ||
-            frog.frog->GetPosition().GetX() > (logs[i].log->GetPosition().GetX() + (half_log_l + 5)) ||
-            frog.frog->GetPosition().GetY() < (logs[i].log->GetPosition().GetY() - (half_log_w + 5)) ||
-            frog.frog->GetPosition().GetY() > (logs[i].log->GetPosition().GetY() + (half_log_w + 5)))
-        {
-            std::cout << "game is over" << std::endl;
-            return -1;
-        }
-    }
+    // if (x_frog >= (x_c_log5 - half_log_l) && x_frog <= (x_c_log5 + half_log_l) &&
+    //     y_frog >= (y_c_log5 - half_log_w) && y_frog <= (y_c_log5 + half_log_w))
+    // {
+    //     x_frog = x_c_log5;
+    //     y_frog = y_c_log5;
+    // }
 
-    return 1; /* draw */
+    // return 1; /* draw */
+
+    // for (int i = 0; i < 7; ++i)
+    // {
+    //     x_log1 -= 1;
+
+    //     //y_log1 += 1;
+
+    //     return 1; /* draw */
+    // }
 }
 
 void Log_slow(int argc, char *argv[])
 {
     InitializeLogs();
-    InitializeFrog();
 
     DrawInit(argc, argv, frame_length, frame_width, DrawFunction);
     DrawSetKeyboardFunc(KeyboardFunction);
