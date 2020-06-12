@@ -1,8 +1,10 @@
+/*
+g++ demo.c ../lib/libpoint.a ../lib/libglut_utils.so -I ../include
+*/
 #include <stdio.h>
 #include <mcheck.h>
 
 #include "glut_utils.h"
-
 
 int drawCircle = 1;
 int xCircle = 250;
@@ -15,8 +17,7 @@ static int MouseFunction(int button, int state, int x, int y);
 static int MotionFunction(int x, int y);
 static int TimerFunction();
 
-
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     /*--------------------------- mtrace(); */
 
@@ -35,18 +36,16 @@ int main(int argc, char** argv)
     return 0;
 }
 
-
 static void DrawFunction()
 {
     /* printf("Drawing\n"); */
 
     /* draw rectangle */
-    DrawPolygon(COLOR_MAGENTA, 4, (int)150, (int)400, (int)150, (int)650, (int)300, (int)650, (int)300, (int)400);
+    DrawPolygon(COLOR_FILL, 4, (int)150, (int)400, (int)150, (int)650, (int)300, (int)650, (int)300, (int)400);
 
     if (drawCircle)
         DrawCircle(COLOR_GREEN, xCircle, yCircle, rCircle);
 }
-
 
 static int KeyboardFunction(unsigned char key, int x, int y)
 {
@@ -57,7 +56,6 @@ static int KeyboardFunction(unsigned char key, int x, int y)
 
     return 0;
 }
-
 
 static int MouseFunction(int button, int state, int x, int y)
 {
@@ -83,7 +81,6 @@ static int MouseFunction(int button, int state, int x, int y)
     return 0;
 }
 
-
 static int MotionFunction(int x, int y)
 {
     printf("Mouse: %d,%d\n", x, y);
@@ -91,11 +88,10 @@ static int MotionFunction(int x, int y)
     return 0;
 }
 
-
 static int TimerFunction()
 {
     xCircle += 1;
     yCircle += 1;
 
-    return 1;  /* draw */
+    return 1; /* draw */
 }
