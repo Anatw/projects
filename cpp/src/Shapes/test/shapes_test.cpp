@@ -75,6 +75,7 @@ typedef struct Frog
 
 frog_t frog;
 Rectangle lily_pad(Point(500, 930), -3, magenta_fill, lily_width, lily_length);
+recatngle end_pad(Point(500, 70), 2, magenta_fill, lily_width, (lily_length * 2));
 
 #define NUM_LOGS (6)
 int distance = (frame_length - (100 * 2)) / NUM_LOGS;
