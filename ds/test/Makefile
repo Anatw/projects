@@ -1,13 +1,13 @@
 # Makefile - Version 4
-NAME:=final_ds_April
+NAME:=DS3_q7
 CC=gcc
 CFLAGS=-pedantic-errors -Wall -Wextra -g#gd#
 F_RELEASE:=-pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#
 DEPS=#hash_table.h
 INC_DIR:=-I ../include
-OBJ_LIB:=../obj/
+OBJ_LIB:=#../obj/
 
-LIB := singly_linked_list.o
+LIB := -lds#singly_linked_list.o
 OBJ :=$(NAME).c #$(NAME)_test.c
 
 # $@ -> the file name of the target of the rule
