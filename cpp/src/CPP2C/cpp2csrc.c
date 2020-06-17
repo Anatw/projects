@@ -16,7 +16,6 @@ Created on: June 10th, 2020
 Reviewer: Lior Cohen
 *******************************************************************************/
 #include <stdio.h>  /* printf(), size_t */
-#include <string.h> /* size_t, atoi(), memset() */
 #include <stdlib.h> /* malloc(), free(), abs(), size_t */
 
 #include "cpp2csrc.h"
