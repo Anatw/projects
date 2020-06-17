@@ -7,7 +7,7 @@ DEPS=#hash_table.h
 INC_DIR:=-I ../include
 OBJ_LIB:=#../obj/
 
-LIB := -lds#singly_linked_list.o
+LIB := -lsingly_linked_list.o
 OBJ :=$(NAME).c #$(NAME)_test.c
 
 # $@ -> the file name of the target of the rule

@@ -71,9 +71,7 @@ public:
 
     virtual void wash(int minutes)
     {
-        Publi
-                cout
-            << "Minibus::wash(" << minutes << ") ID:" << get_ID() << "\n";
+        cout << "Minibus::wash(" << minutes << ") ID:" << get_ID() << "\n";
     }
 
 private:
@@ -222,8 +220,8 @@ int main(int argc, char **argv, char **envp)
     Minibus m2;
     m2.print_count();
 
-    Minibus arr3[4];          // on the stack
-    Taxi *arr4 = new Taxi[4]; //on the heap
+    Minibus arr3[4];
+    Taxi *arr4 = new Taxi[4];
     delete[] arr4;
 
     std::cout << max_func(1, 2) << "\n";

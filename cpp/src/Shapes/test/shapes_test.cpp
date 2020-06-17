@@ -1,7 +1,7 @@
 /*******************************************************************************
                                 Shapes
                           Written by Anat Wax
-						     June 7th-, 2020
+						     June 7th-13, 2020
 						Reviewer: Laura Bedah
 *******************************************************************************/
 #include <iostream> /* cout, cin, cerr */
@@ -24,7 +24,6 @@ int frame_length = 1000;
 int frame_width = 1000;
 
 Color turqois(134217985, 1, 1);
-Color white(50, 50, 50);
 Color red(65536, 1, 1);
 Color yellow_fill(134283520, 1, 1);
 Color green_fill(134217984, 1, 1);
@@ -142,7 +141,11 @@ static void DrawFunction()
     if (entring_screen)
     {
         SimpleDrawText sdt;
-        sdt.drawText("Click 'S' to start", 350, 400, 0, 1, 0);
+        sdt.drawText("The frog and the log", 310, 440, 0, 1, 0);
+        sdt.drawText("Help the frog cross the river ", 280, 380, 0, 0, 1);
+        sdt.drawText("without falling into the water", 275, 360, 0, 0, 1);
+        sdt.drawText("Click 'S' to start", 330, 290, 1, 0, 0);
+        sdt.drawText("Created by Anat Wax   (c).2020", 270, 180, 41, 40, 40);
     }
 
     if (winning_screen)
@@ -150,8 +153,8 @@ static void DrawFunction()
         SimpleDrawText sdt;
         sdt.drawText("Well played!! Your frog has made it through the river",
                      200, 420, 41, 40, 40);
-        sdt.drawText("If you wish to try again, press 'S'", 280, 360, 500, 400, 400);
-        sdt.drawText("To exit game press 'ESC'", 310, 300, 1, 12, 0);
+        sdt.drawText("If you wish to play again, press 'S'", 280, 360, 0, 1, 0);
+        sdt.drawText("To exit game press 'ESC'", 310, 300, 0, 1, 0);
     }
 
     if (game_over_screen)
@@ -193,40 +196,12 @@ static void DrawFunction()
     }
 }
 
-void MousFunc(Circle &circle)
-{
-}
-static int MouseFunction(int button, int state, int x, int y)
-{
-    /* printf("Mouse: %d,%d,%d,%d\n", button, state, x, y); */
-
-    if (state == 1 && button == 'MOUSE_WHEEL_UP')
-    {
-        rCircle *= 1.1;
-        return 1;
-    }
-    if (state == 1 && button == MOUSE_WHEEL_DOWN)
-    {
-        rCircle *= 0.9;
-        return 1;
-    }
-
-    if (button == MOUSE_LEFT)
-    {
-        //drawCircle = state;
-
-        return 1;
-    }
-
-    return 0;
-}
 static int KeyboardFunction(unsigned char key, int x, int y)
 {
-    std::cout << "Keyboard: "
-              << "02x" << key << ", " << x << ", " << y
-              << std::endl;
+    (void)x;
+    (void)y;
 
-    if (key == 'S' || key == 's') // Press 'S' to start playing
+    if (key == 'S') // Press 'S' to start playing
     {
         InitializeLogs();
         InitializeBubbles();
@@ -252,10 +227,8 @@ static int KeyboardFunction(unsigned char key, int x, int y)
 
         if (key == 'w')
         {
-            // int new_y = frog.frog->GetPosition().GetY() -
-            // (distance + (distance * frog.current_log));
             int new_y = frog.frog->GetPosition().GetY() -
-                        (910);
+                        (distance + (distance * frog.current_log));
             Point change_frog_y(frog.frog->GetPosition().GetX(), new_y);
             frog.frog->SetPosition(change_frog_y);
         }
@@ -285,9 +258,9 @@ static int KeyboardFunction(unsigned char key, int x, int y)
 
             //return -1;
         }
-
-        return 0;
     }
+
+    return 0;
 }
 
 static int MotionFunction(int x, int y)
@@ -315,12 +288,12 @@ static int TimerFunction()
         {
             if (LEFT == logs[i].direction)
             {
-                Point log_point((-1 * logs[i].speed), 0);
+                Point log_point((-2 * logs[i].speed), 0);
                 logs[i].log->Move_m(log_point);
             }
             else // (RIGHT == logs[i].direction)
             {
-                Point log_point((1 * logs[i].speed), 0);
+                Point log_point((2 * logs[i].speed), 0);
                 logs[i].log->Move_m(log_point);
             }
         }
@@ -328,7 +301,6 @@ static int TimerFunction()
         // Randomly decide if a log should change direction:
         for (i = 0; i < NUM_LOGS; ++i)
         {
-            //std::cout << logs[i].checked << " I: " << i << std::endl;
             // Enter this part only if you haven't been checked lately(1) or
             //moved past the frame lately(2):
             if (0 == logs[i].checked)
@@ -414,15 +386,19 @@ static int TimerFunction()
             {
                 return 1;
             }
+        }
+
+        for (i = 0; i < NUM_LOGS; ++i)
+        {
             // Frog is inside the boundery of a log:
-            else if (frog.frog->GetPosition().GetX() >=
-                         (logs[i].log->GetPosition().GetX() - half_log_l) &&
-                     frog.frog->GetPosition().GetX() <=
-                         (logs[i].log->GetPosition().GetX() + half_log_l) &&
-                     frog.frog->GetPosition().GetY() >=
-                         (logs[i].log->GetPosition().GetY() - half_log_w) &&
-                     frog.frog->GetPosition().GetY() <=
-                         (logs[i].log->GetPosition().GetY() + half_log_w))
+            if (frog.frog->GetPosition().GetX() >=
+                    (logs[i].log->GetPosition().GetX() - half_log_l) &&
+                frog.frog->GetPosition().GetX() <=
+                    (logs[i].log->GetPosition().GetX() + half_log_l) &&
+                frog.frog->GetPosition().GetY() >=
+                    (logs[i].log->GetPosition().GetY() - half_log_w) &&
+                frog.frog->GetPosition().GetY() <=
+                    (logs[i].log->GetPosition().GetY() + half_log_w))
             {
                 Point frog_new_pos(logs[i].log->GetPosition().GetX(),
                                    logs[i].log->GetPosition().GetY());
@@ -431,7 +407,7 @@ static int TimerFunction()
                 return 1;
             }
         }
-        // If frog fell into the water
+        // If frog is not on a log
         for (i = 0; i < NUM_LOGS; ++i)
         {
             if (frog.frog->GetPosition().GetX() <
@@ -447,16 +423,16 @@ static int TimerFunction()
                 {
                     winning_screen = 1;
                 }
-                else
+                else // Frog fell into the water
                 {
                     game_over_screen = 1;
                     //return -1;
                 }
             }
         }
-
-        return 1; /* draw */
     }
+
+    return 1; /* draw */
 }
 
 int main(int argc, char *argv[])
@@ -468,9 +444,8 @@ int main(int argc, char *argv[])
     //DrawCreateMenu();
     DrawInit(argc, argv, frame_length, frame_width, DrawFunction);
     DrawSetKeyboardFunc(KeyboardFunction);
-    DrawSetMouseFunc(MouseFunction);
     DrawSetMotionFunc(MotionFunction);
-    DrawSetTimerFunc(TimerFunction, 20);
+    DrawSetTimerFunc(TimerFunction, 15);
 
     DrawMainLoop();
 
