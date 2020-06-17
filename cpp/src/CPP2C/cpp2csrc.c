@@ -19,6 +19,8 @@ Reviewer: Lior Cohen
 #include <string.h> /* size_t, atoi(), memset() */
 #include <stdlib.h> /* malloc(), free(), abs(), size_t */
 
+#include "cpp2csrc.h"
+
 static int s_count = 0;
 
 /*                            PublicTransport:                                */

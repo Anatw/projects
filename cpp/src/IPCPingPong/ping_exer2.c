@@ -5,12 +5,10 @@ Created on: 16.6.20
 Reviewer: Shmuel Pablo Sinder
 *******************************************************************************/
 #include <stdio.h>     /* printf(), size_t */
-#include <stdlib.h>    /* malloc(), free(), abs(), size_t */
 #include <unistd.h>    /* pipe(), write(), read(), close() */
 #include <string.h>    /* strlen() */
 #include <sys/stat.h>  /* mkfifo()*/
 #include <sys/types.h> /* pid_t,  mkfifo() */
-#include <sys/wait.h>  /* wait() */
 #include <fcntl.h>     /* For O_* constants */
 
 #define MASSAGE_SIZE (80)

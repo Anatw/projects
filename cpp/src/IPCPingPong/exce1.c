@@ -1,25 +1,15 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
-
-                            Simple Watchdog
-                          Written by Anat Wax
-                            May th, 2020
-                          Reviewer: 
+IPC - exercise1
+Written by Anat Wax, anatwax@gmail.com
+Created on: 16.6.20
+Reviewer: Shmuel Pablo Sinder
 *******************************************************************************/
 #include <stdio.h>     /* printf(), size_t */
-#include <stdlib.h>    /* malloc(), free(), abs(), size_t */
 #include <unistd.h>    /* pipe(), write(), read(), close() */
 #include <string.h>    /* strlen() */
 #include <sys/types.h> /* pid_t */
-#include <sys/wait.h>  /* wait() */
-#include <signal.h>    /* sig_atomic_t, kill() */
-#include <semaphore.h> /* sem_init(), sem_destroy(), sem_wait(), sem_post(), sem_trywait(), sem_getvalue() */
-#include <fcntl.h>     /* For O_* constants */
-#include <stdatomic.h> /* atomic_int */
 
-/*#include "utility.h"*/
-
-#define MESSAGE_SIZE (10) /* 4 chars + '/0' */
+#define MESSAGE_SIZE (10)
 #define TRUE (1)
 
 int is_ping = 1;

@@ -4,22 +4,12 @@ Written by Anat Wax, anatwax@gmail.com
 Created on: 16.6.20
 Reviewer: Shmuel Pablo Sinder
 *******************************************************************************/
-#include <stdio.h>  /* printf(), size_t */
-#include <stdlib.h> /* malloc(), free(), abs(), size_t */
-#include <unistd.h> /* pipe(), write(), read(), close() */
-#include <string.h> /* strlen() */
-
-#include <sys/stat.h> /* mkfifo()*/
-
-#include <unistd.h>
+#include <stdio.h>     /* printf(), size_t */
+#include <unistd.h>    /* pipe(), write(), read(), close() */
+#include <string.h>    /* strlen() */
+#include <sys/stat.h>  /* mkfifo()*/
 #include <sys/types.h> /* pid_t,  mkfifo() */
-#include <sys/wait.h>  /* wait() */
-#include <signal.h>    /* sig_atomic_t, kill() */
-#include <semaphore.h> /* sem_init(), sem_destroy(), sem_wait(), sem_post(), sem_trywait(), sem_getvalue() */
 #include <fcntl.h>     /* For O_* constants */
-#include <stdatomic.h> /* atomic_int */
-
-/*#include "utility.h"*/
 
 #define MASSAGE_SIZE (80) /* 4 chars + '/0' */
 #define TRUE (1)

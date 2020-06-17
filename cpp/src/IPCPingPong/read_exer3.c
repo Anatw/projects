@@ -1,57 +1,53 @@
 /*******************************************************************************
-IPC - exercise2
+Use 'ipcrm -a' to clean memory when done.
+
+IPC - exercise3
 Written by Anat Wax, anatwax@gmail.com
 Created on: 16.6.20
 Reviewer: Shmuel Pablo Sinder
 *******************************************************************************/
-#include <stdio.h>  /* printf(), size_t */
-#include <stdlib.h> /* malloc(), free(), abs(), size_t */
-#include <unistd.h> /* pipe(), write(), read(), close() */
-#include <string.h> /* strlen() */
-
-#include <sys/stat.h> /* mkfifo()*/
-
-#include <unistd.h>
-#include <sys/types.h> /* pid_t,  mkfifo() */
-#include <sys/wait.h>  /* wait() */
-#include <signal.h>    /* sig_atomic_t, kill() */
-#include <semaphore.h> /* sem_init(), sem_destroy(), sem_wait(), sem_post(), sem_trywait(), sem_getvalue() */
+#include <stdio.h>     /* printf(), size_t */
+#include <sys/stat.h>  /* mkfifo()*/
+#include <sys/types.h> /* pid_t,  mkfifo(), ftok()*/
+#include <string.h>    /* memcpy() */
+#include <sys/ipc.h>   /* key_t */
+#include <sys/msg.h>   /* msgget()*/
 #include <fcntl.h>     /* For O_* constants */
-#include <stdatomic.h> /* atomic_int */
 
-/*#include "utility.h"*/
+#define MESSAGE_SIZE (80)
 
-#define MASSAGE_SIZE (80)
-#define TRUE (1)
+typedef struct Message
+{
+    long message_type;
+    char message_receive[MESSAGE_SIZE];
+} message_t;
 
 int main()
 {
-    int fd = 0;
+    message_t message;
+    int message_id = 0;
     char *current_fifo = "/tmp/myfifo";
-    /* Creating the FIFO if it doesn't exist: */
-    mkfifo(current_fifo, 0666);
-    char array1[MASSAGE_SIZE];
-    char array2[MASSAGE_SIZE];
-
-    while (TRUE)
+    /* ftok convert a pathname and a project identifier to a key: */
+    key_t key = ftok(current_fifo, 'a');
+    if ((-1) == key)
     {
-        // Open current_fifo with writing permissions only: */
-        fd = open(current_fifo, O_WRONLY);
-        // Receieve input from the user */
-        fgets(array2, MASSAGE_SIZE, stdin);
-        /* write the input into array 2: */
-        write(fd, array2, (strlen(array2) + 1));
-        close(fd);
-
-        /* Open current_fifo with read only permissions: */
-        fd = open(current_fifo, O_RDONLY);
-
-        /* Read from current_info (using fd) into array1: */
-        read(fd, array1, sizeof(array1));
-
-        printf("ping: %s\n", array1);
-        close(fd);
+        return (1);
     }
+    printf("Checking messages...\n");
+
+    /* msgget Creates a new message queue: */
+    if ((-1) == (message_id = msgget(key, 0666 | IPC_CREAT)))
+    {
+        return (1);
+    }
+
+    /* Receieve the message: */
+    msgrcv(message_id, &message, MESSAGE_SIZE, 1, 0);
+    printf("Message received: %s\n", message.message_receive);
+
+    /* Send the message: 
+    msgsnd(message_id, &message, sizeof(message), 0);*/
+    msgctl(message_id, IPC_RMID, NULL);
 
     return (0);
 }
