@@ -130,7 +130,7 @@ void MinibusConstructor(Minibus *p_this)
 void MinibusCCtor(Minibus *p_this, Minibus *copy)
 {
     PTCCtor(&(p_this->p_public_transport), &(copy->p_public_transport));
-    copy->p_public_transport = p_this->p_public_transport;
+    copy->p_public_transport.v_ptr = p_this->p_public_transport.v_ptr;
     copy->m_numSeates = p_this->m_numSeates;
 
     printf("Minibus::CCtor()\n");
@@ -181,7 +181,7 @@ void TaxiConstructor(Taxi *p_this)
 void TaxiCCtor(Taxi *p_this, Taxi *copy)
 {
     PTCCtor(&(p_this->p_public_transport), &(copy->p_public_transport));
-    copy->p_public_transport = p_this->p_public_transport;
+    copy->p_public_transport.v_ptr = p_this->p_public_transport.v_ptr;
 
     printf("Taxi::CCtor()\n");
 }
@@ -226,6 +226,11 @@ void SpecialTConstructor(SpecialTaxi *p_this)
 
 void SpecialTCCtor(SpecialTaxi *p_this, SpecialTaxi *copy)
 {
+    PTCCtor(&(p_this->p_taxi.p_public_transport),
+            &(copy->p_taxi.p_public_transport));
+    copy->p_taxi.p_public_transport.v_ptr =
+        p_this->p_taxi.p_public_transport.v_ptr;
+
     copy->p_taxi = p_this->p_taxi;
 
     printf("SpecialTaxi::CCtor()\n");
@@ -235,7 +240,7 @@ void SpecialTCCtor(SpecialTaxi *p_this, SpecialTaxi *copy)
 
 void PTPrintInfo(PublicTransport *p_this)
 {
-    V_PTDisplay(p_this);
+    p_this->v_ptr->V_Display(p_this);
 }
 
 void PrintInfo(PublicTransport *p_this)
@@ -245,7 +250,7 @@ void PrintInfo(PublicTransport *p_this)
 
 void MinibusPrintInfo(Minibus *p_this)
 {
-    V_MinibusWash(p_this, 3);
+    ((struct Minibus_VTable *)p_this->p_public_transport.v_ptr)->Wash(p_this, 3);
 }
 
 PublicTransport *Print_Info(Minibus *p_this, int i)

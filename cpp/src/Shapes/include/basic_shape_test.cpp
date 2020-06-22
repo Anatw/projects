@@ -1,3 +1,22 @@
+/*******************************************************************************
+Basic shapes
+Written by Anat Wax
+June 7th-13,2020
+Reviewer : Laura Bedah
+*******************************************************************************/
+#include <iostream> /* cout, cin, cerr */
+#include <time.h>   // srand(), rand()
+
+#include "glut_utils.h"
+#include "shape.hpp"
+#include "point.hpp"
+#include "color.hpp"
+#include "circle.hpp"
+#include "line.hpp"
+#include "square.hpp"
+#include "rectangle.hpp"
+#include "simpledrawtext.hpp"
+
 static void DrawFunction()
 {
     Point b_pos(500, 500);
@@ -43,16 +62,21 @@ static void DrawFunction()
     Point rev_point = rec.GetPosition();
     Point move_rec(0, 0);
     rev_point += move_rec;
+}
 
-    // int i = 0;
-    // while ((i) < 50)
-    // {
-    //     double angle = 1;
-    //     std::cout << rec.GetPosition() << std::endl;
-    //     rec.Revolve_m(move_rec, angle);
-    //     std::cout << rec.GetPosition() << std::endl;
-    //     rec.Draw();
-    //     ++i;
-    //     ++angle;
-    // }
+int main(int argc, char *argv[])
+{
+    InitializeLogs();
+    InitializeBubbles();
+    InitializeFrog();
+
+    //DrawCreateMenu();
+    DrawInit(argc, argv, frame_length, frame_width, DrawFunction);
+    DrawSetKeyboardFunc(KeyboardFunction);
+    DrawSetMotionFunc(MotionFunction);
+    DrawSetTimerFunc(TimerFunction, 15);
+
+    DrawMainLoop();
+
+    return (0);
 }

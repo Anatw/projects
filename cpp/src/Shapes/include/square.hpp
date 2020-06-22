@@ -16,21 +16,25 @@ namespace ilrd
 
         Square(Point position_, double angle_, Color color_, int edge_);
 
-        inline void SetLength(int edge_)
-        {
-            this->m_edge = edge_;
-        }
-
-        inline int GetLength() const
-        {
-            return this->m_edge;
-        }
+        void SetLength(int edge_);
+        int GetLength() const;
 
     private:
         void DrawInternal() const;
 
         int m_edge;
     };
+
+    // Inline functions:
+    inline void Square::SetLength(int edge_)
+    {
+        this->m_edge = edge_;
+    }
+
+    inline int Square::GetLength() const
+    {
+        return this->m_edge;
+    }
 } // namespace ilrd
 
 #endif //ILRD_RD8586_SQUARE_HPP

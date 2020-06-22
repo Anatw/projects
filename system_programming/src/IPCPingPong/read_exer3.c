@@ -42,12 +42,19 @@ int main()
     }
 
     /* Receieve the message: */
-    msgrcv(message_id, &message, MESSAGE_SIZE, 1, 0);
+    if ((-1) == (msgrcv(message_id, &message, MESSAGE_SIZE, 1, 0)))
+    {
+        return 1;
+    }
+
     printf("Message received: %s\n", message.message_receive);
 
     /* Send the message: 
     msgsnd(message_id, &message, sizeof(message), 0);*/
-    msgctl(message_id, IPC_RMID, NULL);
+    if ((-1) == (msgctl(message_id, IPC_RMID, NULL)))
+    {
+        return 1;
+    }
 
     return (0);
 }

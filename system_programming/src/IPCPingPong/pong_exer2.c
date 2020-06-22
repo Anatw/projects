@@ -31,17 +31,33 @@ int main()
     {
         /* Open current_fifo with read only permissions: */
         fd1 = open(current_fifo, O_RDONLY);
+        if (0 > fd1)
+        {
+            return (1);
+        }
+
         /* Read into string 1 the input from user sent into current_buffer: */
         read_bytes = read(fd1, string1, MASSAGE_SIZE);
         string1[read_bytes] = '\0';
         printf("pong: %s\n", string1);
-        close(fd1);
+        if (-1 == (close(fd1)))
+        {
+            return 1;
+        }
 
         /* Open current_fifo in write only mode: */
         fd1 = open(current_fifo, O_WRONLY);
+        if (0 > fd1)
+        {
+            return (1);
+        }
+
         fgets(string2, MASSAGE_SIZE, stdin);
         write(fd1, string2, (strlen(string2) + 1));
-        close(fd1);
+        if (-1 == (close(fd1)))
+        {
+            return 1;
+        }
     }
 
     return (0);

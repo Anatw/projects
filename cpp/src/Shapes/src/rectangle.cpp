@@ -6,8 +6,6 @@
 *******************************************************************************/
 #include "rectangle.hpp"
 #include "glut_utils.h"
-#include "shape.hpp"
-#include "color.hpp"
 
 using namespace ilrd;
 

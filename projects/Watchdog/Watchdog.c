@@ -1,10 +1,15 @@
 /*******************************************************************************
-                          Watchdog - test file
-                          Written by Anat Wax
-                       May 10th - May 16th, 2020
-                         Reviewer: Haim Sa'adia
+From othis file the library was created - all the WD functions and USER API
+functions are coded in this file.
+
+Watchdog - functions + API
+Written by Anat Wax, anatwax@gmail.com
+May 10th - May 16th, 2020
+Reviewer: Haim Sa'adia
 *******************************************************************************/
-#define _XOPEN_SOURCE 700 /* this addes posix to the library - X/Open 7, incorporating POSIX 2008 - to use with the "struct sigaction action;" */
+/* this addes posix to the library - X/Open 7, incorporating POSIX 2008 -
+to use with the "struct sigaction action;": */
+#define _XOPEN_SOURCE 700
 #include <unistd.h>    /* ssize_t, sleep(), execvp(), fork() */
 #include <string.h>    /* memset() */
 #include <stdio.h>     /* printf(), size_t */
@@ -33,7 +38,6 @@ int GeneralCheckPulse(void *args);
 void *InitiateScheduler(char **args, pid_t *pid);
 void FreeMemory();
 
-
 /*#define DNDBUG*/
 
 #define SEND_PULSE (1)
@@ -50,15 +54,17 @@ scheduler_t *scheduler = NULL;
 char *user_program_name;
 extern char *__progname;
 char *args[3] = {0};
-/* this must be glocal so that the sigaction will be available for all processes: */
+/* this must be local so that the sigaction will be
+available for all processes: */
 struct sigaction action;
 atomic_int is_watchdog = 0;
 
-
 /******************************************************************************/
-                          /* Functions definition: */
+/* Functions definition: */
 /******************************************************************************/
 
+/* constructor function is running first -
+   creating a thread in the user proccess: */
 void ThreadCreate(int argc, char *argv[])
 {
     char user_program_name[64] = {0};
@@ -68,25 +74,31 @@ void ThreadCreate(int argc, char *argv[])
     args[2] = NULL;
 
     UNUSED(argc);
-    
+
     /*user_program_name = program_name;*/
     strcpy(user_program_name, argv[0]); /* initializing user's program name */
     strcat(user_program_name, " &");
     args[1] = user_program_name;
 
+#ifndef DNDBUG
     printf("args0: %s\n", args[0]);
     printf("args1: %s\n\n", args[1]);
+#endif
 
-    memset(&action, 0, sizeof(action));
+    /* Setting a signal hangler for SIGUSR1: */
+    memset(&action, 0, sizeof(action)); /* Initialize 'action' to 0 */
     action.sa_handler = &SignalHandlers;
     sigaction(SIGUSR1, &action, NULL);
 
-    /* launching the thread that will initiate the process scheduler (to watch the watchdog) */
+    /* launching the thread that will initiate the process
+       scheduler (to watch the watchdog) */
     if (pthread_create(&thread, NULL, &WatchdogSchedulerCreate, NULL))
     {
+#ifndef DNDBUG
         printf("ERROR in pthread_create (producer)\n");
+#endif
 
-        exit (1);
+        exit(1);
     }
 }
 
@@ -95,8 +107,9 @@ void ThreadCreate(int argc, char *argv[])
 int WatchdogStart(char *program_name)
 {
     char user_program_name[64] = {0};
-    /* initializing user's program name - './a.out' ==> './a.out &': */
-    strcpy(user_program_name, program_name); 
+    /* initializing user's program name, adding '&' do that it will run in 
+    the background - './a.out' ==> './a.out &': */
+    strcpy(user_program_name, program_name);
     strcat(user_program_name, " &");
     args[1] = user_program_name;
 
@@ -105,21 +118,27 @@ int WatchdogStart(char *program_name)
     {
         if (execv("./bin/Watchdog_prog", args) < 0)
         {
+#ifndef DNDBUG
             printf("Error in execvp\n");
+#endif
+
+            return (1);
         }
     }
     else if (0 > watchdog_pid)
     {
+#ifndef DNDBUG
         printf("ERROR in fork\n");
+#endif
 
         return (1);
     }
-    /* else - this is the user process - do nothing... */
+    /* else - this is the user process - insert pid into a global variable: */
     else
     {
         user_pid = getpid();
     }
-    
+
     return (0);
 }
 
@@ -137,27 +156,28 @@ void WatchdogStop()
 
 void *WatchdogSchedulerCreate(void *program_name)
 {
-    pid_t *init_process_pid = ((getpid() == user_pid) ?
-                                &watchdog_pid : &user_pid);
+    pid_t *init_process_pid = ((getpid() == user_pid) ? &watchdog_pid : &user_pid);
     UNUSED(program_name);
 
-    #ifndef DNDBUG
+#ifndef DNDBUG
     printf("I'm in WatchdogSchedulerCreate, PID = %d\n\n", getpid());
-    #endif
+#endif
 
-    /* Creating a semaphore to act as a flag and wait for the watchdog to signal that it is set and ready. When it is ready the thread watch_watch_dig will start signaling it the "alive" signals: */
+    /* Creating a semaphore to act as a flag and wait for the watchdog to
+    signal that it is set and ready. When it is ready the thread
+    watch_watch_dog will start signaling it the "alive" signals: */
     is_dog_ready = sem_open("dog_sem", O_CREAT, 0666, 0);
-    
+
     InitiateScheduler(args, init_process_pid);
 
-    /* Id I'm in watchdog_process: */
-    if ((strcmp(__progname, "Watchdog_prog")) == 0) 
+    /* If I'm in watchdog_process: */
+    if ((strcmp(__progname, "Watchdog_prog")) == 0)
     {
-        SchedulerRun(scheduler);
+        RunSched(scheduler);
     }
-    else
+    else /* I'm in user thread */
     {
-        while(1)
+        while (1)
         {
             sem_wait(is_dog_ready);
             RunSched(scheduler);
@@ -175,10 +195,13 @@ void RunSched(scheduler_t *scheduler)
 
     if (2 == status)
     {
+#ifndef DNDBUG
         printf("ERROR - SchedulerRun - problem in allocation\n");
-    } 
-}
+#endif
 
+        return (1);
+    }
+}
 
 /******************************************************************************/
 
@@ -188,15 +211,19 @@ void PostToSem(char *user_prog_name)
     args[1] = user_prog_name;
 
     is_dog_ready = sem_open("dog_sem", O_CREAT, 0666, 0);
-    
+
     if (-1 == sem_post(is_dog_ready))
     {
+#ifndef DNDBUG
         printf("ERROR in sem_post\n");
+#endif
+
+        return (1);
     }
 
     pthread_join(thread, NULL);
 }
-  
+
 /******************************************************************************/
 
 void SignalHandlers(int signal)
@@ -213,9 +240,9 @@ int GeneralCheckPulse(void *args)
     if (1 == global_flag) /* I received an "alive" signal */
     {
         global_flag = 0;
-        #ifndef DNDBUG
+#ifndef DNDBUG
         printf("I am pid %d and... I GOT A SIGNAL! WOOHOO\n\n", getpid());
-        #endif
+#endif
     }
     else
     {
@@ -233,21 +260,22 @@ void RestartProcesses(char **args)
 {
     if (0 == watchdog_pid) /* I am in watchdog_prog */
     {
-        /* Killing the users process in case it is just stock and not dead: */
+        /* Killing the users process in case it is just stuck and not dead: */
         kill(getppid(), SIGSTOP);
-        
-        #ifndef DNDBUG
+
+#ifndef DNDBUG
         printf("Restarting %s\n\n", args[1]);
-        #endif
+#endif
 
         system("./a.out"); /* reloading user process */
-        /* Finish the task you are currently running, destroy scheduler, kill yourself - watchdog process: */
+        /* Finish the task you are currently running, destroy scheduler,
+        kill yourself - watchdog process: */
         sleep(5);
         FreeMemory();
         abort(); /* Kill ingcurrent process on the spot */
     }
     /* I'm in user proccess - watchdog_process has died: */
-    else if (watchdog_pid) 
+    else if (watchdog_pid)
     {
         kill(watchdog_pid, SIGUSR2);
         WatchdogStop();
@@ -260,21 +288,23 @@ void RestartProcesses(char **args)
 int GeneralSendPulse(void *unused)
 {
     UNUSED(unused);
-  
+
     /* If i am withing watch_dog prog - user_pid will be equal to 0: */
     if (!user_pid)
     {
-        #ifndef DNDBUG
-        printf("I am watchdog process, sanding from pid %d to pid %d\n\n", getpid(), getppid());
-        #endif
+#ifndef DNDBUG
+        printf("I am watchdog process, sanding from pid %d to pid %d\n\n",
+               getpid(), getppid());
+#endif
 
         kill(getppid(), SIGUSR1);
     }
     else if (user_pid) /* I'm in the parrent process */
     {
-        #ifndef DNDBUG
-        printf("I am user process, sanding from pid %d to pid %d\n\n", user_pid, watchdog_pid);
-        #endif
+#ifndef DNDBUG
+        printf("I am user process, sanding from pid %d to pid %d\n\n",
+               user_pid, watchdog_pid);
+#endif
 
         kill(watchdog_pid, SIGUSR1);
     }
@@ -291,12 +321,13 @@ void *InitiateScheduler(char **args, pid_t *pid)
     /* inserting both tasks: */
     SchedulerInsertTask(scheduler, CHECK_PULSE, GeneralCheckPulse, args);
     SchedulerInsertTask(scheduler, SEND_PULSE, GeneralSendPulse, pid);
-    
+
     return (NULL);
 }
 
 /******************************************************************************/
 
+/* This code will run in the destructor: */
 void ThreadDestroy()
 {
     sem_destroy(is_dog_ready);
@@ -314,7 +345,8 @@ void FreeMemory()
 }
 
 /******************************************************************************/
-/* Function to dliberatly crash the proocess (segmentation fault) - in order to chack re-initializatiion of processes */
+/* Function to dliberatly crash the proocess (segmentation fault) - in order
+   to chack re-initializatiion of processes */
 int CrashMyProccess()
 {
     char *string = "Crush me";

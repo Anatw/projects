@@ -1,3 +1,11 @@
+/*******************************************************************************
+Comment and un-comment the defines to see both phases (one at a time).
+
+Templates + STL (Point)
+Written by Anat Wax, anatwax@gmail.com
+Created: 15.6.20
+Reviewer: Noffar Gil
+*******************************************************************************/
 #include <iostream> /* cout, cin, cerr */
 #include <cassert>  // assert()
 

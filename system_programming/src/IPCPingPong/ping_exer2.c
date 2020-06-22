@@ -27,20 +27,35 @@ int main()
     {
         /* Open current_fifo with writing permissions only: */
         fd = open(current_fifo, O_WRONLY);
+        if (0 > fd)
+        {
+            return (1);
+        }
+
         /* Receieve input from the user */
         fgets(array2, MASSAGE_SIZE, stdin);
         /* write the input into array 2: */
         write(fd, array2, (strlen(array2) + 1));
-        close(fd);
+        if ((-1) == close(fd))
+        {
+            return (1);
+        }
 
         /* Open current_fifo with read only permissions: */
         fd = open(current_fifo, O_RDONLY);
+        if (0 > fd)
+        {
+            return (1);
+        }
 
         /* Read from current_info (using fd) into array1: */
         read(fd, array1, sizeof(array1));
 
         printf("ping: %s\n", array1);
-        close(fd);
+        if ((-1) == close(fd))
+        {
+            return (1);
+        }
     }
 
     return (0);

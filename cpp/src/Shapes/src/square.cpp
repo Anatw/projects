@@ -29,9 +29,6 @@ void Square::DrawInternal() const
     int right_top_y = (int)center.GetY() + half;
     int right_buttom_y = (int)center.GetY() - half;
 
-    // center.SetX(center.GetX() + (this->m_edge / 2));
-    // center.SetY(center.GetY() + (this->m_edge / 2));
-
     Point left_top(left_top_x, left_top_y);
     left_top.Revolve(center, this->GetAngle() * M_PI / 180);
 

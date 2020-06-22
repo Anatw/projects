@@ -23,22 +23,24 @@ namespace ilrd
         }
 
         Circle(Point position_, double angle_, Color color_, int radius_);
-
-        inline void SetRadius(int radius_)
-        {
-            this->m_radius = radius_;
-        }
-
-        inline int GetRadius() const
-        {
-            return this->m_radius;
-        }
+        void SetRadius(int radius_);
+        int GetRadius() const;
 
     private:
         void DrawInternal() const;
 
         int m_radius;
     };
+    // inline functions:
+    inline void Circle::SetRadius(int radius_)
+    {
+        this->m_radius = radius_;
+    }
+
+    inline int Circle::GetRadius() const
+    {
+        return this->m_radius;
+    }
 
 } // namespace ilrd
 #endif //ILRD_RD8586_CIRCLE_HPP

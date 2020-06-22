@@ -25,14 +25,14 @@ namespace ilrd
         //Color(const Color&) = default;
         //Color& operator=(const Color&) = default;
 
-        inline unsigned int GetR() const;
-        inline void SetR(unsigned int value);
+        unsigned int GetR() const;
+        void SetR(unsigned int value);
 
-        inline unsigned int GetG() const;
-        inline void SetG(unsigned int value);
+        unsigned int GetG() const;
+        void SetG(unsigned int value);
 
-        inline unsigned int GetB() const;
-        inline void SetB(unsigned int value);
+        unsigned int GetB() const;
+        void SetB(unsigned int value);
 
     private:
         unsigned int m_r;

@@ -17,6 +17,7 @@ void Line::DrawInternal() const
 {
     int half = m_length / 2;
     Point pos = this->GetPosition(); // x, y
+    // Transfering the engle to radian (' * M_PI / 180 '):
     double angle = this->GetAngle() * M_PI / 180;
 
     double start_x = (pos.GetX() - half);

@@ -1,7 +1,13 @@
+/*******************************************************************************
+                                Shapes
+                          Written by Anat Wax
+						     June 7th-, 2020
+						Reviewer: Laura Bedah
+*******************************************************************************/
+#include <cmath> // M_PI
+
 #include "shape.hpp"
-#include "color.hpp"
 #include "glut_utils.h"
-#include "point.hpp"
 
 using namespace ilrd;
 Shape::Shape() : position_m(Point(500, 500)), angle_m(0), color_m(Color())
@@ -9,10 +15,8 @@ Shape::Shape() : position_m(Point(500, 500)), angle_m(0), color_m(Color())
 }
 
 Shape::Shape(Point point_, double angle_, Color color_)
+    : position_m(point_), angle_m(angle_), color_m(color_)
 {
-    this->position_m = point_;
-    this->angle_m = angle_;
-    this->color_m = color_;
 }
 
 void Shape::Draw() const

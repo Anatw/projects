@@ -18,10 +18,6 @@ Reviewer: Lior Cohen
 #ifndef ILRD_RD8586_CPP2CSRC_HPP
 #define ILRD_RD8586_CPP2CSRC_HPP
 
-#include <stdio.h>  /* printf(), size_t */
-#include <string.h> /* size_t, atoi(), memset() */
-#include <stdlib.h> /* malloc(), free(), abs(), size_t */
-
 /*                            PublicTransport:                                */
 
 typedef struct publicTransport PublicTransport;

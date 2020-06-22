@@ -22,17 +22,20 @@ namespace ilrd
         }
 
         Line(Point position_, double angle_, Color color_, int length_);
-
-        inline int GetLength() const
-        {
-            return this->m_length;
-        }
+        int GetLength() const;
 
     private:
         void DrawInternal() const;
 
         int m_length;
     };
+
+    // Inline functions:
+    inline int Line::GetLength() const
+    {
+        return this->m_length;
+    }
+
 } // namespace ilrd
 
 #endif //ILRD_RD8586_LINE_HPP

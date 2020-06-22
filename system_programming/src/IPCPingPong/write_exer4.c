@@ -17,21 +17,38 @@ Reviewer: Shmuel Pablo Sinder
 int main()
 {
     /* ftok generate unique key */
-    key_t key = ftok("shmfile", 65);
+    key_t key = 0;
+    char *message = "this is a message sent to you from another process";
 
     /* shmget returns an identifier */
-    int shmid = shmget(key, 1024, 0666 | IPC_CREAT);
+    int shmid = 0;
 
     /* shmat used to attach to the shared memory */
-    char *string = (char *)shmat(shmid, (void *)0, 0);
+    char *string = NULL;
 
-    printf("Data read from memory: %s\n", string);
+    key = ftok("my_file", 'a');
+    if (-1 == key)
+    {
+        return 1;
+    }
+
+    shmid = shmget(key, 1024, 0666 | IPC_CREAT);
+    if (-1 == shmid)
+    {
+        return 1;
+    }
+
+    string = (char *)shmat(shmid, (void *)0, 0);
+    if (NULL == string)
+    {
+        return 1;
+    }
+
+    printf("data inserted to the common queue.\n");
+    memcpy(string, message, MESSAGE_SIZE);
 
     /* Detach from shared memory */
     shmdt(string);
-
-    /* Destroy the shared memory */
-    shmctl(shmid, IPC_RMID, NULL);
 
     return 0;
 }

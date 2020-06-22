@@ -9,6 +9,7 @@
 #include "circle.hpp"
 #include "shape.hpp"
 #include "color.hpp"
+#include "point.hpp"
 
 using namespace ilrd;
 
@@ -20,8 +21,6 @@ Circle::Circle(Point position_, double angle_, Color color_, int radius_)
 void Circle::DrawInternal() const
 {
     Point point = this->GetPosition();
-
-    //point.Revolve(point, this->GetAngle());
 
     DrawCircle(this->GetColor(), point.GetX(), point.GetY(), this->m_radius);
 }
