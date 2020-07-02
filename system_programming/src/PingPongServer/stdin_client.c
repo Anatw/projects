@@ -35,19 +35,28 @@ void ConnectToServer(int sockfd)
     {
         bzero(buffer, sizeof(buffer));
         printf("Enter a string:\n");
-        fgets(buffer, BUF_SIZE, stdin);
+        scanf("%s", buffer);
 
         printf("Sending to server '%s':\n", buffer);
         write(sockfd, buffer, sizeof(buffer)); /* Sending ping */
 
-        bzero(buffer, sizeof(buffer));
-        read(sockfd, buffer, sizeof(buffer));
+        if (0 == strcmp(buffer, "ping"))
+        {
+            bzero(buffer, sizeof(buffer));
+            read(sockfd, buffer, sizeof(buffer));
 
-        printf("Client received: %s\n", buffer);
+            printf("Client received: %s\n", buffer);
 
-        interval = RetRand();
-        printf("about to sleep for %d\n", interval);
-        sleep(interval);
+            interval = RetRand();
+            printf("about to sleep for %d\n\n", interval);
+            sleep(interval);
+        }
+        else if (0 == strcmp(buffer, "quit") ||
+                 0 == strcmp(buffer, "exit"))
+        {
+            printf("Exiting the stdin client\n");
+            exit(0);
+        }
     }
 }
 
@@ -57,6 +66,8 @@ int main()
     int connfd = 0;
     struct sockaddr_in servaddr;
     struct sockaddr_in cli;
+
+    system("clear");
 
     sockfd = NewSocketFD(SOCK_STREAM);
 

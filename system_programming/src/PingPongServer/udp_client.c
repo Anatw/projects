@@ -40,6 +40,7 @@ static void SendRecieveFunc(int socket_fd, struct sockaddr_in server_addr)
     char input[BUF_SIZE];
     int length = 0;
     int input_length = 0;
+    char message[BUF_SIZE] = "Ping";
 
     counter = RetRand();
 
@@ -51,15 +52,18 @@ static void SendRecieveFunc(int socket_fd, struct sockaddr_in server_addr)
     {
         length = sizeof(server_addr);
 
-        sleep_interval = RetRand();
-        printf("Waiting %d seconds before sending a ping\n", sleep_interval);
-        sleep(sleep_interval);
+        printf("There are %d 'pings' left\n", counter);
+
         sendto(socket_fd,
-               "Ping",
+               message,
                BUF_SIZE,
                MSG_CONFIRM,
                (const struct sockaddr *)&server_addr,
                sizeof(server_addr));
+
+        sleep_interval = RetRand();
+        printf("Waiting %d seconds before sending a ping\n", sleep_interval);
+        sleep(sleep_interval);
 
         if (0 > (input_length = recvfrom(socket_fd,
                                          (char *)input,
@@ -68,12 +72,12 @@ static void SendRecieveFunc(int socket_fd, struct sockaddr_in server_addr)
                                          (struct sockaddr *)&server_addr,
                                          &length)))
         {
-            perror("ERROR in recvfrom in udp client\n");
+            perror("ERROR in recvfrom in UDP client\n");
             exit(EXIT_FAILURE);
         }
 
         input[input_length] = '\0';
 
-        printf("From the server: %s\n\n", input);
+        printf("UDP client receieved from server: %s\n\n", input);
     }
 }
