@@ -7,7 +7,8 @@
 #ifndef RCSTRING_HPP
 #define RCSTRING_HPP
 
-#include <cstddef> // size_t
+#include <cstddef>  // size_t
+#include <iostream> // ostream
 
 typedef struct RCS
 {

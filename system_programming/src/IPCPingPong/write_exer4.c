@@ -20,10 +20,8 @@ int main()
     key_t key = 0;
     char *message = "this is a message sent to you from another process";
 
-    /* shmget returns an identifier */
     int shmid = 0;
 
-    /* shmat used to attach to the shared memory */
     char *string = NULL;
 
     key = ftok("my_file", 'a');
@@ -32,12 +30,14 @@ int main()
         return 1;
     }
 
+    /* shmget returns an identifier */
     shmid = shmget(key, 1024, 0666 | IPC_CREAT);
     if (-1 == shmid)
     {
         return 1;
     }
 
+    /*shmat used to attach to the shared memory */
     string = (char *)shmat(shmid, (void *)0, 0);
     if (NULL == string)
     {

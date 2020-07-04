@@ -83,14 +83,12 @@ RCString &RCString::Concat(const RCString &o_)
     // char *buffer = new char[this_length + o_length + ONE];
 
     // Copy the first string into the new buffer.
-    static size_t i = 0;
-    while ('\0' != this->s_string->m_string[i])
+    size_t i = 0;
+    for (i = 0; i < this_length; ++i)
     {
-        for (i = 0; i < this_length; ++i)
-        {
-            buffer[i] = this->s_string->m_string[i];
-        }
+        buffer[i] = this->s_string->m_string[i];
     }
+    cout << "i = " << i << endl;
 
     // Regarding the expression: 'this->s_string->m_string = buffer;', in this
     // state is still don't matter if the string is changed because I'm changing
@@ -106,6 +104,7 @@ RCString &RCString::Concat(const RCString &o_)
         catch (const bad_alloc &e)
         {
             cerr << e.what() << '\n';
+            ++this->s_string->m_rc;
             delete[] buffer;
             throw bad_alloc();
         }
@@ -132,7 +131,7 @@ RCString &RCString::Concat(const RCString &o_)
 
     buffer[i] = '\0';
 
-    //this->s_string->m_string = buffer;
+    this->s_string->m_string = buffer;
 
     return (*this);
 }
@@ -151,6 +150,7 @@ char &RCString::operator[](size_t idx_)
     if (1 < this->s_string->m_rc)
     {
         char *buffer = this->s_string->m_string;
+        int temp_num = this->s_string->m_rc;
         --this->s_string->m_rc;
 
         this->s_string = new rcs_t;
@@ -162,6 +162,11 @@ char &RCString::operator[](size_t idx_)
         catch (const bad_alloc &e)
         {
             cerr << e.what() << '\n';
+            // Re-initializing the content of "this" to it's conetnt before
+            // entering the function:
+            this->s_string->m_string = buffer;
+            this->s_string->m_rc = temp_num;
+
             delete[] this->s_string;
             throw bad_alloc();
         }
@@ -198,7 +203,7 @@ inline bool operator>(const RCString &s1, const RCString &s2)
 
 ostream &operator<<(ostream &os_, const RCString &s_)
 {
-    return (os_ << s_.ToCStr() << endl);
+    return (os_ << s_.ToCStr());
 }
 
 /*******************************************************************************
