@@ -1,11 +1,8 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
-
-WS name
-Templates + STL (Histo)
+libserver (ping pong server)
 Written by Anat Wax, anatwax@gmail.com
-Created: 15.6.20
-Reviewer: 
+Created: 25.6.20
+Reviewer: Yoni Naor
 *******************************************************************************/
 #include <stdio.h>    /* printf(), size_t */
 #include <stdlib.h>   /* malloc(), free(), abs(), size_t, rand(), srand() */

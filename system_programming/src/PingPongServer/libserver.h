@@ -1,3 +1,9 @@
+/*******************************************************************************
+libserver (ping pong server)
+Written by Anat Wax, anatwax@gmail.com
+Created: 25.6.20
+Reviewer: Yoni Naor
+*******************************************************************************/
 #ifndef ILRD_RD8586_LIBSERVER_HPP
 #define ILRD_RD8586_LIBSERVER_HPP
 

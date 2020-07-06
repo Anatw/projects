@@ -2,7 +2,7 @@
 Ping Pong Server
 Written by Anat Wax, anatwax@gmail.com
 Created: 25.6.20
-Reviewer: 
+Reviewer: Yoni Naor
 *******************************************************************************/
 #include <stdio.h>      /* printf(), size_t */
 #include <stdlib.h>     /* malloc(), free(), abs(), size_t */

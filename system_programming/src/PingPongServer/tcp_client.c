@@ -1,10 +1,10 @@
 /*******************************************************************************
 compile with GCC (and not gd! - getaddrinfo() is not competible for c99).
 
-TCP/UDP PingPong (Exercise 2 - TCP)
+tcp client (Ping Pong Server)
 Written by Anat Wax, anatwax@gmail.com
-Created: 21.6.20
-Reviewer: Yaacov Evenchik
+Created: 25.6.20
+Reviewer: Yoni Naor
 *******************************************************************************/
 #include <netdb.h>      /* getaddrinfo() */
 #include <stdio.h>      /* printf(), size_t */

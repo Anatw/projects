@@ -21,6 +21,7 @@ Circle::Circle(Point position_, double angle_, Color color_, int radius_)
 void Circle::DrawInternal() const
 {
     Point point = this->GetPosition();
+    this->
 
-    DrawCircle(this->GetColor(), point.GetX(), point.GetY(), this->m_radius);
+        DrawCircle(this->GetColor(), point.GetX(), point.GetY(), this->m_radius);
 }

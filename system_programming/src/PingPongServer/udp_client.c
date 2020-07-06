@@ -1,3 +1,9 @@
+/*******************************************************************************
+udp client (Ping Pong Server)
+Written by Anat Wax, anatwax@gmail.com
+Created: 25.6.20
+Reviewer: Yoni Naor
+*******************************************************************************/
 #include <stdio.h>      /* printf(), scanf() */
 #include <stdlib.h>     /* system() */
 #include <unistd.h>     /* sleep() */

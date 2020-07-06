@@ -1,3 +1,9 @@
+/*******************************************************************************
+udp_broadcast (Ping Pong Server)
+Written by Anat Wax, anatwax@gmail.com
+Created: 25.6.20
+Reviewer: Yoni Naor
+*******************************************************************************/
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>

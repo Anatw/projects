@@ -1,8 +1,8 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
+all printf() of numbers that exist inside this file are not inside the original
+CPP code and are here only to help me eith the exercise.
 
-WS name
-Templates + STL (Histo)
+cpp2c.cpp->c file
 Written by Anat Wax, anatwax@gmail.com
 Created: 15.6.20
 Reviewer: 
@@ -150,7 +150,7 @@ Minibus *MinibusCctor(Minibus *p_this, Minibus *other)
 {
     PTCctor(&p_this->m_pt, &other->m_pt);
 
-    p_this->m_pt.vptr = other->m_pt.vptr;
+    p_this->m_pt.vptr = (Vtable *)&Minibus_VTable;
 
     p_this->m_numSeats = other->m_numSeats;
     printf("Minibus::CCtor()\n");
@@ -234,6 +234,9 @@ SpecialTaxi *STaxiCctor(SpecialTaxi *p_this, SpecialTaxi *other)
 void PCDestructor(PC *p_this)
 {
     /*publicConvoy *this = (publicConvoy *)p_this;*/
+    V_PTDestructor(p_this->m_pt1);
+    V_PTDestructor(p_this->m_pt2);
+
     free(p_this->m_pt1);
     p_this->m_pt1 = NULL;
     free(p_this->m_pt2);
@@ -249,8 +252,8 @@ void PCDisplay(PC *p_this)
 {
     p_this->m_pt1->vptr->V_Display(p_this->m_pt1);
     p_this->m_pt2->vptr->V_Display(p_this->m_pt2);
-    p_this->m_m.m_pt.vptr->V_Display(&(p_this->m_m.m_pt));
-    p_this->m_t.m_pt.vptr->V_Display(&(p_this->m_t.m_pt));
+    p_this->m_m.m_pt.vptr->V_Display((PublicTransport *)&p_this->m_m);
+    p_this->m_t.m_pt.vptr->V_Display((PublicTransport *)&p_this->m_t);
 }
 
 Vtable PCVtable = {(void (*)(PublicTransport *))PCDestructor,
@@ -258,6 +261,7 @@ Vtable PCVtable = {(void (*)(PublicTransport *))PCDestructor,
 
 void PCConstructor(PC *p_this)
 {
+    /* Creating the inherent class PT member: */
     PTConstructor(&p_this->m_pt);
     p_this->m_pt.vptr = &PCVtable;
 
@@ -269,30 +273,29 @@ void PCConstructor(PC *p_this)
 
     p_this->m_pt1 = (PublicTransport *)pt1;
     p_this->m_pt2 = (PublicTransport *)pt2;
+    MinibusConstructor(&p_this->m_m);
+    TaxiConstructor(&p_this->m_t);
 }
 
 PC *PCCctor(PC *p_this, PC *other)
 {
-    /*PublicTransport *pt1 = (PublicTransport *)malloc(sizeof(PublicTransport));
-    pt1 = p_this->m_pt1;
-    other->m_pt1 = pt1;
-
-    PublicTransport *pt2 = (PublicTransport *)malloc(sizeof(PublicTransport));
-    pt2 = p_this->m_pt2;
-    other->m_pt2 = pt2;*/
-
-    PTConstructor(&p_this->m_pt);
+    PTCctor(&p_this->m_pt, &other->m_pt);
     p_this->m_pt.vptr = &PCVtable;
 
-    Minibus *m = (Minibus *)malloc(sizeof(Minibus));
-    *m = p_this->m_m;
-    other->m_m = *m;
+    PublicTransport *pt1 = (PublicTransport *)malloc(sizeof(Minibus));
+    p_this->m_pt1 = pt1;
+    MinibusCctor((Minibus *)p_this->m_pt1, (Minibus *)other->m_pt1);
+    /*pt1 = other->m_pt1;*/
 
-    Taxi *t = (Taxi *)malloc(sizeof(Taxi));
-    *t = p_this->m_t;
-    other->m_t = *t;
+    PublicTransport *pt2 = (PublicTransport *)malloc(sizeof(Taxi));
+    p_this->m_pt2 = pt2;
+    TaxiCctor((Taxi *)p_this->m_pt2, (Taxi *)other->m_pt2);
+    /* pt2 = other->m_pt2;*/
 
-    return (other);
+    MinibusCctor(&p_this->m_m, &other->m_m);
+    TaxiCctor(&p_this->m_t, &other->m_t);
+
+    return (p_this);
 }
 
 /*******************************************************************************
@@ -419,13 +422,13 @@ int main()
     Minibus min3;
     MinibusConstructor(&min3);
     PublicTransport pt_min3;
-    PTCctor(&pt_min3, (PublicTransport *)&min3);
+    PTCctor(&pt_min3, &min3.m_pt);
     MinibusDestructor(&min3);
 
     Taxi taxi2;
     TaxiConstructor(&taxi2);
     PublicTransport pt_taxi2;
-    PTCctor(&pt_taxi2, (PublicTransport *)&taxi2);
+    PTCctor(&pt_taxi2, &taxi2.m_pt);
     TaxiDestructor(&taxi2);
 
     PublicTransport pt;
@@ -504,36 +507,43 @@ int main()
     /*taxi_display(st);*/
     printf("16\n");
     Taxi temp;
-    TaxiCctor((Taxi *)&st, &temp);
+    TaxiCctor(&temp, (Taxi *)&st);
     taxi_display(&temp);
     TaxiDestructor(&temp);
     STaxiDestructor(&st);
 
     printf("\n\nStarting Public Convoy area:\n");
-    /* PublicConvoy *ts1 = new PublicConvoy(); */
-    /*printf("17\n");
+    /* PublicConvoy *ts1 = new PublicConvoy();*/
+    printf("17\n");
     PC *ts1 = (PC *)malloc(sizeof(PC));
-    PCConstructor(ts1);*/
+    PCConstructor(ts1);
 
-    /* PublicConvoy *ts2 = new PublicConvoy(*ts1); 
+    /* PublicConvoy *ts2 = new PublicConvoy(*ts1); */
     printf("18\n");
     PC *ts2 = (PC *)malloc(sizeof(PC));
-    PCCctor(ts1, ts2);*/
+    PCCctor(ts2, ts1);
 
-    /* ts1->display(); 
-    ts1->m_pt1->vptr->V_Display(ts1->m_pt1);*/
+    /* ts1->display(); */
+    printf("19\n");
+    ts1->m_pt.vptr->V_Display((PublicTransport *)ts1);
 
-    /* ts2->display(); 
-    ts1->m_pt2->vptr->V_Display(ts1->m_pt2);*/
+    /* ts2->display();*/
+    printf("20\n");
+    ts2->m_pt.vptr->V_Display((PublicTransport *)ts2);
 
-    /* delete ts1; 
-    free(ts1);*/
+    /* delete ts1; */
+    printf("21\n");
+    PCDestructor(ts1);
+    free(ts1);
 
-    /* ts2->display(); 
-    ts1->m_pt2->vptr->V_Display(ts1->m_pt2);*/
+    /* ts2->display(); */
+    printf("22\n");
+    ts2->m_pt.vptr->V_Display(&ts2->m_pt);
 
-    /* delete ts2; 
-    free(ts2);*/
+    /* delete ts2; */
+    printf("23\n");
+    PCDestructor(ts2);
+    free(ts2);
 
     for (i = 0; i <= 3; ++i)
     {
@@ -541,13 +551,12 @@ int main()
     }
 
     MinibusDestructor(m2);
+    free(m2);
+    m2 = NULL;
     V_PTDestructor(&pt_min3);
     V_PTDestructor(&pt_taxi2);
     V_PTDestructor(&pt);
     MinibusDestructor(&m);
-    /*PCDestructor(ts1);
-
-    PCDestructor(ts2);*/
 
     return (0);
 }
