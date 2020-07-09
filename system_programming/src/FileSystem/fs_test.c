@@ -25,17 +25,11 @@ Written by Anat Wax, anatwax@gmail.com
 Created: 15.6.20
 Reviewer: Yehhuda Levavi
 *******************************************************************************/
-#include <stdio.h>     /* printf(), size_t */
-#include <stdlib.h>    /* malloc(), free(), abs(), size_t */
-#include <assert.h>    /* assert() */
-#include <stddef.h>    /* offsetof(), size_t */
-#include <time.h>      /* time, size_t, srand() */
-#include <unistd.h>    /* ssize_t, sleep(), execvp(), fork() */
-#include <string.h>    /* size_t, atoi(), memset() */
-#include <sys/types.h> /* pid_t */
-#include <sys/wait.h>  /* wait() */
-#include <fcntl.h>     /* for O parameneters */
-#include <sys/stat.h>  /* macroes of i_mode if inodes */
+#include <stdio.h>    /* printf(), size_t */
+#include <stdlib.h>   /* malloc(), free(), abs(), size_t */
+#include <unistd.h>   /* close() */
+#include <fcntl.h>    /* for O parameneters */
+#include <sys/stat.h> /* macroes of i_mode if inodes */
 #include <ext2fs/ext2_fs.h>
 
 #include "fs.h"
@@ -55,7 +49,6 @@ int main(void)
     int fd;
     int found = 0;
     char c = 'n';
-    /*char pathname[] = "/amirq/glext.h";*/
 
     if ((fd = open(FD_DEVICE, O_RDONLY)) == -1)
     {
@@ -70,15 +63,15 @@ int main(void)
     ReadInode(fd, &group, 2, &inode); /* read inode 2 (root directory) */
     DirLS(fd, &inode, &group);
 
-    /*FindByPath(fd, &group, pathname);*/
-
     found = FindFileInDir(fd, &group, &inode, "stdio.h", &f_inode);
     if (found)
     {
         printf("File was found!, print it [Y/n]? ");
         scanf("%c", &c);
         if ((c == 'y') || (c == 'Y'))
+        {
             print_file(fd, &f_inode, 1);
+        }
     }
 
     close(fd);

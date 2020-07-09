@@ -34,7 +34,7 @@ int NewSocketFD(int sock_type)
 
 int NewUDPBroadSocket()
 {
-    int yes = 1;
+    // int yes = 1;
     int sockfd = NewSocketFD(SOCK_DGRAM);
     /*int status = setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &yes, sizeof(int));
     

@@ -41,8 +41,10 @@ void ReadInode(int fd,
                int inode_number,
                struct ext2_inode *ret_inode);
 
-int FindFileInDir(int fd, const struct ext2_group_desc *group_descriptor,
-                  const struct ext2_inode *inode, const char *file_name_to_search,
+int FindFileInDir(int fd,
+                  const struct ext2_group_desc *group_descriptor,
+                  const struct ext2_inode *inode,
+                  const char *file_name_to_search,
                   struct ext2_inode *ret_inode);
 
 void print_file(int fd,

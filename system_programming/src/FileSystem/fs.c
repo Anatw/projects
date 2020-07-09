@@ -25,26 +25,19 @@ Written by Anat Wax, anatwax@gmail.com
 Created: 15.6.20
 Reviewer: Yehhuda Levavi
 *******************************************************************************/
-#include <stdio.h>     /* printf(), size_t */
-#include <stdlib.h>    /* malloc(), free(), abs(), size_t */
-#include <assert.h>    /* assert() */
-#include <stddef.h>    /* offsetof(), size_t */
-#include <time.h>      /* time, size_t, srand() */
-#include <unistd.h>    /* ssize_t, sleep(), execvp(), fork() */
-#include <string.h>    /* size_t, atoi(), memset() */
-#include <sys/types.h> /* pid_t */
-#include <sys/wait.h>  /* wait() */
-#include <fcntl.h>     /* for O parameneters */
-#include <sys/stat.h>  /* macroes of i_mode if inodes */
+#include <stdio.h>    /* printf(), size_t */
+#include <stdlib.h>   /* malloc(), free(), abs(), size_t */
+#include <stddef.h>   /* offsetof(), size_t */
+#include <unistd.h>   /* fread(), fseek(), close */
+#include <string.h>   /* memcpy(), strcmp(), strtok() */
+#include <fcntl.h>    /* for O parameneters */
+#include <sys/stat.h> /* macroes of i_mode if inodes */
 #include <ext2fs/ext2_fs.h>
 
 #include "fs.h"
 
 #define BLOCK_SIZE (1024)
 #define BLOCK_OFFSET(block) (BLOCK_SIZE + (block - 1) * BLOCK_SIZE)
-/*
-
-*/
 
 /* Super block is the main header of the memory pool: */
 void GetSuperBlock(int fd, struct ext2_super_block *ret_super)
@@ -60,7 +53,6 @@ void GetSuperBlock(int fd, struct ext2_super_block *ret_super)
     }
 }
 
-/* FindGroupBlock */
 void GetGroupDescriptor(int fd, struct ext2_group_desc *group_des)
 {
     /* Move the fd to the beggining of the group descriptor - past the boot
@@ -99,13 +91,13 @@ void ReadInode(int fd,
                struct ext2_inode *ret_inode)
 {
     lseek(fd, BLOCK_OFFSET(group_descriptor->bg_inode_table) + (inode_number - 1) * sizeof(struct ext2_inode), SEEK_SET);
-    /*lseek(fd, (BLOCK_SIZE + BLOCK_SIZE + sizeof(*group_descriptor) + sizeof(struct ext2_inode)), SEEK_SET);*/
     read(fd, ret_inode, sizeof(struct ext2_inode));
 
     printf("inode information:\n");
     printf("the i_mode of inode %d is: %d\n", inode_number, ret_inode->i_mode);
     printf("the size of inode %d is: %d\n", inode_number, ret_inode->i_size);
-    printf("the i_block of inode %d is: %ls\n\n\n", inode_number, ret_inode->i_block);
+    printf("the i_block of inode %d is: %ls\n\n\n", inode_number,
+           ret_inode->i_block);
 
     InodeInfo(ret_inode);
 }
