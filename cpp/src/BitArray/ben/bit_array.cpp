@@ -5,11 +5,7 @@
 * Author: Ben David Zikri                                                      *
 * Reviwer:                                                                     *
 *******************************************************************************/
-#ifndef BIT_ARRAY_C
-#define BIT_ARRAY_C
-
-#include <string.h>
-
+#include<string.h>
 #include "bit_array.hpp"
 
 static unsigned char lut[] = { 0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
@@ -45,15 +41,12 @@ private:
 	std::string& m_str;
 };
 
-
 class MoveRight
 {
 public:
     MoveRight(int to_move) : move(to_move), buff(0), next_buff(0) {}
     uint8_t operator()(uint8_t byte)
     {
-        std::cout << next_buff << std::endl;
-
         next_buff = byte << (CHAR_BITS - move);
 
         byte >>= move;
@@ -69,6 +62,17 @@ private:
     unsigned char next_buff;
 };
 
+class MirrorByte
+{
+public:
+    uint8_t operator()(uint8_t byte)
+    {
+        byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
+        byte = (byte & 0xCC) >> 2 | (byte & 0x33) << 2;
+        byte = (byte & 0xAA) >> 1 | (byte & 0x55) << 1;
+        return byte;
+    }
+};
 
 class Setter
 {
@@ -102,7 +106,6 @@ public:
 		m_idx++;
 		return(byte);
 	}
-
 private:
 	const uint8_t *m_arr;
 	uint64_t m_idx;
@@ -153,8 +156,8 @@ template <uint64_t SIZE>
 void BitArray<SIZE>::Flip(uint64_t pos)
 {
 	CheckBounds(pos);
-
-	 m_arr[pos / CHAR_BITS] ^= (1UL << pos % CHAR_BITS);
+	
+	m_arr[pos / CHAR_BITS] ^= (1 << (CHAR_BITS - 1 - ((pos) % CHAR_BITS)));
 }
 
 template <uint64_t SIZE>
@@ -174,8 +177,6 @@ uint64_t BitArray<SIZE>::CountSetBits() const
 template <uint64_t SIZE>
 inline bool BitArray<SIZE>::operator [](uint64_t pos) const
 {
-	CheckBounds(pos);
-
 	return (this->Get(pos));
 }
 
@@ -214,32 +215,22 @@ BitArray<SIZE>& BitArray<SIZE>::operator &=(const BitArray &other)
 	
 	return (*this);
 }
+
 template <uint64_t SIZE>
-BitArray<SIZE>& BitArray<SIZE>::operator>>=(uint64_t n)
+BitArray<SIZE> &BitArray<SIZE>::operator>>=(uint64_t n)
 {
-    if (n >= SIZE)
-    {
-        std::transform(m_arr, m_arr + NBYTES(SIZE), m_arr, Setter(0));
-        return (*this);
-    }
+	Shifter(n);
+    ZeroLeftovers();
 
-    // int bit_shift = shift % 8;
-        // memcpy(m_arr + 1, m_arr, 3);
-    std::transform(m_arr + (n / 8), m_arr + NBYTES(SIZE), m_arr, MoveRight(n % 8));
-    memset(m_arr+ (n / 8), 0, n / 8 );
-
-	ZeroLeftovers();
     return (*this);
 }
 
 template <uint64_t SIZE>
-BitArray<SIZE>& BitArray<SIZE>::operator<<=(uint64_t n)
+BitArray<SIZE> &BitArray<SIZE>::operator<<=(uint64_t n)
 {
-    if (n >= SIZE)
-    {
-        std::transform(m_arr, m_arr + NBYTES(SIZE), m_arr, Setter(0));
-        return (*this);
-    }
+	ReverseBits();
+	Shifter(n);
+	ReverseBits();
 
     return (*this);
 }
@@ -248,14 +239,12 @@ template <uint64_t SIZE>
 std::string BitArray<SIZE>::ToString() const
 {
 	std::string str;
-	
 	std::for_each(m_arr, m_arr + NBYTES(SIZE), BinaryToString(str));
-
-	// str.resize(SIZE + NBYTES(SIZE)-1);
-	// reverse(str.begin(), str.end());
+	str.resize(SIZE + NBYTES(SIZE)-1);
+	
 	return (str);
-
 }
+
 template <uint64_t SIZE>
 void BitArray<SIZE>::CheckBounds(uint64_t pos)
 {
@@ -274,9 +263,27 @@ void BitArray<SIZE>::ZeroLeftovers()
     {
         uint8_t mask = 0xFF << (CHAR_BITS - bits);
 
-
         m_arr[(SIZE-1)/CHAR_BITS] &= mask;
     }
 }
 
-#endif // BIT_ARRAY_C
+template <uint64_t SIZE>
+void BitArray<SIZE>::Shifter(uint64_t n)
+{
+	if (n >= SIZE)
+	{
+		std::transform(m_arr, m_arr + NBYTES(SIZE), m_arr, Setter(0));
+		return;
+	}
+	
+	memmove(m_arr + n / 8, m_arr, NBYTES(SIZE) + 1 - n / 8);
+	memset(m_arr, 0, n / 8);
+	std::transform(m_arr + n / 8, m_arr + NBYTES(SIZE), m_arr + n / 8, MoveRight(n % 8));
+}
+
+template <uint64_t SIZE>
+void BitArray<SIZE>::ReverseBits()
+{
+	std::reverse(m_arr, m_arr + NBYTES(SIZE));
+    std::transform(m_arr, m_arr + NBYTES(SIZE), m_arr, MirrorByte());
+}

@@ -17,7 +17,6 @@ Reviewer: Dean Oron
 #include <utility>
 #include <boost/core/noncopyable.hpp>
 
-using namespace std;
 
 // The type of a handle is system specific. We're using UNIX so an handle is
 // represented by an integer
@@ -36,8 +35,8 @@ enum MODE
 ////////////////////////////////////////////////////////////////////////////////
 
 typedef boost::function<void(int)> HandleFunc;
-typedef pair<MODE, Handle> HandleAndMode;
-typedef pair<HandleAndMode, HandleFunc> KeyAndFunc;
+typedef std::pair<MODE, Handle> HandleAndMode;
+typedef std::pair<HandleAndMode, HandleFunc> KeyAndFunc;
 
 //The user may derieves from this class to define his own Listener class
 class IListener
@@ -45,7 +44,7 @@ class IListener
 public:
     virtual ~IListener(){};
     // to be implemented to work with "select":
-    virtual vector<HandleAndMode> Listen(const vector<HandleAndMode> &handle) = 0;
+    virtual std::vector<HandleAndMode> Listen(const std::vector<HandleAndMode> &handle) = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +58,7 @@ public:
     Reactor(IListener *listener) : m_Listener(listener), to_stop(0) {}
     inline ~Reactor()
     {
-        delete this->m_Listener;
+        delete this->m_Listener; // I THINK THIS MIGHT HAVE TO BE DELETED - I'M DELETING SOMETHING THAT NOT I CREATED (USING 'NEW').
     }
 
     void Add(HandleAndMode handle_and_mode, HandleFunc func);
@@ -71,7 +70,7 @@ public:
 private:
     // The map holds a function that shouold be activated for a specific
     // combination of MODE and Handle:
-    map<HandleAndMode, HandleFunc> m_EventHandlers;
+    std::map<HandleAndMode, HandleFunc> m_EventHandlers;
     IListener *m_Listener;
     bool to_stop;
 };

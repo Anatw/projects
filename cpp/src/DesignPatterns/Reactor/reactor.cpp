@@ -37,9 +37,7 @@ void Reactor::Add(HandleAndMode handle_and_mode, HandleFunc func)
 
 void Reactor::Remove(HandleAndMode handle_and_mode)
 {
-    map<HandleAndMode, HandleFunc>::iterator i = this->m_EventHandlers.begin();
-    HandleAndMode key(handle_and_mode);
-    i = this->m_EventHandlers.find(key);
+    map<HandleAndMode, HandleFunc>::iterator i = this->m_EventHandlers.find(handle_and_mode);
 
     if (this->m_EventHandlers.end() != i)
     {

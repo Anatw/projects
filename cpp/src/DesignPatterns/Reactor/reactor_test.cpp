@@ -12,6 +12,7 @@ Reviewer: Dean Oron
 #include <utility>
 #include <sys/select.h> /* select */
 #include <cstdio>       // perror
+#include <stdio.h>      // STDIN_FILENO (this is equal to '0')
 
 #include "reactor.hpp"
 
@@ -123,16 +124,16 @@ int main()
     // DerievedListener listener;
     Reactor reactor(new DerievedListener);
 
-    reactor.Add(HandleAndMode(READ, 0), StdinHandler(reactor));
+    reactor.Add(HandleAndMode(READ, STDIN_FILENO), StdinHandler(reactor));
     reactor.Run();
 
     // StdinHandler test(reactor);
 
-    // HandleAndMode stdin_w = HandleAndMode(WRITE, 0);
+    // HandleAndMode stdin_w = HandleAndMode(WRITE, STDIN_FILENO);
 
     // reactor.Add(first, FuncW);
-    // reactor.Add(HandleAndMode(READ, 0), FuncW);
-    // reactor.Add(HandleAndMode(EXCEPTION, 0), FuncW);
+    // reactor.Add(HandleAndMode(READ, STDIN_FILENO), FuncW);
+    // reactor.Add(HandleAndMode(EXCEPTION, STDIN_FILENO), FuncW);
 
     // reactor.Remove(first);
 
