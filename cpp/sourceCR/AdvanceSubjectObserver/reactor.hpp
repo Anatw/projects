@@ -17,11 +17,15 @@ Reviewer: Dean Oron
 #include <utility>
 #include <boost/core/noncopyable.hpp>
 
+#include "advanced_subject.hpp"
+#include "advanced_observer.hpp"
 
 // The type of a handle is system specific. We're using UNIX so an handle is
 // represented by an integer
 typedef int Handle;
 class IListener;
+
+#define ORIGINAL_VERSION
 
 enum MODE
 {
@@ -60,17 +64,36 @@ public:
     {
         delete this->m_Listener; // I THINK THIS MIGHT HAVE TO BE DELETED - I'M DELETING SOMETHING THAT NOT I CREATED (USING 'NEW').
     }
-
+#ifndef ORIGINAL_VERSION
     void Add(HandleAndMode handle_and_mode, HandleFunc func);
+
+#endif // ORIGINAL_VERSION
+
+    // This add() version is in case that the user has added a function, but
+    // will not need to bee in charge to remove it - it will happen automaticly
+    // for him (like the RAII principles), and we want to protect the user in
+    // case he will forget to remove() this handle_and_func function - we want
+    // to crete some sort of an object that in his distructor is releasing
+    // the pointer to the function - we have to create a seperation between
+    // what we are holding and what the user is holding:
+    // we want to holds SimpleSrc(that object we will hold), that will point to
+    // another object - Callback: Class SimpleSrc{} <-> class Callback{}
+    // Callback can go out of scope.
+    void Add(HandleAndMode handle_and_mode, Callback< SimpleSrc< int > > *callback);
     void Remove(HandleAndMode handle_and_mode);
 
     void Run();
     void Stop();
 
 private:
-    // The map holds a function that shouold be activated for a specific
-    // combination of MODE and Handle:
-    std::map<HandleAndMode, HandleFunc> m_EventHandlers;
+// The map holds a function that shouold be activated for a specific
+// combination of MODE and Handle:
+#ifndef ORIGINAL_VERSION
+    std::map< HandleAndMode, HandleFunc > m_EventHandlers;
+#endif // ORIGINAL_VERSION
+
+    // SimpleSrc is pointing to the Callback onject, and it will not get out of scope.
+    std::map< HandleAndMode, SimpleSrc< int > > m_EventHandlers;
     IListener *m_Listener;
     bool to_stop;
 };
