@@ -54,7 +54,7 @@ void Reactor::Remove(HandleAndMode handle_and_mode)
 }
 #endif // ORIGINAL_VERSION
 
-void Reactor::Add(HandleAndMode handle_and_mode, Callback<SimpleSrc<int>> *callback)
+void Reactor::Add(HandleAndMode handle_and_mode, Callback<SimpleSrc<int> > *callback)
 {
     this->m_EventHandlers.insert(make_pair(handle_and_mode, callback->));
     this->
@@ -113,7 +113,7 @@ void Reactor::Run()
     {
         // Creating an iterator for map, iterating through the map and
         // inserting all HandleAndMode elements into the active_keys vector:
-        map<HandleAndMode, SimpleSrc<int>>::iterator i;
+        map<HandleAndMode, SimpleSrc<int> >::iterator i;
         vector<HandleAndMode> inserted_keys;
         vector<HandleAndMode> active_keys;
 

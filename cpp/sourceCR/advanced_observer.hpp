@@ -7,8 +7,12 @@ Reviewer:
 #ifndef ILRD_RD8586_ADVANCED_OBSERVER_HPP
 #define ILRD_RD8586_ADVANCED_OBSERVER_HPP
 
-#include <boost/function.hpp> // boost::function
+#include <cassert>            // assert
 #include <iostream>           // cout
+#include <boost/function.hpp> // boost::function
+
+#define LOG_ERR(X) (std::cerr << "ERROR: " << (X) << std::endl)
+#define LOG_WRN(X) (std::cerr << "WARNING: " << (X) << std::endl)
 
 typedef boost::function<void(int)> CallbackPointer;
 
@@ -22,7 +26,6 @@ namespace detail
     {
         std::cout << "default EmpthFunctions() was called" << std::endl;
     }
-
 } // namespace detail
 
 // observer
@@ -37,61 +40,88 @@ public:
     Callback(CallbackPointer func,
              DeathPointer death_func = detail::EmptyFunction);
 
-    inline ~Callback()
+    inline ~Callback();
+
+    void InitializeFuncs(const CallbackPointer &func,
+                         const DeathPointer &death_pointer_func =
+                             detail::EmptyFunction);
+
+private: // for the friend
+    struct FriendHelper
     {
-        m_source->Unsubscribe();
-    }
+        typedef SOURCE MySource;
+    };
+    friend struct FriendHelper::MySource;
 
-    void InitializeFuncs();
-
-    // should move to the private section
     void Link(SOURCE *source);
     void Unlink();
     void Invoke(typename SOURCE::dataType data);
     void InvokeDeath();
-    // friend SOURCE;
 
-private:
+private: // class private
     SOURCE *m_source;
-    CallbackPointer m_func;
+    const CallbackPointer m_func;
     DeathPointer m_death_func;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void InitializeFuncs()
-{
-}
-
-typedef boost::function<void(typename SOURCE::dataType)> CallbackPointer() typedef boost::function<void()> DeathPointer;
-
 template <typename SOURCE>
 Callback<SOURCE>::Callback(CallbackPointer func,
                            DeathPointer death_func = detail::EmptyFunction)
-    : m_source(NULL)
+    : m_source(NULL), m_func(func), m_death_func()
 {
+    assert(func);
+
     InitializeFuncs();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+template <typename SOURCE>
+Callback<SOURCE>::~Callback()
+{
+    if (m_source)
+    {
+        m_source->Unsubscribe();
+    }
+}
+////////////////////////////////////////////////////////////////////////////////
+
+template <typename SOURCE>
+void Callback<SOURCE>::InitializeFuncs(
+    const CallbackPointer &func,
+    const DeathPointer &death_pointer_func = detail::EmptyFunction)
+{
+    m_func = func;
+    m_death_func = death_pointer_func;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 template <typename SOURCE>
 void Callback<SOURCE>::Link(SOURCE *source)
 {
+    assert(!m_source);
+    assert(source);
+
     m_source = source;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 template <typename SOURCE>
-void Callback<SOURCE>::Unlink()
+void Callback<SOURCE>::Unlink(bool should_notify = false)
 {
-    if (m_source)
+    assert(m_source);
+
+    if (should_notify)
     {
-        m_source = NULL;
-        m_death_func();
+        std::cout << "a source " << m_source << " has been unsubscribed\n"
+                  << std::endl;
     }
-    else
-    {
-    }
+
+    m_source = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,14 +130,10 @@ void Callback<SOURCE>::Unlink()
 template <typename SOURCE>
 void Callback<SOURCE>::Invoke(typename SOURCE::dataType data)
 {
-    if (m_func)
-    {
-        m_func(data);
-    }
-    else
-    {
-        //warning
-    }
+    assert(m_source);
+    assert(m_func);
+
+    m_func(data);
 }
 
 #endif // ILRD_RD8586_ADVANCED_OBSERVER_HPP
