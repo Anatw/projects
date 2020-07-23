@@ -27,28 +27,26 @@ class IListener;
 
 #define ORIGINAL_VERSION
 
+////////////////////////////////////////////////////////////////////////////////
+//                     IListener class & functions:                           //
+////////////////////////////////////////////////////////////////////////////////
+
+//The user may derieves from this class to define his own Listener class
 enum MODE
 {
     WRITE,
     READ,
     EXCEPTION
 };
-
-////////////////////////////////////////////////////////////////////////////////
-//                     IListener class & functions:                           //
-////////////////////////////////////////////////////////////////////////////////
-
 typedef boost::function<void(int)> HandleFunc;
 typedef std::pair<MODE, Handle> HandleAndMode;
 typedef std::pair<HandleAndMode, HandleFunc> KeyAndFunc;
-
-//The user may derieves from this class to define his own Listener class
 class IListener
 {
 public:
     virtual ~IListener(){};
     // to be implemented to work with "select":
-    virtual std::vector<HandleAndMode> Listen(const std::vector<HandleAndMode> &handle) = 0;
+    virtual std::vector<HandleAndMode> Listen(const std::vector<HandleAndMode> &handle_and_mode) = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,15 +57,9 @@ public:
 class Reactor : private boost::noncopyable
 {
 public:
-    Reactor(IListener *listener) : m_Listener(listener), to_stop(0) {}
-    inline ~Reactor()
-    {
-        delete this->m_Listener; // I THINK THIS MIGHT HAVE TO BE DELETED - I'M DELETING SOMETHING THAT NOT I CREATED (USING 'NEW').
-    }
-#ifndef ORIGINAL_VERSION
-    void Add(HandleAndMode handle_and_mode, HandleFunc func);
-
-#endif // ORIGINAL_VERSION
+    // Reactor(IListener *listener) : m_Listener(listener), to_stop(0) {}
+    Reactor(IListener *listener) : m_Listener(listener) {}
+    ~Reactor();
 
     // This add() version is in case that the user has added a function, but
     // will not need to bee in charge to remove it - it will happen automaticly
@@ -79,22 +71,22 @@ public:
     // we want to holds SimpleSrc(that object we will hold), that will point to
     // another object - Callback: Class SimpleSrc{} <-> class Callback{}
     // Callback can go out of scope.
-    void Add(HandleAndMode handle_and_mode, Callback< SimpleSrc< int > > *callback);
-    void Remove(HandleAndMode handle_and_mode);
+    void Add(HandleAndMode handle_and_mode, Callback<SimpleSrc<int> > *callback);
+    // void Remove(HandleAndMode handle_and_mode);
 
     void Run();
     void Stop();
 
 private:
-// The map holds a function that shouold be activated for a specific
-// combination of MODE and Handle:
-#ifndef ORIGINAL_VERSION
-    std::map< HandleAndMode, HandleFunc > m_EventHandlers;
-#endif // ORIGINAL_VERSION
+    void DeleteOnDestruction();
+
+    // The map holds a function that shouold be activated for a specific
+    // combination of MODE and Handle:
 
     // SimpleSrc is pointing to the Callback onject, and it will not get out of scope.
-    std::map< HandleAndMode, SimpleSrc< int > > m_EventHandlers;
-    IListener *m_Listener;
+    std::map<HandleAndMode, SimpleSrc<int> *> m_EventHandlers;
+    IListener *const m_Listener;
+    // Listener m_listener;
     bool to_stop;
 };
 

@@ -24,11 +24,27 @@ int main()
     return 0;
 }
 
-
-
 /*
 int leftRotate(int n, unsigned int d) 
 { 
    return (n << d)|(n >> (INT_BITS - d)); 
 } 
 */
+
+11011001 - begin
+
+            << 5
+
+                   00100000
+
+                   00111011 -
+                   wanted
+
+                       step 1 : num
+            << 5 001 - 00000
+
+                   step 2 : mask >>
+        3 000 - 11011
+
+            step 3 : num |
+    mask 00111011

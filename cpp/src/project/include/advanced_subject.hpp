@@ -10,7 +10,6 @@ Reviewer:
 #include <boost/function.hpp> // boost::function
 #include "iostream"           // cout
 
-#include "advanced_observer.hpp"
 
 #define LOG_ERR(X) (std::cerr << "ERROR: " << (X) << std::endl)
 #define LOG_WRN(X) (std::cerr << "WARNING: " << (X) << std::endl)
@@ -19,7 +18,7 @@ template <typename SOURCE>
 class Callback;
 
 ////////////////////////////////////////////////////////////////////////////////
-//                         SimpleSrc class & functions:                          //
+//                         SimpleSrc class & functions:                       //
 ////////////////////////////////////////////////////////////////////////////////
 
 // Subject
@@ -70,7 +69,7 @@ void SimpleSrc<T>::Unsubscribe(Callback<SimpleSrc<T> > *callback)
     assert(m_callback == callback); // make sure we are trying to unsubscribe from a place you are already subscribed to.
     if (!callback)
     {
-        LOG_ERR("in Unsubscribe() - empty callback pointer")
+        LOG_ERR("in Unsubscribe() - empty callback pointer");
     }
 
     if (m_callback == callback) // Unsubscribing from the correct service
@@ -85,9 +84,14 @@ void SimpleSrc<T>::Unsubscribe(Callback<SimpleSrc<T> > *callback)
 template <typename T>
 void SimpleSrc<T>::Notify(dataType data)
 {
-    assert(m_callback);
-
-    m_callback->Invoke(data);
+    if (m_callback)
+    {
+        m_callback->Invoke(data);
+    }
+    else
+    {
+        LOG_WRN("Notify->Invoke was called with no callback member inside the subject\n");
+    }
 }
 
 #endif // ILRD_RD8586_ADVANCED_SUBJECT_HPP

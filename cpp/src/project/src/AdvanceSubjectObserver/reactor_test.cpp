@@ -4,15 +4,21 @@ Written by Anat Wax, anatwax@gmail.com
 Created: 7.7.20
 Reviewer: Dean Oron
 *******************************************************************************/
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <map>
+#include <boost/bind.hpp>
 #include <boost/function.hpp>
-#include <utility>
-#include <sys/select.h> /* select */
-#include <cstdio>       // perror
+#include <cstdio> // perror
+#include <iostream>
+#include <map>
+#include <queue>
 #include <stdio.h>      // STDIN_FILENO (this is equal to '0')
+#include <sys/select.h> /* select */
+#include <utility>
+#include <vector>
+
+extern "C"
+{
+    //#include "ping_pong_server.h" // tcp and udp server functions
+}
 
 #include "reactor.hpp"
 
@@ -21,7 +27,7 @@ using namespace std;
 class DerievedListener : public IListener
 {
 public:
-    vector<HandleAndMode> Listen(const vector<HandleAndMode> &handle)
+    vector< HandleAndMode > Listen(const vector< HandleAndMode >& handle)
     {
         fd_set ReadFDs;
         fd_set WriteFDs;
@@ -31,8 +37,9 @@ public:
         FD_ZERO(&WriteFDs);
         FD_ZERO(&ExceptFDs);
 
-        // Inserting keys from vector into the lists with regards to correct MODE
-        vector<HandleAndMode>::const_iterator i;
+        // Inserting keys from vector into the lists with regards to correct
+        // MODE
+        vector< HandleAndMode >::const_iterator i;
         for (i = handle.begin(); i != handle.end(); ++i)
         {
             switch (i->first)
@@ -59,7 +66,7 @@ public:
             throw domain_error("select failed");
         }
 
-        vector<HandleAndMode> return_vector;
+        vector< HandleAndMode > return_vector;
 
         for (int index = 0; index < FD_SETSIZE; ++index)
         {
@@ -96,10 +103,19 @@ void FuncW(int d)
 class StdinHandler
 {
 public:
-    StdinHandler(Reactor &reactor) : m_reactor(reactor) {}
-    void operator()(int i)
+    StdinHandler(Reactor& reactor)
+        : m_reactor(reactor),
+          m_callback(boost::bind(&StdinHandler::Handler, this),
+                     boost::bind(&StdinHandler::ReactorStops, this))
     {
-        (void)i;
+        m_reactor.Add(HandleAndMode(READ, STDIN_FILENO), &m_callback);
+
+        m_reactorOn = true;
+    }
+
+private:
+    void Handler()
+    {
         string input;
         getline(cin, input);
 
@@ -115,17 +131,25 @@ public:
         fflush(stdin);
     }
 
-private:
-    Reactor &m_reactor;
+    void ReactorStops()
+    {
+        m_reactorOn = false;
+        cout << "stdin listener is out of reactor" << endl;
+    }
+    Reactor& m_reactor;
+    Callback< SimpleSrc< int > > m_callback;
+    bool m_reactorOn;
 };
 
 int main()
 {
     // DerievedListener listener;
-    Reactor reactor(new DerievedListener);
+    Reactor newReactor(new DerievedListener);
 
-    reactor.Add(HandleAndMode(READ, STDIN_FILENO), StdinHandler(reactor));
-    reactor.Run();
+    StdinHandler stdinListener(newReactor);
+
+    // reactor.Add(HandleAndMode(READ, STDIN_FILENO), StdinHandler(reactor));
+    newReactor.Run();
 
     // StdinHandler test(reactor);
 

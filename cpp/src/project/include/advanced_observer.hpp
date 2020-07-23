@@ -2,19 +2,21 @@
 
 Written by Anat Wax, anatwax@gmail.com
 Created: 9.7.20
-Reviewer: 
+Reviewer:
 *******************************************************************************/
 #ifndef ILRD_RD8586_ADVANCED_OBSERVER_HPP
 #define ILRD_RD8586_ADVANCED_OBSERVER_HPP
 
+#include <boost/function.hpp> // boost::function
 #include <cassert>            // assert
 #include <iostream>           // cout
-#include <boost/function.hpp> // boost::function
+
+#include "advanced_observer.hpp"
 
 #define LOG_ERR(X) (std::cerr << "ERROR: " << (X) << std::endl)
 #define LOG_WRN(X) (std::cerr << "WARNING: " << (X) << std::endl)
 
-typedef boost::function<void(int)> CallbackPointer;
+typedef boost::function< void(int) > CallbackPointer;
 
 ////////////////////////////////////////////////////////////////////////////////
 //                        Callback class & functions:                         //
@@ -22,29 +24,32 @@ typedef boost::function<void(int)> CallbackPointer;
 
 namespace detail
 {
-    void EmptyFunction()
-    {
-        std::cout << "default EmpthFunctions() was called" << std::endl;
-    }
+inline void EmptyFunction()
+{
+    std::cout << "default EmpthFunctions() was called" << std::endl;
+}
 } // namespace detail
 
 // observer
-template <typename SOURCE>
+template < typename SOURCE >
 class Callback : private boost::noncopyable
 {
 public:
     // What should the subject do when a notification is signaled
-    typedef boost::function<void(typename SOURCE::dataType)> CallbackPointer;
-    typedef boost::function<void()> DeathPointer;
+    typedef boost::function< void(typename SOURCE::dataType) > CallbackPointer;
+    typedef boost::function< void() > DeathPointer;
 
     Callback(CallbackPointer func,
-             DeathPointer death_func = detail::EmptyFunction);
+             DeathPointer death_func = detail::EmptyFunction)
+        : m_source(NULL), m_func(func), m_death_func(death_func)
+    {
+    }
 
     inline ~Callback();
 
-    void InitializeFuncs(const CallbackPointer &func,
-                         const DeathPointer &death_pointer_func =
-                             detail::EmptyFunction);
+    // void InitializeFuncs(const CallbackPointer &func,
+    //                      const DeathPointer &death_pointer_func =
+    //                          detail::EmptyFunction);
 
 private: // for the friend
     struct FriendHelper
@@ -53,54 +58,40 @@ private: // for the friend
     };
     friend struct FriendHelper::MySource;
 
-    void Link(SOURCE *source);
-    void Unlink();
+    void Link(SOURCE* source);
+    void Unlink(bool should_notify = false);
     void Invoke(typename SOURCE::dataType data);
     void InvokeDeath();
 
 private: // class private
-    SOURCE *m_source;
+    SOURCE* m_source;
     const CallbackPointer m_func;
     DeathPointer m_death_func;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename SOURCE>
-Callback<SOURCE>::Callback(CallbackPointer func,
-                           DeathPointer death_func = detail::EmptyFunction)
-    : m_source(NULL), m_func(func), m_death_func()
-{
-    assert(func);
-
-    InitializeFuncs();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-template <typename SOURCE>
-Callback<SOURCE>::~Callback()
+template < typename SOURCE >
+Callback< SOURCE >::~Callback()
 {
     if (m_source)
     {
-        m_source->Unsubscribe();
+        m_source->Unsubscribe(this);
     }
 }
-////////////////////////////////////////////////////////////////////////////////
 
-template <typename SOURCE>
-void Callback<SOURCE>::InitializeFuncs(
-    const CallbackPointer &func,
-    const DeathPointer &death_pointer_func = detail::EmptyFunction)
-{
-    m_func = func;
-    m_death_func = death_pointer_func;
-}
+// template < typename SOURCE >
+// void Callback< SOURCE >::InitializeFuncs(
+//     const CallbackPointer& func, const DeathPointer& stop_inform_func)
+// {
+//     m_func = func;
+//     m_death_func = stop_inform_func;
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename SOURCE>
-void Callback<SOURCE>::Link(SOURCE *source)
+template < typename SOURCE >
+void Callback< SOURCE >::Link(SOURCE* source)
 {
     assert(!m_source);
     assert(source);
@@ -110,8 +101,8 @@ void Callback<SOURCE>::Link(SOURCE *source)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename SOURCE>
-void Callback<SOURCE>::Unlink(bool should_notify = false)
+template < typename SOURCE >
+void Callback< SOURCE >::Unlink(bool should_notify)
 {
     assert(m_source);
 
@@ -127,8 +118,8 @@ void Callback<SOURCE>::Unlink(bool should_notify = false)
 ////////////////////////////////////////////////////////////////////////////////
 
 // template <typename dataType>
-template <typename SOURCE>
-void Callback<SOURCE>::Invoke(typename SOURCE::dataType data)
+template < typename SOURCE >
+void Callback< SOURCE >::Invoke(typename SOURCE::dataType data)
 {
     assert(m_source);
     assert(m_func);

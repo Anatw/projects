@@ -11,9 +11,9 @@ Reviewer:
 #include <cassert>
 
 #include "advanced_subject.hpp"
+#include "advanced_observer.hpp"
 
 using namespace std;
-// using namespace ilrd;
 
 
 class SubjectThermoExample;
@@ -42,7 +42,7 @@ void ReportThermometerDied()
 class SubjectThermoExample
 {
 public:
-    typedef Callback< Source< int > > MyCallback;
+    typedef Callback< SimpleSrc< int > > MyCallback;
     void WatchTemp(MyCallback* callback)
     {
         src.Subscribe(callback);
@@ -54,14 +54,14 @@ public:
     }
 
 private:
-    Source< int > src;
+    SimpleSrc< int > src;
 };
 
 class ObserverFridgeExample
 {
 public:
     ObserverFridgeExample(
-        Callback< Source< int > >::CallbackPointer callback = TempHandler)
+        Callback< SimpleSrc< int > >::CallbackPointer callback = TempHandler)
         : m_callback(callback, ReportThermometerDied)
     {
     }
@@ -71,7 +71,7 @@ public:
     }
 
 private:
-    Callback< Source< int > > m_callback;
+    Callback< SimpleSrc< int > > m_callback;
 };
 
 void BasicTests();
@@ -95,23 +95,23 @@ void BasicTests()
     thermometer->ChangeInTemp(-3);
     // delete thermometer;
     delete fridge;
-    thermometer->ChangeInTemp(-3);
+    // thermometer->ChangeInTemp(-3);
 }
 
 
 // class Fridge : private Callback<Fridge>
 // {
 //     public:
-//     Fridge(Callback<Source<int>>::CallbackPointer callback = CallBackPTR) : m_call
+//     Fridge(Callback<SimpleSrc<int>>::CallbackPointer callback = CallBackPTR) : m_call
 
 //     private:
     
 // };
 
-// class Thermometer : private Source<float>
+// class Thermometer : private SimpleSrc<float>
 // {
 // public:
-//     typedef Callback<Source<int>> MyCaVllback;
+//     typedef Callback<SimpleSrc<int>> MyCaVllback;
 
 //     void SubscribeFotInfo(MyCallback *cd_)
 //     {
@@ -119,7 +119,7 @@ void BasicTests()
 //     }
 
 // private:
-//     Source<int>m_source;
+//     SimpleSrc<int>m_source;
 // };
 
 // template <typename dataType>
@@ -131,7 +131,7 @@ void BasicTests()
 // int main()
 // {
 //     Callback<Thermometer> fridge(CallbackPtr<float>);
-//     Source<fridge> thermo;
+//     SimpleSrc<fridge> thermo;
     
 
 //     thermo.Link(fridge);
