@@ -17,10 +17,14 @@ using namespace std;
 using namespace ilrd;
 
 Scheduler::Scheduler(Reactor& reactor)
-    : m_timer(reactor, boost::bind(&Scheduler::ActivateNextTask, this,
+try : m_timer(reactor, boost::bind(&Scheduler::ActivateNextTask, this,
                                    _1)) //-1 is a placeholder that will pass on
                                         // what the funtion receieves
 {
+}
+catch (...)
+{
+    throw runtime_error("Error in scheduler constructor");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +34,6 @@ Scheduler::~Scheduler()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// boost::chrono::time_point_cast<boost::chrono::microseconds>
 
 void Scheduler::ScheduleAction(TimePoint timepoint, ActionFunc function)
 {
@@ -38,23 +41,40 @@ void Scheduler::ScheduleAction(TimePoint timepoint, ActionFunc function)
     new_task.m_function = function;
     new_task.m_timepoint = timepoint;
 
-    // boost::chrono::duration_cast<MS>(m_tasks.top().m_timepoint - Now());
+    m_tasks.push(new_task);
 
-    if (!m_tasks.empty())
+    // If the new task should begin before the current first task
+    // in the queue - if so - i need to activate timer set
+    if (new_task.m_timepoint == m_tasks.top().m_timepoint)
     {
-        // If the new task should begin befor the current first task in the
-        // queue - if so - i need to activate timer set
-        if (new_task < m_tasks.top())
-        {
-            // This will return in nano-seconds, and we need to cast it int
-            // microseconds.
-            MS time = boost::chrono::duration_cast< MS >(new_task.m_timepoint -
-                                                         this->Now());
-            m_timer.Set(time);
-            // timerfd_settime(m_fd, );
-        }
+        // This will return in nano-seconds, and
+        // it needs to cast it in microseconds.
+        MS time = boost::chrono::duration_cast< MS >(new_task.m_timepoint -
+                                                     this->Now());
+        m_timer.Set(time);
+    }
+}
 
-        m_tasks.push(new_task);
+////////////////////////////////////////////////////////////////////////////////
+void Scheduler::ScheduleAction(MS microseconds, ActionFunc function)
+{
+    TimePoint time_point = TimePoint(microseconds + Now());
+
+    Scheduler::Task new_task;
+    new_task.m_function = function;
+    new_task.m_timepoint = time_point;
+
+    m_tasks.push(new_task);
+
+    // If the new task should begin befor the current first task in the
+    // queue - if so - i need to activate timer set
+    if (new_task.m_timepoint == m_tasks.top().m_timepoint)
+    {
+        // This will return in nano-seconds, and we need to cast it int
+        // microseconds.
+        MS time = boost::chrono::duration_cast< MS >(new_task.m_timepoint -
+                                                     this->Now());
+        m_timer.Set(time);
     }
 }
 
@@ -82,6 +102,10 @@ void Scheduler::ActivateNextTask(int fd)
         MS time = boost::chrono::duration_cast< MS >(m_tasks.top().m_timepoint -
                                                      this->Now());
         m_timer.Set(time);
+    }
+    else
+    {
+        m_timer.Unset();
     }
 }
 

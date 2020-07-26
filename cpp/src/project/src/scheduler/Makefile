@@ -8,7 +8,7 @@ INC_DIR:=-I ../../include
 OBJ_LIB:=#../../obj/
  
 LIB := #doubly_linked_list.o
-OBJ :=$(NAME).cpp $(NAME)_test.cpp fdtimer.cpp
+OBJ :=$(NAME).cpp $(NAME)_test.cpp fdtimer.cpp ../Reactor/reactor.cpp
  
 # $@ -> the file name of the target of the rule
 # $< -> the first item in the Dependencies list
