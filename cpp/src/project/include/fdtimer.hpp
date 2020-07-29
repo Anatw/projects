@@ -1,8 +1,8 @@
 /*******************************************************************************
-timer.hpp (part of the Scheduler design pattern)
+fdtimer.hpp (part of the Scheduler design pattern)
 Written by Anat Wax, anatwax@gmail.com
 Created: 21.7.20
-Reviewer:
+Reviewer: Kobi Rappaport
 *******************************************************************************/
 
 #ifndef ILRD_RD8586_TIMER_HPP
@@ -51,14 +51,11 @@ public:
     void Unset();
 
 private:
-    Reactor& m_reactor;
+    Reactor* m_reactor;
     Callback< SimpleSrc< int > > m_callback;
     int m_fd;
+    void m_death_func();
 };
-
-////////////////////////////////////////////////////////////////////////////////
-///   inline functions implementation   ////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 } // namespace ilrd
 

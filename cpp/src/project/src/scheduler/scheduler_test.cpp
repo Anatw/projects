@@ -1,11 +1,14 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
+Scheduler (design pattern)
 
-WS name
-Templates + STL (Histo)
+useage flow:
+1. Create a scheduler, it creates a timer .
+2. add 3 tasks - one in 5,
+    the second 10, the third in 1 second
+
 Written by Anat Wax, anatwax@gmail.com
-Created: 15.6.20
-Reviewer:
+Created: 21.7.20
+Reviewer: Kobi Rappaport
 *******************************************************************************/
 #include <boost/bind.hpp>
 #include <boost/chrono.hpp>
@@ -20,12 +23,6 @@ extern "C"
 
 using namespace std;
 using namespace ilrd;
-
-// useage flow:
-// 1. Create a scheduler, it creates a timer .
-// 2. add 3 tasks - one in 5,
-//     the second 10, the third in 1 second
-// 3.
 
 class DerievedListener : public IListener
 {
@@ -95,6 +92,8 @@ public:
     }
 };
 
+////////////////////////////////////////////////////////////////////////////////
+
 class FuncW
 {
 public:
@@ -112,6 +111,8 @@ private:
 
 int FuncW::m_counter = 0;
 
+////////////////////////////////////////////////////////////////////////////////
+
 void FuncW::operator()(int d)
 {
     d = d;
@@ -127,11 +128,15 @@ void FuncW::operator()(int d)
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void FuncW2(int d)
 {
     d = d;
     cout << "FuncW2 executed: " << boost::chrono::system_clock::now() << endl;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 class StdinHandler
 {
@@ -173,6 +178,10 @@ private:
     Callback< SimpleSrc< int > > m_callback;
     bool m_reactorOn;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+//                              main function:                                //
+////////////////////////////////////////////////////////////////////////////////
 
 int main()
 {

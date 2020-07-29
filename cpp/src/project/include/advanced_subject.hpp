@@ -1,20 +1,18 @@
 /*******************************************************************************
-
 Written by Anat Wax, anatwax@gmail.com
-Created: 9.7.20
-Reviewer: 
+Created: 16.7.20
+Reviewer: Ivanna Fleisher
 *******************************************************************************/
 #ifndef ILRD_RD8586_ADVANCED_SUBJECT_HPP
 #define ILRD_RD8586_ADVANCED_SUBJECT_HPP
 
-#include <boost/function.hpp> // boost::function
 #include "iostream"           // cout
-
+#include <boost/function.hpp> // boost::function
 
 #define LOG_ERR(X) (std::cerr << "ERROR: " << (X) << std::endl)
 #define LOG_WRN(X) (std::cerr << "WARNING: " << (X) << std::endl)
 
-template <typename SOURCE>
+template < typename SOURCE >
 class Callback;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,26 +20,28 @@ class Callback;
 ////////////////////////////////////////////////////////////////////////////////
 
 // Subject
-template <typename T>
+template < typename T >
 class SimpleSrc : private boost::noncopyable
 {
 public:
-    SimpleSrc() : m_callback(NULL) {}
+    SimpleSrc() : m_callback(NULL)
+    {
+    }
     ~SimpleSrc();
     typedef T dataType; // nested type
 
-    void Subscribe(Callback<SimpleSrc<T> > *callback);
-    void Unsubscribe(Callback<SimpleSrc<T> > *callback);
+    void Subscribe(Callback< SimpleSrc< T > >* callback);
+    void Unsubscribe(Callback< SimpleSrc< T > >* callback);
     void Notify(dataType data);
 
 private:
-    Callback<SimpleSrc<T> > *m_callback;
+    Callback< SimpleSrc< T > >* m_callback;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename T>
-SimpleSrc<T>::~SimpleSrc()
+template < typename T >
+SimpleSrc< T >::~SimpleSrc()
 {
     if (m_callback)
     {
@@ -51,8 +51,8 @@ SimpleSrc<T>::~SimpleSrc()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename T>
-void SimpleSrc<T>::Subscribe(Callback<SimpleSrc<T> > *callback)
+template < typename T >
+void SimpleSrc< T >::Subscribe(Callback< SimpleSrc< T > >* callback)
 {
     assert(callback);
     assert(!m_callback);
@@ -63,10 +63,12 @@ void SimpleSrc<T>::Subscribe(Callback<SimpleSrc<T> > *callback)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename T>
-void SimpleSrc<T>::Unsubscribe(Callback<SimpleSrc<T> > *callback)
+template < typename T >
+void SimpleSrc< T >::Unsubscribe(Callback< SimpleSrc< T > >* callback)
 {
-    assert(m_callback == callback); // make sure we are trying to unsubscribe from a place you are already subscribed to.
+    assert(m_callback ==
+           callback); // make sure we are trying to unsubscribe from a place you
+                      // are already subscribed to.
     if (!callback)
     {
         LOG_ERR("in Unsubscribe() - empty callback pointer");
@@ -81,8 +83,8 @@ void SimpleSrc<T>::Unsubscribe(Callback<SimpleSrc<T> > *callback)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename T>
-void SimpleSrc<T>::Notify(dataType data)
+template < typename T >
+void SimpleSrc< T >::Notify(dataType data)
 {
     if (m_callback)
     {
@@ -90,7 +92,8 @@ void SimpleSrc<T>::Notify(dataType data)
     }
     else
     {
-        LOG_WRN("Notify->Invoke was called with no callback member inside the subject\n");
+        LOG_WRN("Notify->Invoke was called with no callback member inside the "
+                "subject\n");
     }
 }
 

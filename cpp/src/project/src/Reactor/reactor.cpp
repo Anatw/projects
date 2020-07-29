@@ -55,10 +55,10 @@ void Reactor::Add(HandleAndMode handle_and_mode,
 //     delete m_EventHandlers[index].
 // }
 
-// void Reactor::Remove(HandleAndMode handle_and_mode)
-// {
-//     this->m_EventHandlers[handle_and_mode].Unsubscribe(m_);
-// }
+void Reactor::Remove(HandleAndMode handle_and_mode)
+{
+    this->m_EventHandlers[handle_and_mode].Unsubscribe(m_);
+}
 
 // infinite loop that: call listen (after retrieving all the keys from the map),
 // recieve from it the resources that were beeing call, and than go to the map

@@ -9,16 +9,16 @@ Reviewer: Dean Oron
 #ifndef ILRD_RD8586_REACTOR_HPP
 #define ILRD_RD8586_REACTOR_HPP
 
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <map>
-#include <boost/function.hpp>
-#include <utility>
 #include <boost/core/noncopyable.hpp>
+#include <boost/function.hpp>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <utility>
+#include <vector>
 
-#include "advanced_subject.hpp"
 #include "advanced_observer.hpp"
+#include "advanced_subject.hpp"
 
 // The type of a handle is system specific. We're using UNIX so an handle is
 // represented by an integer
@@ -31,22 +31,23 @@ class IListener;
 //                     IListener class & functions:                           //
 ////////////////////////////////////////////////////////////////////////////////
 
-//The user may derieves from this class to define his own Listener class
+// The user may derieves from this class to define his own Listener class
 enum MODE
 {
     WRITE,
     READ,
     EXCEPTION
 };
-typedef boost::function<void(int)> HandleFunc;
-typedef std::pair<MODE, Handle> HandleAndMode;
-typedef std::pair<HandleAndMode, HandleFunc> KeyAndFunc;
+typedef boost::function< void(int) > HandleFunc;
+typedef std::pair< MODE, Handle > HandleAndMode;
+typedef std::pair< HandleAndMode, HandleFunc > KeyAndFunc;
 class IListener
 {
 public:
     virtual ~IListener(){};
     // to be implemented to work with "select":
-    virtual std::vector<HandleAndMode> Listen(const std::vector<HandleAndMode> &handle_and_mode) = 0;
+    virtual std::vector< HandleAndMode >
+    Listen(const std::vector< HandleAndMode >& handle_and_mode) = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +59,9 @@ class Reactor : private boost::noncopyable
 {
 public:
     // Reactor(IListener *listener) : m_Listener(listener), to_stop(0) {}
-    Reactor(IListener *listener) : m_Listener(listener) {}
+    Reactor(IListener* listener) : m_Listener(listener)
+    {
+    }
     ~Reactor();
 
     // This add() version is in case that the user has added a function, but
@@ -71,8 +74,11 @@ public:
     // we want to holds SimpleSrc(that object we will hold), that will point to
     // another object - Callback: Class SimpleSrc{} <-> class Callback{}
     // Callback can go out of scope.
-    void Add(HandleAndMode handle_and_mode, Callback<SimpleSrc<int> > *callback);
+    void Add(HandleAndMode handle_and_mode,
+             Callback< SimpleSrc< int > >* callback);
     // void Remove(HandleAndMode handle_and_mode);
+
+    void Remove(HandleAndMode handle_and_mode);
 
     void Run();
     void Stop();
@@ -83,9 +89,10 @@ private:
     // The map holds a function that shouold be activated for a specific
     // combination of MODE and Handle:
 
-    // SimpleSrc is pointing to the Callback onject, and it will not get out of scope.
-    std::map<HandleAndMode, SimpleSrc<int> *> m_EventHandlers;
-    IListener *const m_Listener;
+    // SimpleSrc is pointing to the Callback onject, and it will not get out of
+    // scope.
+    std::map< HandleAndMode, SimpleSrc< int >* > m_EventHandlers;
+    IListener* const m_Listener;
     // Listener m_listener;
     bool to_stop;
 };

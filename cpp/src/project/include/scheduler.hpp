@@ -2,15 +2,13 @@
 Scheduler (design pattern)
 Written by Anat Wax, anatwax@gmail.com
 Created: 21.7.20
-Reviewer:
+Reviewer: Kobi Rappaport
 *******************************************************************************/
 #ifndef ILRD_RD8586_SCHEDULER_HPP
 #define ILRD_RD8586_SCHEDULER_HPP
 
 #include <boost/noncopyable.hpp>
-
 #include <queue>
-// <std::vector< task >
 
 #include "fdtimer.hpp"
 
@@ -78,10 +76,6 @@ private:
     FDTimer m_timer;
     std::priority_queue< Task, std::vector< Task >, std::less< Task > > m_tasks;
 };
-
-////////////////////////////////////////////////////////////////////////////////
-///   inline functions implementation   ////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 } // namespace ilrd
 

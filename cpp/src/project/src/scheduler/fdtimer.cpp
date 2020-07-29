@@ -1,12 +1,10 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
-
-WS name
-Templates + STL (Histo)
+fdtimer.hpp (part of the Scheduler design pattern)
 Written by Anat Wax, anatwax@gmail.com
-Created: 15.6.20
-Reviewer:
+Created: 21.7.20
+Reviewer: Kobi Rappaport
 *******************************************************************************/
+#include <boost/bind.hpp>
 #include <iostream>   // cout, cin, cerr
 #include <sys/time.h> // itimerspec
 #include <sys/timerfd.h>
@@ -19,20 +17,41 @@ using namespace std;
 using namespace ilrd;
 
 FDTimer::FDTimer(Reactor& reactor, ActionFunc callback_func)
-    : m_reactor(reactor), m_callback(callback_func),
+    : m_reactor(&reactor),
+      m_callback(callback_func, boost::bind(&FDTimer::m_death_func, this)),
       m_fd(timerfd_create(CLOCK_REALTIME, 0))
 {
-    m_reactor.Add(HandleAndMode(READ, m_fd), &m_callback);
 
     if (0 > m_fd)
     {
         throw runtime_error(
             "Error in creating a new fd using timerfd_create()");
     }
+
+    try
+    {
+        m_reactor->Add(HandleAndMode(READ, m_fd), &m_callback);
+    }
+    catch (...)
+    {
+        close(m_fd);
+
+        throw runtime_error("error in add function insidr FDTimer\n");
+    }
+}
+
+void FDTimer::m_death_func()
+{
+    m_reactor = NULL;
 }
 
 FDTimer::~FDTimer()
 {
+    if (m_reactor)
+    {
+        m_reactor->Remove(HandleAndMode(READ, m_fd));
+    }
+
     close(m_fd);
 }
 
@@ -69,7 +88,3 @@ void FDTimer::Unset()
         throw runtime_error("error in Unset()");
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////
-//                           Inline functions:                                //
-////////////////////////////////////////////////////////////////////////////////

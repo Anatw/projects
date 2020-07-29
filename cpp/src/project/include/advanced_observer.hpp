@@ -1,8 +1,7 @@
 /*******************************************************************************
-
 Written by Anat Wax, anatwax@gmail.com
-Created: 9.7.20
-Reviewer:
+Created: 16.7.20
+Reviewer: Ivanna Fleisher
 *******************************************************************************/
 #ifndef ILRD_RD8586_ADVANCED_OBSERVER_HPP
 #define ILRD_RD8586_ADVANCED_OBSERVER_HPP
@@ -47,10 +46,6 @@ public:
 
     inline ~Callback();
 
-    // void InitializeFuncs(const CallbackPointer &func,
-    //                      const DeathPointer &death_pointer_func =
-    //                          detail::EmptyFunction);
-
 private: // for the friend
     struct FriendHelper
     {
@@ -79,14 +74,6 @@ Callback< SOURCE >::~Callback()
         m_source->Unsubscribe(this);
     }
 }
-
-// template < typename SOURCE >
-// void Callback< SOURCE >::InitializeFuncs(
-//     const CallbackPointer& func, const DeathPointer& stop_inform_func)
-// {
-//     m_func = func;
-//     m_death_func = stop_inform_func;
-// }
 
 ////////////////////////////////////////////////////////////////////////////////
 
