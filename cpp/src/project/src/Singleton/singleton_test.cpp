@@ -3,41 +3,45 @@ Singleton (design pattern)
 
 Written by Anat Wax, anatwax@gmail.com
 Created: 29.7.20
-Reviewer:
+Reviewer: Lior Cohen
 *******************************************************************************/
-#include <cstring>  // strlen()
-#include <fstream>  // ofstream
-#include <iostream> // cout, cin, cerr
-#include <mutex>
+#include <boost/thread/mutex.hpp>
+#include <cstring>   // strlen()
+#include <fstream>   // ofstream
+#include <iostream>  // cout, cin, cerr
+#include <pthread.h> // pthread_create()
 
 #include "singleton.hpp"
 
 using namespace std;
 using namespace ilrd;
 
-/*
-create Logger class that writes to a file.
-call it from different threads and during different timelines (on thread
-creation, global variable initialization, main, etc) obviously you can create
-any class you want or use an existing std class. but it is always fun to be
-creative with your tests
-*/
+#define COUNTER ('0')
 
 class Logger
 {
 public:
+    Logger();
     ~Logger();
+    void Open(const char* log_file);
     void Log(const char* massage);
 
 private:
-    Logger(string log_file);
     ofstream m_stream;
-    mutex m_mutex;
+    boost::mutex m_mutex;
 };
 
-Logger::Logger(string log_file) : m_stream(log_file, ofstream::out)
+Logger::Logger()
 {
-    m_stream.open(log_file);
+    std::cout << "inside ctor of Logger class" << std::endl;
+}
+
+void Logger::Open(const char* log_file)
+{
+    if (!m_stream.is_open())
+    {
+        m_stream.open(log_file, std::ios_base::app);
+    }
 }
 
 Logger::~Logger()
@@ -47,12 +51,64 @@ Logger::~Logger()
 
 void Logger::Log(const char* massage)
 {
-    m_stream.write(massage, strlen(massage));
+    // m_stream.write(massage, strlen(massage));
+    m_mutex.lock();
+    m_stream << massage << endl;
+    m_mutex.unlock();
+}
+
+void* PrintNumToLog(void* number)
+{
+    Logger* log = Singleton< Logger >::GetInstance();
+    static char num = COUNTER;
+    char* p_num = &num;
+
+    log->Open("log_file");
+
+    log->Log("inside PrintNumToLog, number = ");
+    log->Log(p_num);
+    ++num;
+
+    return (number);
+}
+
+void ThreadCreate()
+{
+    Logger* log = Singleton< Logger >::GetInstance();
+
+    log->Open("log_file");
+
+    log->Log("inside ThreadCreate");
+
+    pthread_t thread = 0;
+
+    if (pthread_create(&thread, NULL, &PrintNumToLog, NULL))
+    {
+        throw runtime_error("Error in pthread_create\n");
+    }
+
+    pthread_join(thread, NULL);
 }
 
 int main()
 {
     Logger* log = Singleton< Logger >::GetInstance();
+
+    Logger* second_log = Singleton< Logger >::GetInstance();
+
+    log->Open("log_file");
+
+    log->Log("hello new log");
+
+    ThreadCreate();
+    ThreadCreate();
+
+    second_log->Log("\nhello from second_log\n");
+
+    ThreadCreate();
+    ThreadCreate();
+
+    second_log->Log("\n\nEnd of main\n\n");
 
     return (0);
 }
