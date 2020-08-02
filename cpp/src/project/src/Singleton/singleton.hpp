@@ -51,11 +51,23 @@ int Singleton< T >::m_is_initializing = false;
 template < class T >
 T* Singleton< T >::GetInstance()
 {
+    // the "__atomic_fetch_or" will set the value using OR opperation and will
+    // return th pervious value that was inside the variable.
     if (false ==
         (__atomic_fetch_or(&m_is_initializing, true, __ATOMIC_SEQ_CST)))
     {
         __atomic_store_n(&m_instance, new T, __ATOMIC_SEQ_CST);
-        m_is_initializing = true;
+        m_is_initializing = false;
+    }
+    // if multiple threads will enter this section, only one will enter the if
+    // part and the rest will get stuck inside the else part until the end of
+    // the initializaion process (when m_is_initializing will be 'false' again).
+    else
+    {
+        while (true = m_is_initializing)
+        {
+            ;
+        }
     }
 
     assert(m_instance);
