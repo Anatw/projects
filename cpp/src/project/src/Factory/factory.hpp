@@ -1,11 +1,12 @@
 #ifndef ILRD_RD8586_FACTORY_HPP
 #define ILRD_RD8586_FACTORY_HPP
 
-/******************************************************************************
- * API FACTORY
- * 02.08.2020
- *
- ******************************************************************************/
+/*******************************************************************************
+Factory (design pattern)
+Written by Anat Wax, anatwax@gmail.com
+Created: 2.8.20
+Reviewer: Shmuel Sinder
+*******************************************************************************/
 
 #include "boost/core/noncopyable.hpp"
 #include <iostream>
@@ -60,7 +61,11 @@ BASE* Factory< KEY, BASE, PARAMS, BUILDER >::Create(KEY key,
     BASE* return_val = NULL;
     typename std::map< KEY, BUILDER >::const_iterator iter;
     iter = m_factory_creation.find(key);
-    if (m_factory_creation.end() != iter)
+    if (m_factory_creation.end() == iter)
+    {
+        throw std::runtime_error("key is not inside the map!");
+    }
+    else
     {
         return_val = iter->second(build_params);
     }

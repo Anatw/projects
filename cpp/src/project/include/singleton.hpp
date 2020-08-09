@@ -53,7 +53,8 @@ T* Singleton< T >::GetInstance()
 {
     // the "__atomic_fetch_or" will set the value using OR opperation and will
     // return th pervious value that was inside the variable.
-    if (NULL == m_instance)
+
+    if (!m_instance)
     {
         if (false ==
             (__atomic_fetch_or(&m_is_initializing, true, __ATOMIC_SEQ_CST)))
@@ -67,9 +68,9 @@ T* Singleton< T >::GetInstance()
         // 'false' again).
         else
         {
-            while (true = m_is_initializing)
+            while (true == m_is_initializing)
             {
-                ;
+                ; // spinlock...
             }
         }
     }

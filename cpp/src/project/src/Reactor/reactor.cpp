@@ -57,7 +57,7 @@ void Reactor::Add(HandleAndMode handle_and_mode,
 
 void Reactor::Remove(HandleAndMode handle_and_mode)
 {
-    this->m_EventHandlers[handle_and_mode].Unsubscribe(m_);
+    this->m_EventHandlers.erase(handle_and_mode);
 }
 
 // infinite loop that: call listen (after retrieving all the keys from the map),

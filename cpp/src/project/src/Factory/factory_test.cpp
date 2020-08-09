@@ -1,11 +1,8 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
-
-WS name
-Templates + STL (Histo)
+Factory (design pattern)
 Written by Anat Wax, anatwax@gmail.com
-Created: 15.6.20
-Reviewer:
+Created: 2.8.20
+Reviewer: Shmuel Sinder
 *******************************************************************************/
 #include <iostream> // cout, cin, cerr
 
@@ -17,10 +14,16 @@ Reviewer:
 #include "point.hpp"
 #include "rectangle.hpp"
 #include "shape.hpp"
+#include "singleton.hpp"
 #include "square.hpp"
 
 using namespace std;
 using namespace ilrd;
+
+Shape* circle = NULL;
+Shape* rectangle = NULL;
+Shape* square = NULL;
+Shape* line = NULL;
 
 struct Params
 {
@@ -31,8 +34,9 @@ struct Params
     int length_;
     int radius_;
     int edge_;
-    int length_;
 };
+
+typedef Singleton< Factory< string, Shape, Params > > ShapeFactory;
 
 Shape* DrawCircle(Params params)
 {
@@ -59,31 +63,44 @@ Shape* DrawSquare(Params params)
 Shape* DrawLine(Params params)
 {
     return (new Line(params.position_, params.angle_, params.color_,
-                     params.length_))
+                     params.length_));
 }
 
-int main()
+static void DrawShapes()
 {
-    // Params circle_parameters;
-    // Params params_p;
-    // circle_parameters.position_ = Point(0, 0);
-    // circle_parameters.angle_ = 27;
-    // circle_parameters.color_ = Color();
-    // circle_parameters.radius_ = 100;
+    circle->Draw();
+    rectangle->Draw();
+    line->Draw();
+    square->Draw();
+}
 
-    // Params rectangle_parameters;
-    // rectangle_parameters.position_ = Point(400, 400);
-    // rectangle_parameters.angle_ = 28;
-    // rectangle_parameters.color_ = Color();
-    // rectangle_parameters.width_ = 68;
-    // rectangle_parameters.length_ = 87;
+int main(int argc, char** argv)
+{
+    Params shape_params;
+    shape_params.position_ = Point(400, 400);
+    shape_params.angle_ = 28;
+    shape_params.color_ = Color();
+    shape_params.width_ = 68;
+    shape_params.length_ = 87;
+    shape_params.radius_ = 100;
+    shape_params.edge_ = 95;
 
-    shape_params(Point(400, 400), 27, Color(), 27, 28, 68, 87, 100);
+    // Factory< string, Shape, Params > shape_factory;
 
-    Factory< string, Shape, Params > shape_factory;
-    shape_factory.Add("circle", DrawCircle);
+    ShapeFactory::GetInstance()->Add("circle", DrawCircle);
+    circle = ShapeFactory::GetInstance()->Create("circle", shape_params);
 
-    Shape* circle = shape_factory.Create("circle", shape_params);
+    ShapeFactory::GetInstance()->Add("rectangle", DrawRectangle);
+    rectangle = ShapeFactory::GetInstance()->Create("rectangle", shape_params);
+
+    ShapeFactory::GetInstance()->Add("square", DrawSquare);
+    square = ShapeFactory::GetInstance()->Create("square", shape_params);
+
+    ShapeFactory::GetInstance()->Add("line", DrawLine);
+    line = ShapeFactory::GetInstance()->Create("line", shape_params);
+
+    DrawInit(argc, argv, 1000, 1000, DrawShapes);
+    DrawMainLoop();
 
     return (0);
 }
