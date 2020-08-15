@@ -26,7 +26,7 @@ struct Request
     uint64_t m_uid;
     uint64_t m_index;
     char m_data[1];
-};
+} __attribute__((packed));
 
 struct Response
 {
@@ -36,10 +36,10 @@ struct Response
     }
 
     char m_mode;
-    char m_status;
     uint64_t m_uid;
+    char m_status;
     char m_data[1];
-};
+} __attribute__((packed));
 
 } // namespace ilrd
 

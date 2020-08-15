@@ -46,6 +46,8 @@ size_t MaxSum(node_t* current)
     return (Max(MaxSum(current->left), MaxSum(current->right)) + current->data);
 }
 
+
+// same function, this one with a static variable 
 size_t MaxSumS(node_t* current)
 {
     static size_t sum = 0;

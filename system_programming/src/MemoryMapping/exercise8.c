@@ -5,12 +5,12 @@
                           Reviewer:
 *******************************************************************************/
 
-#include <stdio.h> /* printf(), size_t */
+#include <fcntl.h>   /* For O_* constants */
 #include <pthread.h> /* pthread_t, pthread_create(), ptherad_mutex_t, pthread_mutex_init(), pthread_mutex_unlock() */
 #include <semaphore.h> /* sem_init(), se,_destroy(), sem_wait(), sem_post(), sem_trywait(), sem_getvalue() */
-#include <fcntl.h>           /* For O_* constants */
 #include <stdatomic.h> /* atomic_int */
-#include <unistd.h> /* ssize_t, sleep(), execvp(), fork() */
+#include <stdio.h>     /* printf(), size_t */
+#include <unistd.h>    /* ssize_t, sleep(), execvp(), fork() */
 
 #include "utility.h"
 
@@ -29,8 +29,8 @@ atomic_int massage = 0;
 int counter = 0;
 
 /**** Declaring threads functions: ****/
-void *ProducerFunc(void *unused);
-void *ConsumerFunc(void *unused);
+void* ProducerFunc(void* unused);
+void* ConsumerFunc(void* unused);
 
 int main()
 {
@@ -56,7 +56,7 @@ int main()
         printf("ERROR in pthread_create (producer)\n");
         return (1);
     }
-    
+
     for (i = 0; i < NUM_CONSUMER; ++i)
     {
         if (pthread_create(&consumer_string[i], NULL, &ConsumerFunc, NULL))
@@ -80,9 +80,9 @@ int main()
 
 /**** Defining threads functions: ****/
 
-void *ProducerFunc(void *unused)
+void* ProducerFunc(void* unused)
 {
-    
+
     int variables = 0;
     sem_post(&semaphore);
     pthread_mutex_lock(&lock);
@@ -90,9 +90,11 @@ void *ProducerFunc(void *unused)
     UNUSED(unused);
 
     printf("ProducerFunc - variables address: %p\t\n", &variables);
-    printf("ProducerFunc - pthread_mutex_lock address: %p\t\n", &pthread_mutex_lock);
-    
-    /* Enter this while-loop only if this is the beggining of the program and no producer thread has executed yet: */
+    printf("ProducerFunc - pthread_mutex_lock address: %p\t\n",
+           &pthread_mutex_lock);
+
+    /* Enter this while-loop only if this is the beggining of the program and no
+     * producer thread has executed yet: */
     while (0 == counter)
     {
         printf("Waiting on conditional variable 'guard'\n");
@@ -105,25 +107,23 @@ void *ProducerFunc(void *unused)
 
 /************************************/
 
-void *ConsumerFunc(void *unused)
+void* ConsumerFunc(void* unused)
 {
     int variables = 0;
     /* this variable is visibale only inside a thread - TLS area: */
     static pthread_key_t key;
     UNUSED(unused);
     pthread_key_create(&key, NULL);
-    
-    
+
     sem_wait(&semaphore);
     ++counter;
     printf("Thread #%d, massage: %d\n", counter, (massage + counter));
 
- printf("ProducerFunc - (local)variables address: %p\t\n", &variables);
+    printf("ProducerFunc - (local)variables address: %p\t\n", &variables);
     printf("ConsumerFunc - sem_wait address: %p\t\n", &sem_wait);
     printf("ConsumerFunc - semaphore address: %p\t\n", &semaphore);
     printf("ConsumerFunc - key address: %p\t\n", &key);
- 
-    
+
     if (NUM_CONSUMER == counter)
     {
         pthread_cond_broadcast(&guard);

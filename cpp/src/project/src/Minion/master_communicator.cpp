@@ -5,6 +5,7 @@ Created: 6.8.20
 Reviewer: Haim Sa'adia
 *******************************************************************************/
 #include <boost/bind.hpp>
+#include <endian.h> // htobe64
 #include <iostream> // cout, cin, cerr
 #include <new>      // operator new
 
@@ -44,6 +45,8 @@ void MasterCommunicator::ReadRequest(int fd) const
     }
 
     Request* request = (Request*)buffer;
+    request->m_index =
+        htobe64(request->m_index); // switch endianess to network endianess
 
     m_arFunc(*request);
 
@@ -52,11 +55,20 @@ void MasterCommunicator::ReadRequest(int fd) const
 
 void MasterCommunicator::Reply(const Response& response) const
 {
+    int msg_size = 0;
+    if (0 == response.m_mode) // read mode
+    {
+        msg_size = MAX_BLOCK_SIZE + offsetof(Response, m_data);
+    }
+    else // write mode
+    {
+        msg_size = offsetof(Response, m_data);
+    }
+
     if (0 >
-        (sendto(m_udpConnector.GetFD(), &response,
-                (MAX_BLOCK_SIZE + sizeof(response)), MSG_CONFIRM,
+        (sendto(m_udpConnector.GetFD(), &response, msg_size, MSG_CONFIRM,
                 (struct sockaddr*)&m_master_address, sizeof(m_master_address))))
     {
-        throw runtime_error("error in master communicator (Replay())");
+        throw runtime_error("error in master communicator (Reply())");
     }
 }
