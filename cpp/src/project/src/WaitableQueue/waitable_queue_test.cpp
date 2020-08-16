@@ -31,14 +31,15 @@ void PrintQueue()
 {
     cout << "entring PrintQueue()" << endl;
 
-    size_t size = q.GetSize();
+    size_t size = q.GetQueueSize();
     int temp_value = 0;
     bool status = 0;
 
     for (size_t i = 0; i < size; ++i)
     {
-        status = q.Pop(temp_value,
-                       WaitableQueue< std::queue< int >, int >::Millisec(3001));
+        status =
+            q.Pop(temp_value,
+                  WaitableQueue< std::queue< int >, int >::Millisec(30001));
         if (status)
         {
             cout << temp_value << endl;

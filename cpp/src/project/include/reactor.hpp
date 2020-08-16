@@ -38,9 +38,11 @@ enum MODE
     READ,
     EXCEPTION
 };
+
 typedef boost::function< void(int) > HandleFunc;
 typedef std::pair< MODE, Handle > HandleAndMode;
 typedef std::pair< HandleAndMode, HandleFunc > KeyAndFunc;
+
 class IListener
 {
 public:

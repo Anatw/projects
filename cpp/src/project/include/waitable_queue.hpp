@@ -7,7 +7,7 @@ Reviewer: Haim Sa'adia
 compile with -lboost_system -lboost_chrono -lpthread -lboost_thread
 [
     pd waitable_queue.hpp waitable_queue_test.cpp -lboost_system -lboost_chrono
--lpthread -lboost_thread
+-lpthread -lboost_thread -lboost_thread
 ]
 *******************************************************************************/
 #ifndef __ILRD_RD8586_WAITABLE_QUEUE_HPP_
@@ -32,36 +32,34 @@ public:
     // default Ctor and Dtor
 
     void Push(const T& val);
+
     // If the queue is empty the thread will be blocked until a new data is
     // added to the queue - and than the data will be poped.
+    void Pop(T& peaked_value);
 
-    void Pop(T& peaked_value); // will use front and pop
+    // will use front and pop
     // if the queue is empty the thread will be blocked for a defined amount of
     // time.
-
     bool Pop(T& peaked_value, Millisec timeout);
 
-    bool Empty() const; // please make sur to use in a thread-safe environment
+    bool Empty();
 
-    size_t GetQueueSize();
+    inline size_t GetQueueSize()
+    {
+        boost::unique_lock< boost::mutex > lock(m_mutex);
+        return (m_queue.size());
+    }
 
 private:
     QUEUE m_queue;
-    boost::condition_variable m_pushflag; // use boost::unique_lock
-    boost::mutex m_mutex;                 // use boost::unique_lock
-};
-
-template < class QUEUE, typename T >
-size_t WaitableQueue< QUEUE, T >::GetQueueSize()
-{
-    return (m_queue.size());
-}
+    boost::condition_variable m_pushflag;
+    boost::mutex m_mutex;
+}; // namespace ilrd
 
 template < class QUEUE, typename T >
 void WaitableQueue< QUEUE, T >::Push(const T& val)
 {
     // the scoped_lock is automatically unlock when is out of scope
-    // boost::mutex::scoped_lock lock(m_mutex);
     boost::unique_lock< boost::mutex > lock(m_mutex);
 
     // if the queue was empty, than the condition variable should be notified -
@@ -84,7 +82,6 @@ void WaitableQueue< QUEUE, T >::Push(const T& val)
 template < class QUEUE, typename T >
 void WaitableQueue< QUEUE, T >::Pop(T& peaked_value)
 {
-    // boost::mutex::scoped_lock lock(m_mutex);
     boost::unique_lock< boost::mutex > lock(m_mutex);
 
     // lock the conditional variable while the queue is empty
@@ -101,13 +98,6 @@ void WaitableQueue< QUEUE, T >::Pop(T& peaked_value)
 template < class QUEUE, typename T >
 bool WaitableQueue< QUEUE, T >::Pop(T& peaked_value, Millisec timeout)
 {
-    // boost::system_time const time_to_wake = boost::get_system_time() +
-    // timeout;
-
-    // boost::system_time const time_to_wake =
-    //     boost::get_system_time() + boost::posix_time::milliseconds(500);
-
-    // boost::mutex::scoped_lock lock(m_mutex);
     boost::unique_lock< boost::mutex > lock(m_mutex);
 
     while (m_queue.empty())
@@ -117,11 +107,6 @@ bool WaitableQueue< QUEUE, T >::Pop(T& peaked_value, Millisec timeout)
         {
             return false;
         }
-
-        // if (m_pushflag.wait_for(lock, timeout))
-        // {
-        //     return false;
-        // }
     }
 
     peaked_value = m_queue.front();
@@ -130,7 +115,7 @@ bool WaitableQueue< QUEUE, T >::Pop(T& peaked_value, Millisec timeout)
     return true;
 }
 template < class QUEUE, typename T >
-bool WaitableQueue< QUEUE, T >::Empty() const
+bool WaitableQueue< QUEUE, T >::Empty()
 {
     boost::unique_lock< boost::mutex > lock(m_mutex);
 

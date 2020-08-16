@@ -16,7 +16,7 @@ using namespace ilrd;
 
 int main()
 {
-    Minion(1234, 10, 4567);
+    Minion minion(1234, 10, 4567);
 
     return (0);
 }
