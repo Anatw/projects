@@ -11,13 +11,8 @@ Written by Anat Wax, anatwax@gmail.com
 Created: 11.8.20
 
 *******************************************************************************/
-#include <assert.h> /* assert() */
-#include <stddef.h> /* offsetof(), size_t */
 #include <stdio.h>  /* printf(), size_t */
-#include <stdlib.h> /* malloc(), free(), abs(), size_t */
 #include <string.h> /* size_t, atoi(), memset() */
-#include <time.h>   /* time, size_t, srand() */
-#include <unistd.h> /* ssize_t, sleep(), execvp(), fork() */
 
 void MultipleArray(int array_a[], int array_b[], size_t n)
 {
@@ -37,6 +32,11 @@ void MultipleArray(int array_a[], int array_b[], size_t n)
 
             ++count_zeros;
             ++i;
+
+            if (count_zeros >= 2)
+            {
+                break;
+            }
         }
 
         total_sum *= array_a[i];
@@ -49,17 +49,18 @@ void MultipleArray(int array_a[], int array_b[], size_t n)
             array_b[i] = total_sum / array_a[i];
         }
     }
-    else if (1 < count_zeros) /* at least 1 zero */
+    else if (2 <= count_zeros) /* at least 2 zeros */
     {
-        for (i = 0; i < n; ++i)
+        /*for (i = 0; i < n; ++i)
         {
             array_b[i] = 0;
-        }
+        }*/
+        memset(array_b, 0, n);
     }
     else /* count_zeros = 1 - all should be 0s, and the one how is '0' should be
             the rest */
     {
-        for (i = 0; i < n; ++i)
+        /*for (i = 0; i < n; ++i)
         {
             if (i != first_zero)
             {
@@ -69,7 +70,9 @@ void MultipleArray(int array_a[], int array_b[], size_t n)
             {
                 array_b[i] = total_sum;
             }
-        }
+        }*/
+        memset(array_b, 0, n);
+        array_b[first_zero] = total_sum;
     }
 }
 
