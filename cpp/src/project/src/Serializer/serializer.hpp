@@ -12,6 +12,9 @@ Reviewer:
 #include <boost/noncopyable.hpp> // boost::noncopyable
 #include <boost/shared_ptr.hpp>
 #include <iostream> // std::cout, std::ostream, std::ios
+#include <string.h>
+
+#include "factory.hpp"
 
 namespace ilrd
 {
@@ -35,27 +38,45 @@ private:
 //                       function implementation:                             //
 ////////////////////////////////////////////////////////////////////////////////
 
-template < class DERIVED >
 template < class BASE >
-void Serializer< DERIVED >::Add()
+template < class DERIVED >
+void Serializer< BASE >::Add()
 {
+    m_factory.Add(typeid(DERIVED).name(), &Creator< DERIVED >);
 }
 
 template < class BASE >
 void Serializer< BASE >::Serialize(const BASE& obj, std::ostream& os) const
 {
+    os << typeid(obj).name() << "|";
+    obj << os;
 }
 
 template < class BASE >
 boost::shared_ptr< BASE >
 Serializer< BASE >::Deserialize(std::istream& is) const
 {
+    std::string str;
+    is >> str;
+
+    size_t seperator_location = str.find("|");
+    std::string name = str.substr(0, seperator_location);
+    std::string params = str.substr(seperator_location + 1);
+    is.seekg(seperator_location, is.beg());
+
+    Serializer< BASE >::m_factory.Create(name, is);
 }
 
-template < class DERIVED >
 template < class BASE >
-BASE* Serializer< DERIVED >::Creator(std::istream& is)
+template < class DERIVED >
+BASE* Serializer< BASE >::Creator(std::istream& is)
 {
+    // Creating a blanc object that will be filled with the istream content:
+    BASE* base = new DERIVED();
+
+    *base >> is;
+
+    return (base);
 }
 
 } // namespace ilrd
