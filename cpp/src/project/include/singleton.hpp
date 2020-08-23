@@ -56,11 +56,14 @@ T* Singleton< T >::GetInstance()
 
     if (!m_instance)
     {
+        // This will change the value inside m_is_initializing to true, and will
+        // check if it was priviously "false":
         if (false ==
             (__atomic_fetch_or(&m_is_initializing, true, __ATOMIC_SEQ_CST)))
         {
             __atomic_store_n(&m_instance, new T, __ATOMIC_SEQ_CST);
-            m_is_initializing = false;
+            atexit(Singleton::CleanUp);
+            __atomic_fetch_and(&m_is_initializing, false, __ATOMIC_SEQ_CST);
         }
         // if multiple threads will enter this section, only one will enter the
         // if part and the rest will get stuck inside the else part until the
@@ -68,7 +71,10 @@ T* Singleton< T >::GetInstance()
         // 'false' again).
         else
         {
-            while (true == m_is_initializing)
+            // "__atomic_fetch_and" will check if the variable
+            // (m_is_initializing) has the value specified (true)
+            while (
+                __atomic_fetch_and(&m_is_initializing, true, __ATOMIC_SEQ_CST))
             {
                 ; // spinlock...
             }

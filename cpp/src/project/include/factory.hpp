@@ -1,14 +1,13 @@
-#ifndef ILRD_RD8586_FACTORY_HPP
-#define ILRD_RD8586_FACTORY_HPP
-
 /*******************************************************************************
 Factory (design pattern)
 Written by Anat Wax, anatwax@gmail.com
 Created: 2.8.20
 Reviewer: Shmuel Sinder
 *******************************************************************************/
+#ifndef ILRD_RD8586_FACTORY_HPP
+#define ILRD_RD8586_FACTORY_HPP
 
-#include "boost/core/noncopyable.hpp"
+#include <boost/core/noncopyable.hpp>
 #include <iostream>
 #include <map>
 

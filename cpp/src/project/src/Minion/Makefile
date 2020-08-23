@@ -9,13 +9,13 @@ INC_DIR:=-I ../../include
 OBJ_LIB:=#../../obj/
  
 LIB := #doubly_linked_list.o 
-OBJ :=$(NAME).cpp $(NAME)_test.cpp  udp_connector.cpp master_communicator.cpp ../Reactor/reactor.cpp
+OBJ :=$(NAME).cpp $(NAME)_test.cpp  udp_connector.cpp master_communicator.cpp ../Reactor/reactor.cpp ../Logger/logger.cpp ../derived_listener.cpp command.cpp
  
 # $@ -> the file name of the target of the rule
 # $< -> the first item in the Dependencies list
 # Compiles each of the object files as separate targets
 %.o: %.c $(DEPS)
-	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS) 
+	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS) -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
 
 # -o $@ -> Tells make to put the output in a file named after the target
 # $^ 	-> all of the file names in $(OBJ) separated by a space
@@ -23,11 +23,11 @@ OBJ :=$(NAME).cpp $(NAME)_test.cpp  udp_connector.cpp master_communicator.cpp ..
 # -fopenmp added for pragme in openmp
 test: $(OBJ)
 	@echo 
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
 	./a.out
 
 testwithoutrun: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
 
 .PHONY: clean
 

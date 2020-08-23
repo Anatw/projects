@@ -9,13 +9,20 @@ Reviewer: Daria Korotkova
 
 #include <boost/noncopyable.hpp> // boost::noncopyable
 
+#include "command.hpp"
+#include "factory.hpp"
+#include "logger.hpp"
 #include "master_communicator.hpp"
 #include "protocol.hpp"
 #include "reactor.hpp"
 #include "storage.hpp"
 
+#define COMMAND_FACTORY                                                        \
+    (Singleton< Factory< char, BaseCommand, Params > >::GetInstance())
+
 namespace ilrd
 {
+
 class Minion : private boost::noncopyable
 {
 public:

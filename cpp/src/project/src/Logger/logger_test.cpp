@@ -15,7 +15,11 @@ using namespace ilrd;
 
 int main()
 {
-    LOG_ERROR("this is a messge");
+    LOG_ERROR("this is an error messge");
+    LOG_WARNING("this is a warning messge");
+    LOG_INFO("this is an info messge");
+    LOG_DEBUG("this is a debug messge");
+
     sleep(1);
 
     return (0);

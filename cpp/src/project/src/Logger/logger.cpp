@@ -1,9 +1,9 @@
 /*******************************************************************************
-Logger (will be used inside the Minion
+Logger (will be used inside the Minion).
 
 Written by Anat Wax, anatwax@gmail.com
 Created: 17.8.20
-Reviewer:
+Reviewer: Haim Sa'adia
 *******************************************************************************/
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
@@ -23,46 +23,63 @@ void Logger::PushMessage(LogLevel log_level, std::string msg)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Logger::Logger() : m_filename(getenv("LOGGERNAME"))
+Logger::Logger()
+    : m_log_thread(boost::bind(&Logger::PrintMessageIntoLogfile, this))
 {
-    m_log_thread =
-        boost::thread(boost::bind(&Logger::PrintMessageIntoLogfile, this));
+    char* file_name = getenv("LOGGERNAME");
+    if (file_name)
+    {
+        m_filename = file_name;
+    }
+    else
+    {
+        throw std::runtime_error(
+            "file name as environment variable was not defined\n");
+    }
+
+    try
+    {
+        m_pFile.open(m_filename, std::fstream::app);
+    }
+    catch (std::ifstream::failure e)
+    {
+        char msg_buffer[512] = {0};
+        sprintf(msg_buffer, "Exception in opening m_pFile: %s\n", e.what());
+        LOG_ERROR(msg_buffer);
+
+        throw std::runtime_error("Exception in opening m_pFile\n");
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 Logger::~Logger()
 {
-    std::ofstream m_pFile(m_filename);
+    while (!m_wqueue.Empty())
+    {
+        ; // spinlock
+    }
+
+    m_log_thread.interrupt();
 
     m_log_thread.join();
 
-    m_pFile.close();
+    try
+    {
+        m_pFile.close();
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR("inside ~Logger(): failure in close()");
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 void Logger::PrintMessageIntoLogfile()
 {
-    std::ofstream m_pFile;
+    LOG_INFO("Logger was initialized\n");
 
-    if (!m_pFile)
-    {
-        std::cout << "error" << std::endl;
-    }
-
-    // m_pFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    try
-    {
-        // m_pFile.open(getenv(m_filename), std::fstream::in | std::fstream::out
-        // |
-        //  std::fstream::trunc);
-        m_pFile.open(m_filename, std::ofstream::app);
-    }
-    catch (std::ifstream::failure e)
-    {
-        throw std::runtime_error("Exception opening/reading/closing m_pFile\n");
-    }
     while (true)
     {
         Logger::Message msg;
@@ -91,12 +108,10 @@ void Logger::PrintMessageIntoLogfile()
             break;
         }
 
-        time_t now = time(0);
-        m_pFile << "Type: " << msg.m_error << ". Message: " << msg.m_string
-                << ". Date: " << ctime(time(0)) << std::endl;
+        m_pFile << "Type: " << error_msg << ". Message: " << msg.m_string
+                << ". Date: " << std::ctime(&t) << std::endl;
 
         m_pFile.flush(); // insert the written data into the log file
-        m_pFile.close();
     }
 }
 
@@ -107,7 +122,3 @@ Logger::Message::Message(LogLevel llevel, std::string message)
       m_timepoint(boost::chrono::system_clock::now())
 {
 }
-
-////////////////////////////////////////////////////////////////////////////////
-//                           Inline functions:                                //
-////////////////////////////////////////////////////////////////////////////////

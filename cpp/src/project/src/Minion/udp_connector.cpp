@@ -35,11 +35,28 @@ UDPConnector::UDPConnector(int port)
                  sizeof(server_address)))
     {
         close(m_fd);
+
+        char log_msg[MSG_SIZE] = {0};
+        sprintf(log_msg, "%s: inside UDPConnector(): Error in bind()",
+                __FILE__);
+        LOG_ERROR(log_msg);
+
         throw runtime_error("error in bind function");
     }
+
+    char log_msg[MSG_SIZE] = {0};
+    sprintf(log_msg,
+            "%s: inside UDPConnector(): Finished binding process with port no. "
+            "%d. m_fd = %d",
+            __FILE__, port, m_fd);
+    LOG_INFO(log_msg);
 }
 
 UDPConnector::~UDPConnector()
 {
+    char log_msg[MSG_SIZE] = {0};
+    sprintf(log_msg, "%s: inside ~UDPConnector(): Dtor activated", __FILE__);
+    LOG_INFO(log_msg);
+
     close(m_fd);
 }

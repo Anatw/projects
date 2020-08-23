@@ -4,10 +4,15 @@ Written by Anat Wax, anatwax@gmail.com
 Created: 4.8.20
 Reviewer: Shumuel Sinder
 *******************************************************************************/
+#ifndef ILRD_RD8586_STORAGE_HPP
+#define ILRD_RD8586_STORAGE_HPP
+
 #include <assert.h>
 #include <boost/noncopyable.hpp>
 #include <fstream>
 #include <iostream> // cout, cin, cerr
+
+#include "logger.hpp"
 
 namespace ilrd
 {
@@ -52,17 +57,24 @@ Storage< BLOCK_SIZE >::Storage(size_t num_blocks)
     std::fstream storage_file;
     storage_file.open("storage_file.txt");
     storage_file.close();
+
+    LOG_INFO("inside Storage(): opened a storage file - 'storage_file.txt'");
 }
 
 template < size_t BLOCK_SIZE >
 void Storage< BLOCK_SIZE >::Write(size_t index, const void* src)
 {
+    std::cout << "index:\n\n" << index << std::endl;
     assert(index <= m_blocks_capacity);
 
     std::fstream storage_file;
     storage_file.open("storage_file.txt");
     storage_file.seekp((index * BLOCK_SIZE), std::fstream::beg);
     storage_file.write(static_cast< const char* >(src), BLOCK_SIZE);
+
+    char log_msg[MSG_SIZE] = {0};
+    sprintf(log_msg, "%s: inside Write(): wrote to index %ld", __FILE__, index);
+    LOG_INFO(log_msg);
 
     storage_file.close();
 }
@@ -77,7 +89,14 @@ void Storage< BLOCK_SIZE >::Read(size_t index, void* dest) const
     storage_file.seekg((index * BLOCK_SIZE), std::fstream::beg);
     storage_file.read(static_cast< char* >(dest), BLOCK_SIZE);
 
+    char log_msg[MSG_SIZE] = {0};
+    sprintf(log_msg, "%s: inside Read(): reading from index %ld", __FILE__,
+            index);
+    LOG_INFO(log_msg);
+
     storage_file.close();
 }
 
 } // namespace ilrd
+
+#endif // ILRD_RD8586_STORAGE_HPP

@@ -11,6 +11,7 @@ Reviewer: Daria Korotkova
 #include <unistd.h>
 
 #include "boost/core/noncopyable.hpp"
+#include "logger.hpp"
 
 namespace ilrd
 {

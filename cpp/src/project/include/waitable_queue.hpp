@@ -99,11 +99,12 @@ template < class QUEUE, typename T >
 bool WaitableQueue< QUEUE, T >::Pop(T& peaked_value, Millisec timeout)
 {
     boost::unique_lock< boost::mutex > lock(m_mutex);
+    boost::system_time this_time = boost::get_system_time() + timeout;
 
     while (m_queue.empty())
     {
         // boost::systemtime
-        if (!m_pushflag.timed_wait(lock, timeout))
+        if (!m_pushflag.timed_wait(lock, this_time))
         {
             return false;
         }

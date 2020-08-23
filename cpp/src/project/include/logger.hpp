@@ -1,3 +1,10 @@
+/*******************************************************************************
+Logger (will be used inside the Minion).
+
+Written by Anat Wax, anatwax@gmail.com
+Created: 17.8.20
+Reviewer: Haim Sa'adia
+*******************************************************************************/
 #ifndef __ILRD_RD8586_LOGGER_HPP__
 #define __ILRD_RD8586_LOGGER_HPP__
 
@@ -13,6 +20,8 @@
 
 namespace ilrd
 {
+
+#define MSG_SIZE (512)
 
 class Logger
 {
@@ -60,10 +69,8 @@ private:
                    Message >
         m_wqueue;
     char* m_filename;
-    std::ofstream m_pFile;
+    std::fstream m_pFile;
     boost::thread m_log_thread;
-    // to set up in the constructor to run PrintMessageIntoLogfile:
-    boost::thread m_thread;
 };
 
 #define LOG_ERROR(msg)                                                         \

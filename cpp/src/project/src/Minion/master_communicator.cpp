@@ -21,11 +21,14 @@ MasterCommunicator::MasterCommunicator(int port, Reactor& reactor,
       m_callback(boost::bind(&MasterCommunicator::ReadRequest, this, _1))
 {
     m_reactor.Add(make_pair(READ, m_udpConnector.GetFD()), &m_callback);
+
+    LOG_INFO("Finished Ctor of MasterCommunicator\n");
 }
 
 MasterCommunicator::~MasterCommunicator()
 {
     m_reactor.Remove(make_pair(READ, m_udpConnector.GetFD()));
+    LOG_INFO("Finished Dtor of MasterCommunicator\n");
 }
 
 void MasterCommunicator::ReadRequest(int fd) const
@@ -41,6 +44,12 @@ void MasterCommunicator::ReadRequest(int fd) const
                  recvfrom(fd, buffer, size, MSG_WAITALL,
                           (struct sockaddr*)&m_master_address, &addr_len)))
     {
+        char log_msg[MSG_SIZE] = {0};
+        sprintf(log_msg,
+                "%s: inside ReadRequest(): error in read request (recvfrom())",
+                __FILE__);
+        LOG_ERROR(log_msg);
+
         throw runtime_error("error in read request (recvfrom())");
     }
 
@@ -49,6 +58,13 @@ void MasterCommunicator::ReadRequest(int fd) const
         htobe64(request->m_index); // switch endianess to network endianess
 
     m_arFunc(*request);
+
+    char log_msg[MSG_SIZE] = {0};
+    sprintf(log_msg,
+            "%s: inside ReadRequest(): Request read from MasterCommunicator "
+            "and was sent to Request()[m_mode = %c]",
+            __FILE__, request->m_mode);
+    LOG_INFO(log_msg);
 
     delete request;
 }

@@ -59,7 +59,7 @@ int main()
     boost::thread inserter[5];
 
     boost::thread thread_to_stuck(PopWhenEmpty);
-    // this will leace the program stuck because I'm
+    // this will stuck the program because I'm
     // tryng to pop an empty queue:
     // thread_to_stuck.join();
 

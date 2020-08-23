@@ -9,6 +9,7 @@ Reviewer: Haim Sa'adia
 
 #include <boost/noncopyable.hpp> // boost::noncopyable
 
+#include "logger.hpp"
 #include "protocol.hpp"
 #include "reactor.hpp"
 #include "udp_connector.hpp"

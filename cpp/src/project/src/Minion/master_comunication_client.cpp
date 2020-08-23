@@ -86,5 +86,7 @@ int main()
 
     close(sockfd);
 
+    delete buffer;
+
     return 0;
 }

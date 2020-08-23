@@ -7,6 +7,8 @@ Created: August 20
 
 #include <vector>
 
+#include "reactor.hpp"
+
 #ifndef __ILRD_RD8586_DERIVED_LISTENER_HPP_
 #define __ILRD_RD8586_DERIVED_LISTENER_HPP__
 
