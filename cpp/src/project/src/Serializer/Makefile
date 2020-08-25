@@ -2,20 +2,20 @@
 # Makefile - Version 4
 NAME:=serializer
 CC=g++
-CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
+CFLAGS=-std=c++11 -pedantic-errors -Wall -Wextra -g#pd#
 F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#
-DEPS=#hash_table.h
-INC_DIR:=-I ../../include -I /home/anat/git/anat-wax/cpp/src/Shapes/include
-OBJ_LIB:=#../../obj/
+DEPS=./include/*.hpp
+INC_DIR:=-I ../../include 
+OBJ_LIB:=
  
-LIB := #doubly_linked_list.o
-OBJ :=$(NAME).cpp# $(NAME)_test.cpp
+LIB:=# /home/anat/git/anat-wax/cpp/src/Shapes/src/point.cpp
+OBJ :=$(NAME).cpp shape.cpp circle.cpp color.cpp# $(NAME)_test.cpp
  
 # $@ -> the file name of the target of the rule
 # $< -> the first item in the Dependencies list
 # Compiles each of the object files as separate targets
 %.o: %.c $(DEPS)
-	$(CC) $(OBJ) $(INC_DIR) -L$(OBJ_LIB)$(LIB) -c -o $@ $< $(CFLAGS)  -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
+	$(CC) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -L shapes.so ./ -c -o $@ $< $(CFLAGS) libpoint.a libglut_utils.so -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
 
 # -o $@ -> Tells make to put the output in a file named after the target
 # $^ 	-> all of the file names in $(OBJ) separated by a space
@@ -23,11 +23,11 @@ OBJ :=$(NAME).cpp# $(NAME)_test.cpp
 # -fopenmp added for pragme in openmp
 test: $(OBJ)
 	@echo 
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) libpoint.a libglut_utils.so -o a.out -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
 	./a.out
 
 testwithoutrun: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
+	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) libpoint.a libglut_utils.so -o a.out -lboost_system -lboost_chrono  -lboost_system -lboost_chrono -lpthread -lboost_thread
 
 .PHONY: clean
 

@@ -48,7 +48,7 @@ void Serializer< BASE >::Add()
 template < class BASE >
 void Serializer< BASE >::Serialize(const BASE& obj, std::ostream& os) const
 {
-    os << typeid(obj).name() << "|";
+    os << typeid(obj).name() << ' ';
     obj << os;
 }
 
@@ -56,23 +56,20 @@ template < class BASE >
 boost::shared_ptr< BASE >
 Serializer< BASE >::Deserialize(std::istream& is) const
 {
-    std::string str;
-    is >> str;
+    std::string key;
+    is >> key;
 
-    size_t seperator_location = str.find("|");
-    std::string name = str.substr(0, seperator_location);
-    std::string params = str.substr(seperator_location + 1);
-    is.seekg(seperator_location, is.beg());
+    boost::shared_ptr< BASE > base_ptr(
+        Serializer< BASE >::m_factory.Create(key, is));
 
-    Serializer< BASE >::m_factory.Create(name, is);
+    return (base_ptr);
 }
-
 template < class BASE >
 template < class DERIVED >
 BASE* Serializer< BASE >::Creator(std::istream& is)
 {
     // Creating a blanc object that will be filled with the istream content:
-    BASE* base = new DERIVED();
+    DERIVED* base = new DERIVED();
 
     *base >> is;
 

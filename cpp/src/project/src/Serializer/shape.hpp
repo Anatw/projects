@@ -7,6 +7,7 @@
 #ifndef ILRD_RD8586_SHAPES_HPP
 #define ILRD_RD8586_SHAPES_HPP
 
+#include <boost/lexical_cast.hpp>
 #include <cmath> // M_PI
 #include <string>
 
@@ -32,18 +33,18 @@ public:
     inline Point GetPosition() const;
     inline void SetPosition(const Point position);
 
-    inline int GetColor() const;
-    inline void SetColor(const Color rgb);
-
     inline double GetAngle() const;
     inline void SetAngle(const double angle_);
+
+    inline int GetColor() const;
+    inline void SetColor(const Color rgb);
 
     virtual void Rotate_m(const double delta_angle);
     virtual void Revolve_m(const Point& c_point, double angle);
     virtual void Move_m(const Point& vector);
 
-    virtual std::ostream& operator<<(std::ostream& os) const = 0;
-    virtual std::istream& operator>>(std::istream& is) = 0;
+    virtual std::ostream& operator<<(std::ostream& os) const;
+    virtual std::istream& operator>>(std::istream& is);
 
 private:
     virtual void DrawInternal() const

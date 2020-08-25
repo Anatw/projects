@@ -16,10 +16,15 @@ using namespace ilrd;
 
 std::ostream& Circle::operator<<(std::ostream& os) const
 {
-    std::string radius_str;
-    radius_str.append(std::to_string(m_radius));
+    std::string params;
+    params.append(boost::lexical_cast< std::string >(m_radius));
+    params.push_back(' ');
 
-    return (os << radius_str);
+    os << params;
+
+    Shape::operator<<(os);
+
+    return os;
 }
 
 std::istream& Circle::operator>>(std::istream& is)
@@ -30,6 +35,8 @@ std::istream& Circle::operator>>(std::istream& is)
     int inner_radius = std::atoi(radius_str.c_str());
 
     this->SetRadius(inner_radius);
+
+    Shape::operator>>(is);
 
     return (is);
 }
