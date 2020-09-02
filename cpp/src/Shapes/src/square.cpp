@@ -9,10 +9,10 @@
 
 using namespace ilrd;
 
-std::ostream& Square::operator<<(std::ostream& os)
+std::ostream& Square::operator<<(std::ostream& os) const
 {
     std::string edge_str;
-    edge_str.append(std::to_string(m_edge));
+    edge_str.append(to_string(m_edge));
 
     return (os << edge_str);
 }

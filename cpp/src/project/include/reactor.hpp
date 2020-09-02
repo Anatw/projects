@@ -31,7 +31,7 @@ class IListener;
 //                     IListener class & functions:                           //
 ////////////////////////////////////////////////////////////////////////////////
 
-// The user may derieves from this class to define his own Listener class
+// The user may derieve from this class to define his own Listener class
 enum MODE
 {
     WRITE,

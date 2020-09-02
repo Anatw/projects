@@ -2,7 +2,7 @@
  
 # makefile - c
 # Makefile - Version 4
-NAME:=Anat_Wax-23.8.20
+NAME:=quick_sort
 CC=gcc
 CFLAGS=-ansi -pedantic-errors -Wall -Wextra -g#gd#
 F_RELEASE:=-ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#

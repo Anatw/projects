@@ -19,7 +19,7 @@ public:
     void SetLength(int edge_);
     int GetLength() const;
 
-    std::ostream& operator<<(std::ostream& os);
+    std::ostream& operator<<(std::ostream& os) const;
     std::istream& operator>>(std::istream& is);
 
 private:

@@ -4,18 +4,21 @@
                              June 7th-, 2020
                         Reviewer: Laura Bedah
 *******************************************************************************/
-#include "rectangle.hpp"
+
+#include <string>
+
 #include "glut_utils.h"
+#include "rectangle.hpp"
 
 using namespace ilrd;
 
-std::ostream& Rectangle::operator<<(std::ostream& os)
+std::ostream& Rectangle::operator<<(std::ostream& os) const
 {
     std::string width_str;
-    width_str.append(std::to_string(m_width));
+    width_str.append(to_string(m_width));
 
     std::string length_str;
-    length_str.append(std::to_string(m_length));
+    length_str.append(to_string(m_length));
 
     return (os << width_str << length_str);
 }
@@ -26,8 +29,8 @@ std::istream& Rectangle::operator>>(std::istream& is)
     std::string length_str;
     is >> width_str >> length_str;
 
-    int inner_width = std::stoi(width_str);
-    int inner_length = std::stoi(length_str);
+    int inner_width = std::atoi(width_str.c_str());
+    int inner_length = std::atoi(length_str.c_str());
 
     this->SetWidth(inner_width);
     this->SetLength(inner_length);

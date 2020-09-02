@@ -7,6 +7,8 @@
 #ifndef ILRD_RD8586_RECTANGLE_HPP
 #define ILRD_RD8586_RECTANGLE_HPP
 
+#include <cstdlib>
+
 #include "color.hpp"
 #include "point.hpp"
 #include "shape.hpp"
@@ -25,7 +27,7 @@ public:
     void SetWidth(int width_);
     int GetWidth() const;
 
-    std::ostream& operator<<(std::ostream& os);
+    std::ostream& operator<<(std::ostream& os) const;
     std::istream& operator>>(std::istream& is);
 
 private:

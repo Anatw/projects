@@ -6,44 +6,41 @@
 // Code Reviewer: Anat Wax                                                   //
 ///////////////////////////////////////////////////////////////////////////////
 
-
-#include <iostream>
-#include <stdio.h>
-#include <mcheck.h>
-#include <stdlib.h>       // system()
-#include <string>
-#include <time.h>
 #include <chrono>
 #include <ctime>
+#include <iostream>
+#include <mcheck.h>
+#include <stdio.h>
+#include <stdlib.h> // system()
+#include <string>
+#include <time.h>
 
-#include "glut_utils.h"
-#include "shape.hpp"
-#include "point.hpp"
-#include "color.hpp"
-#include "line.hpp"
 #include "circle.hpp"
-#include "square.hpp"
-#include "rectangle.hpp"
+#include "color.hpp"
+#include "glut_utils.h"
+#include "line.hpp"
 #include "plane.hpp"
+#include "point.hpp"
+#include "rectangle.hpp"
+#include "shape.hpp"
 #include "simpledrawtext.hpp"
-
+#include "square.hpp"
 
 using namespace std;
 using namespace ilrd;
 using namespace std::chrono;
 
-
 #define LIVES_NUM (5)
 #define AMMUNITION (100)
 
 // REGULAR COLORS
-Color good(40, 40, 40); // GREEN
+Color good(40, 40, 40);    // GREEN
 Color between(80, 80, 80); // YELLOW
-Color bad(32, 32, 64); // RED
+Color bad(32, 32, 64);     // RED
 
-Color fill_good(2, 384, 174763); // GREEN - FILL
+Color fill_good(2, 384, 174763);    // GREEN - FILL
 Color fill_between(245, 256, 2141); // YELLOW - FILL
-Color fill_bad(256, 256, 2049); // RED -FILL
+Color fill_bad(256, 256, 2049);     // RED -FILL
 
 // GENERAL FLAGS
 int open_screen = 1;
@@ -53,17 +50,17 @@ int health_time_check = 0;
 int reload_time_check = 0;
 
 // MAIN PLANE DEFEINITIONS
-Point p_plane(500,850);
+Point p_plane(500, 850);
 double l_plane = 50;
-Color c_plane(1,1,1); // BLUE
+Color c_plane(1, 1, 1); // BLUE
 
 // MISSILES STRUCT AND DEFINITIONS
 typedef struct ammunition
 {
-    Point *left_round;
-    Point *right_round;
-    Line *left_projectile;
-    Line *right_projectile;
+    Point* left_round;
+    Point* right_round;
+    Line* left_projectile;
+    Line* right_projectile;
     int on_off;
 } ammu_t;
 
@@ -75,8 +72,8 @@ int total_ammo = AMMUNITION;
 // NUMBER OF LIVES
 typedef struct num_of_lives
 {
-    Point *position;
-    Plane *live;
+    Point* position;
+    Plane* live;
     int on_off;
 } turns_t;
 
@@ -87,12 +84,11 @@ int turns_index = 0;
 Point p_health_bar(975, 200);
 Rectangle r_health_bar(p_health_bar, double(90), fill_bad, 200, 20);
 
-
 // HEALTH AND AMMO BUBBLES
 typedef struct health_care
 {
-    Point *p_health;
-    Circle *health;
+    Point* p_health;
+    Circle* health;
     int on_off;
 } hc_t;
 
@@ -101,8 +97,8 @@ int health_index = 0;
 
 typedef struct reloading
 {
-    Point *p_reload;
-    Square *reload;
+    Point* p_reload;
+    Square* reload;
     int on_off;
 } reload_t;
 
@@ -120,8 +116,7 @@ struct timespec reload_start, reload_finish;
 double reload_elapsed = 0;
 
 // CHECK POINT
-Point *p = new Point();
-
+Point* p = new Point();
 
 // UTILITY FUNCTIONS
 static void DrawFunction();
@@ -135,20 +130,18 @@ static void InitializeTurns();
 static void InitializeHealth();
 static void InitializeReload();
 
-
 ///////////////////////////////////////////////////////////////////////////////
 //                                  MAIN                                     //
 ///////////////////////////////////////////////////////////////////////////////
 int main(int argc, char** argv)
 {
-    //system("clear");
+    // system("clear");
     /*--------------------------- mtrace(); */
-    
+
     InitializeArr();
     InitializeTurns();
     InitializeHealth();
     InitializeReload();
-
 
     DrawInit(argc, argv, 1000, 1000, DrawFunction);
 
@@ -157,14 +150,13 @@ int main(int argc, char** argv)
     DrawSetMouseFunc(MouseFunction);
     DrawSetMotionFunc(MotionFunction);
     DrawSetTimerFunc(TimerFunction, 100);
-    
+
     DrawMainLoop();
 
     printf("exit\n");
 
     return 0;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //                          UTILITY FUNCTIONS                                //
@@ -176,7 +168,7 @@ static void DrawFunction()
     Point center_point(500, 500);
     Color c_frame(50, 50, 50); // WHITE
     Square frame(center_point, double(0), c_frame, 900);
-   
+
     // CREATING THE CONTROLED PLANE
     Plane main_plane(p_plane, double(0), c_plane, l_plane);
 
@@ -215,7 +207,7 @@ static void DrawFunction()
             clock_gettime(CLOCK_MONOTONIC, &reload_start);
             reload_time_check = 1;
         }
-    
+
         // KEY FEATURES DRAWINGS
         frame.Draw();
         r_health_bar.Draw();
@@ -233,12 +225,11 @@ static void DrawFunction()
 
         // AMOUNT OF AMMO DRAWINGS
         int current_ammo = total_ammo - ammo_index;
-        std::string ammo_print = std::to_string(current_ammo);
+        std::string ammo_print = to_string(current_ammo);
 
         SimpleDrawText sdt;
         sdt.drawText("Ammo: ", 80, 10, 0, 1, 0);
         sdt.drawText(ammo_print, 150, 10, 0, 1, 0);
-
 
         // CONTROLED PLANE MISSILES DRAWINGS
         for (i = 0; i < AMMUNITION; ++i)
@@ -250,12 +241,12 @@ static void DrawFunction()
             }
         }
 
-        // HEALTH BUBBLES HANDLING 
+        // HEALTH BUBBLES HANDLING
         clock_gettime(CLOCK_MONOTONIC, &health_finish);
         health_elapsed = (health_finish.tv_sec - health_start.tv_sec);
 
         // Health bubbles creation
-        srand (time(NULL));
+        srand(time(NULL));
         int random_number = rand() % 5 + 10;
 
         // The last health bubble in the array is gone
@@ -278,13 +269,12 @@ static void DrawFunction()
             }
         }
 
-
         // RELOAD BUBBLES HANDLING
         clock_gettime(CLOCK_MONOTONIC, &reload_finish);
         reload_elapsed = (reload_finish.tv_sec - reload_start.tv_sec);
 
         // Reload bubbles creation
-        srand (time(NULL));
+        srand(time(NULL));
         random_number = rand() % 10 + 15;
 
         // The last reload bubble in the array is gone
@@ -317,7 +307,7 @@ static int KeyboardFunction(unsigned char key, int x, int y)
 
     // START / PAUSE / RESUME GAME
     if ('p' == key)
-    {    
+    {
         // Pause the game
         if (0 == open_screen && 0 == pause_screen && 0 == end_screen)
         {
@@ -345,97 +335,95 @@ static int KeyboardFunction(unsigned char key, int x, int y)
     {
         switch (key)
         {
-            // Move the plane forward
-            case ('w'):
-                p_plane.Move(double(p_plane.GetX()),
-                            double(p_plane.GetY() - move));
-                break;
-            
-            // Move the plane to the left
-            case ('a'):
-                p_plane.Move(double(p_plane.GetX() - move),
-                            double(p_plane.GetY()));
-                break;
-            
-            // Move the plane backward
-            case ('s'):
-                p_plane.Move(double(p_plane.GetX()),
-                            double(p_plane.GetY() + move));
-                break;
-            
-            // Move the plane to the right
-            case ('d'):
-                p_plane.Move(double(p_plane.GetX() + move),
-                            double(p_plane.GetY()));
-                break;
+        // Move the plane forward
+        case ('w'):
+            p_plane.Move(double(p_plane.GetX()), double(p_plane.GetY() - move));
+            break;
 
-            // Move the plane forward and to the left
-            case ('q'):
-                p_plane.Move(double(p_plane.GetX() - move),
-                                        double(p_plane.GetY() - move));
-                break;
+        // Move the plane to the left
+        case ('a'):
+            p_plane.Move(double(p_plane.GetX() - move), double(p_plane.GetY()));
+            break;
 
-            // Move the plane forward and to the right
-            case ('e'):
-                p_plane.Move(double(p_plane.GetX() + move),
-                                        double(p_plane.GetY() - move));
-                break;
+        // Move the plane backward
+        case ('s'):
+            p_plane.Move(double(p_plane.GetX()), double(p_plane.GetY() + move));
+            break;
 
-            // Move the plane backward and to the left
-            case ('z'):
-                p_plane.Move(double(p_plane.GetX() - move),
-                                        double(p_plane.GetY() + move));
-                break;
+        // Move the plane to the right
+        case ('d'):
+            p_plane.Move(double(p_plane.GetX() + move), double(p_plane.GetY()));
+            break;
 
-            // Move the plane backward and to the right
-            case ('c'):
-                p_plane.Move(double(p_plane.GetX() + move),
-                                        double(p_plane.GetY() + move));
-                break;
-            
-            // Shooting
-            case (32):
-                
-                // No ammo
-                if (AMMUNITION == ammo_index)
-                {
-                    cout << "space was pressed" << endl;
-                }
-                
-                // There is ammo
-                else if (*ammo[ammo_index].left_round == *p)
-                {
-                    Point temp = p_plane;
+        // Move the plane forward and to the left
+        case ('q'):
+            p_plane.Move(double(p_plane.GetX() - move),
+                         double(p_plane.GetY() - move));
+            break;
 
-                    temp.Move(double(p_plane.GetX() - (0.2 * l_plane)),
-                                double(p_plane.GetY() + (0.475 * l_plane)));
+        // Move the plane forward and to the right
+        case ('e'):
+            p_plane.Move(double(p_plane.GetX() + move),
+                         double(p_plane.GetY() - move));
+            break;
 
-                    *ammo[ammo_index].left_round = temp;
-                    
-                    temp.Move(double(p_plane.GetX() + (0.2 * l_plane)),
-                                double(p_plane.GetY() + (0.475 * l_plane)));
+        // Move the plane backward and to the left
+        case ('z'):
+            p_plane.Move(double(p_plane.GetX() - move),
+                         double(p_plane.GetY() + move));
+            break;
 
-                    *ammo[ammo_index].right_round = temp;
+        // Move the plane backward and to the right
+        case ('c'):
+            p_plane.Move(double(p_plane.GetX() + move),
+                         double(p_plane.GetY() + move));
+            break;
 
-                    *ammo[ammo_index].left_projectile = Line(*ammo[ammo_index].left_round,
-                                double(90), missiles, double(l_plane / 5));
+        // Shooting
+        case (32):
 
-                    *ammo[ammo_index].right_projectile = Line(*ammo[ammo_index].right_round,
-                                double(90), missiles, double(l_plane / 5));
+            // No ammo
+            if (AMMUNITION == ammo_index)
+            {
+                cout << "space was pressed" << endl;
+            }
 
-                    ammo[ammo_index].on_off = 1;
+            // There is ammo
+            else if (*ammo[ammo_index].left_round == *p)
+            {
+                Point temp = p_plane;
 
-                    ++ammo_index;
-                    cout << "space was pressed" << endl;
-                }
+                temp.Move(double(p_plane.GetX() - (0.2 * l_plane)),
+                          double(p_plane.GetY() + (0.475 * l_plane)));
 
-                cout << "p_plane = " << p_plane << endl;
-                
-                break;
+                *ammo[ammo_index].left_round = temp;
 
-            // Exit the game
-            case (0x1b): // ESC
-                return (-1);
+                temp.Move(double(p_plane.GetX() + (0.2 * l_plane)),
+                          double(p_plane.GetY() + (0.475 * l_plane)));
+
+                *ammo[ammo_index].right_round = temp;
+
+                *ammo[ammo_index].left_projectile =
+                    Line(*ammo[ammo_index].left_round, double(90), missiles,
+                         double(l_plane / 5));
+
+                *ammo[ammo_index].right_projectile =
+                    Line(*ammo[ammo_index].right_round, double(90), missiles,
+                         double(l_plane / 5));
+
+                ammo[ammo_index].on_off = 1;
+
+                ++ammo_index;
+                cout << "space was pressed" << endl;
+            }
+
+            cout << "p_plane = " << p_plane << endl;
+
+            break;
+
+        // Exit the game
+        case (0x1b): // ESC
+            return (-1);
         }
     }
 
@@ -493,7 +481,7 @@ static int TimerFunction()
                 ammo[i].left_projectile->Move(double(0), double(-15));
                 ammo[i].right_projectile->Move(double(0), double(-15));
             }
-            
+
             // Missiles leaving the screen
             if (50 >= ammo[i].left_projectile->GetPosition().GetY())
             {
@@ -509,14 +497,14 @@ static int TimerFunction()
                 more_health[i].health->Move(double(0), double(10));
             }
 
-            if ((p_plane.GetX() - more_health[i].health->GetPosition().GetX()
-                                                                    <= 20) &&
-            (more_health[i].health->GetPosition().GetX() - p_plane.GetX()
-                                                                    <= 20) &&
-            (p_plane.GetY() - more_health[i].health->GetPosition().GetY()
-                                                                    <= 20) &&
-            (more_health[i].health->GetPosition().GetY() - p_plane.GetY()
-                                                                    <= 20))
+            if ((p_plane.GetX() - more_health[i].health->GetPosition().GetX() <=
+                 20) &&
+                (more_health[i].health->GetPosition().GetX() - p_plane.GetX() <=
+                 20) &&
+                (p_plane.GetY() - more_health[i].health->GetPosition().GetY() <=
+                 20) &&
+                (more_health[i].health->GetPosition().GetY() - p_plane.GetY() <=
+                 20))
             {
                 more_health[i].on_off = 2; // To be able to initialize
             }
@@ -528,7 +516,7 @@ static int TimerFunction()
         }
     }
 
-    return 1;  /* draw */
+    return 1; /* draw */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -578,13 +566,13 @@ static void InitializeHealth()
     double radius = 20;
     int i = 0;
 
-    srand (time(NULL));
+    srand(time(NULL));
 
     for (i = 0; i < LIVES_NUM; ++i)
     {
         more_health[i].p_health = new Point(rand() % 800 + 100, 100);
-        more_health[i].health = new Circle(*more_health[i].p_health,
-                                                    angle, good, radius);
+        more_health[i].health =
+            new Circle(*more_health[i].p_health, angle, good, radius);
         more_health[i].on_off = 0;
     }
 }
@@ -595,14 +583,13 @@ static void InitializeReload()
     double length = 40;
     int i = 0;
 
-    srand (time(NULL));
+    srand(time(NULL));
 
     for (i = 0; i < LIVES_NUM; ++i)
     {
         more_ammo[i].p_reload = new Point(rand() % 800 + 100, 100);
-        more_ammo[i].reload = new Square(*more_ammo[i].p_reload,
-                                                    angle, good, length);
+        more_ammo[i].reload =
+            new Square(*more_ammo[i].p_reload, angle, good, length);
         more_ammo[i].on_off = 0;
     }
 }
-

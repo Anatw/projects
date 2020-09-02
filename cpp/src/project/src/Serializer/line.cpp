@@ -11,7 +11,7 @@ using namespace ilrd;
 std::ostream& Line::operator<<(std::ostream& os)
 {
     std::string line_str;
-    line_str.append(std::to_string(m_length));
+    line_str.append(to_string(m_length));
 
     return (os << line_str);
 }

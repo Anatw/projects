@@ -8,6 +8,8 @@
 #define ILRD_RD8586_SHAPES_HPP
 
 #include <cmath> // M_PI
+#include <cstdlib>
+#include <sstream>
 #include <string>
 
 #include "color.hpp"
@@ -16,6 +18,19 @@
 
 namespace ilrd
 {
+template < typename T >
+std::string to_string(T value)
+{
+    // create an output string stream
+    std::ostringstream os;
+
+    // throw the value into the string stream
+    os << value;
+
+    // convert the string stream into a string and return
+    return os.str();
+}
+
 // Draw() will call drawInternal() to make sure that
 // function draw is always called first.
 class Shape

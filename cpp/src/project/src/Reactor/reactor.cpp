@@ -66,7 +66,7 @@ void Reactor::Remove(HandleAndMode handle_and_mode)
 
 void Reactor::Run()
 {
-    this->to_stop = 0; // Making sure it is on when run is called
+    this->to_stop = 0; // Making sure it is on when Run() is called
 
     while (!this->to_stop && !this->m_EventHandlers.empty())
     {

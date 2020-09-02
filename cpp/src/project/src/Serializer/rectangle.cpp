@@ -12,10 +12,10 @@ using namespace ilrd;
 std::ostream& Rectangle::operator<<(std::ostream& os)
 {
     std::string width_str;
-    width_str.append(std::to_string(m_width));
+    width_str.append(to_string(m_width));
 
     std::string length_str;
-    length_str.append(std::to_string(m_length));
+    length_str.append(to_string(m_length));
 
     return (os << width_str << length_str);
 }

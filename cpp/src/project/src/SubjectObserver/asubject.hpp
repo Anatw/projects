@@ -49,6 +49,7 @@ void ASubject::Detach(IObserver* observer)
 {
     vector< IObserver* >::iterator it;
     it = find(m_observers_list.begin(), m_observers_list.end(), observer);
+
     if (it != m_observers_list.end())
     {
         m_observers_list.erase(it);

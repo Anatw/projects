@@ -28,7 +28,7 @@ public:
         m_length = length_;
     }
 
-    std::ostream& operator<<(std::ostream& os);
+    std::ostream& operator<<(std::ostream& os) const;
     std::istream& operator>>(std::istream& is);
 
 private:

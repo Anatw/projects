@@ -6,6 +6,7 @@
 *******************************************************************************/
 #include <iostream> //cout
 #include <sstream>
+#include <string>
 
 #include "circle.hpp"
 #include "color.hpp"
@@ -17,7 +18,7 @@ using namespace ilrd;
 std::ostream& Circle::operator<<(std::ostream& os) const
 {
     std::string radius_str;
-    radius_str.append(std::to_string(m_radius));
+    radius_str.append(to_string(m_radius));
 
     return (os << radius_str);
 }
