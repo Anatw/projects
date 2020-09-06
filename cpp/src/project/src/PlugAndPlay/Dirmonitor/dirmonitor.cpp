@@ -25,6 +25,7 @@ using namespace ilrd;
 DirMonitor::DirMonitor(std::string dir_path)
     : m_path(dir_path), m_is_running(false)
 {
+    LOG_DEBUG(__FILE__ + std::string("::DirMonitor()"));
 }
 
 DirMonitor::~DirMonitor()
@@ -48,17 +49,11 @@ void DirMonitor::UnSubscribe(Callback< Dispatcher< std::string > >* callback)
 // will be sent to the DLLoader:
 void DirMonitor::Monitor()
 {
+    m_is_running = true;
+    LOG_DEBUG(__FILE__ + std::string("::Monitor() - started"));
+
     char log_msg[MSG_SIZE] = {0};
     char buffer[BUF_LEN] = {0};
-
-    // If there any files existing in the library before starting the Monitor -
-    // all and activate them
-    boost::filesystem::directory_iterator end_iter;
-    for (boost::filesystem::directory_iterator iter(m_path.c_str());
-         iter != end_iter; ++iter)
-    {
-        m_dispatcher.Notify(iter->path().filename().c_str());
-    }
 
     // Inotify is a Linux kernel feature that provides an event-driven
     // framework for applications to monitor changes in the filesystem:
@@ -78,18 +73,15 @@ void DirMonitor::Monitor()
 
     if (-1 == wd)
     {
-        sprintf(log_msg,
-                "%s: inside StartMonitoring()->Monitor(): error in "
-                "inotify_add_watch() method",
-                __FILE__);
-        LOG_ERROR(log_msg);
+        LOG_ERROR(__FILE__ +
+                  std::string("::StartMonitoring()->Monitor(): error in "
+                              "inotify_add_watch() method"));
     }
     else
     {
-        sprintf(log_msg,
-                "%s: inside StartMonitoring()->Monitor(): started watching",
-                __FILE__);
-        LOG_INFO(log_msg);
+        LOG_INFO(
+            __FILE__ +
+            std::string("::StartMonitoring()->Monitor(): started watching"));
     }
 
     while (m_is_running)
@@ -99,11 +91,12 @@ void DirMonitor::Monitor()
 
         if (length < 0)
         {
-            sprintf(log_msg,
-                    "%s: inside StartMonitoring()->Monitor(): error in "
-                    "read() method",
-                    __FILE__);
-            LOG_ERROR(log_msg);
+            LOG_ERROR(__FILE__ +
+                      std::string("::StartMonitoring()->Monitor(): error in "
+                                  "read() method"));
+
+            throw std::runtime_error("inside DirMonitor thread, Monitoring() - "
+                                     "ERROOR in inotify read())");
         }
 
         while (i < length)
@@ -113,12 +106,10 @@ void DirMonitor::Monitor()
             {
                 if (event->mask & IN_CREATE)
                 {
-                    sprintf(
-                        log_msg,
-                        "%s: inside StartMonitoring()->Monitor(): "
-                        "inside IN_CREATE, the file %s was created with WD %d",
-                        __FILE__, event->name, event->wd);
-                    LOG_INFO(log_msg);
+                    LOG_INFO(__FILE__ +
+                             std::string("::StartMonitoring()->Monitor(): "
+                                         "inside IN_CREATE, the file ") +
+                             event->name + std::string(" was created"));
                     m_dispatcher.Notify(event->name);
                 }
 
@@ -161,6 +152,14 @@ void DirMonitor::Monitor()
 
 void DirMonitor::StartMonitoring()
 {
-    m_is_running = true;
+    // If there any files existing in the library before starting the Monitor -
+    // all and activate them
+    boost::filesystem::directory_iterator end_iter;
+    for (boost::filesystem::directory_iterator iter(m_path.c_str());
+         iter != end_iter; ++iter)
+    {
+        m_dispatcher.Notify(iter->path().filename().c_str());
+    }
+
     boost::thread monitoring(boost::bind(&DirMonitor::Monitor, this));
 }

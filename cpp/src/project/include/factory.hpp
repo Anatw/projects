@@ -62,7 +62,7 @@ BASE* Factory< KEY, BASE, PARAMS, BUILDER >::Create(KEY key,
     iter = m_factory_creation.find(key);
     if (m_factory_creation.end() == iter)
     {
-        throw std::runtime_error("key is not inside the map!");
+        throw std::runtime_error(key + ": - key is not inside the map!");
     }
     else
     {

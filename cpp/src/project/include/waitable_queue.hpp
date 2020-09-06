@@ -10,7 +10,7 @@ compile with -lboost_system -lboost_chrono -lpthread -lboost_thread
 -lpthread -lboost_thread -lboost_thread
 ]
 *******************************************************************************/
-#ifndef __ILRD_RD8586_WAITABLE_QUEUE_HPP_
+#ifndef __ILRD_RD8586_WAITABLE_QUEUE_HPP__
 #define __ILRD_RD8586_WAITABLE_QUEUE_HPP__
 
 #include <boost/chrono.hpp>

@@ -18,8 +18,6 @@ Reviewer:
 
 using namespace ilrd;
 
-// static void __attribute__((constructor)) init();
-
 Shape* circle = NULL;
 Shape* rectangle = NULL;
 Shape* square = NULL;
@@ -94,12 +92,14 @@ void TestCase2(int argc, char** argv)
     ShapeFactory::GetInstance()->Add("circle", DrawCircle);
     circle = ShapeFactory::GetInstance()->Create("circle", shape_params);
 
-    // ShapeFactory::GetInstance()->Add("rectangle", DrawRectangle);
-    // rectangle = ShapeFactory::GetInstance()->Create("rectangle",
-    // shape_params);
+    ShapeFactory::GetInstance()->Add("rectangle", DrawRectangle);
+    rectangle = ShapeFactory::GetInstance()->Create("rectangle", shape_params);
 
-    // DrawInit(argc, argv, 1000, 1000, DrawShapes);
-    // DrawMainLoop();
+    Shape* square = ShapeFactory::GetInstance()->Create("square", shape_params);
+    square->Draw();
+
+    DrawInit(argc, argv, 1000, 1000, DrawShapes);
+    DrawMainLoop();
 }
 
 static void DrawSquare()
@@ -111,6 +111,10 @@ static void DrawSquare()
 // this test should fail
 void TestCase3(int argc, char** argv)
 {
+    std::string str = "/home/anat/git/anat-wax/cpp/src/project/src/PlugAndPlay/"
+                      "SharedLibraries/";
+    DLLoader dlloader(str);
+
     Params shape_params;
     shape_params.position_ = Point(400, 400);
     shape_params.angle_ = 28;
@@ -127,16 +131,12 @@ void TestCase3(int argc, char** argv)
     DrawMainLoop();
 }
 // load a new shape - square, and try to create it
-void TestCase4()
-{
-}
 
 int main(int argc, char** argv)
 {
-    TestCase1();
+    // TestCase1();
     TestCase2(argc, argv);
-    // TestCase3(argc, argv);
-    // TestCase4(argc, argv);
+    TestCase3(argc, argv);
 
     return (0);
 }
