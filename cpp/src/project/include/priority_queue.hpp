@@ -12,7 +12,7 @@ Created: 16.8.20
 Reviewer: Shmuel Sinder
 *******************************************************************************/
 
-#ifndef __ILRD_RD8586_PRIORITY_QUEUE_HPP_
+#ifndef __ILRD_RD8586_PRIORITY_QUEUE_HPP__
 #define __ILRD_RD8586_PRIORITY_QUEUE_HPP__
 
 #include <iostream>

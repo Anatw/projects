@@ -73,10 +73,11 @@ void WaitableQueue< QUEUE, T >::Push(const T& val)
     // lock the mutex
     lock.unlock();
 
-    if (was_empty)
-    {
-        m_pushflag.notify_one();
-    }
+    // if (was_empty)
+    // {
+    //     m_pushflag.notify_one();
+    // }
+    m_pushflag.notify_one();
 }
 
 template < class QUEUE, typename T >

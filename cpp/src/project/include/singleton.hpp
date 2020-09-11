@@ -1,5 +1,5 @@
 /*******************************************************************************
-Singleton (design pattern)
+Singleton (design pattern) - thread safe
 
 Written by Anat Wax, anatwax@gmail.com
 Created: 29.7.20
@@ -52,7 +52,7 @@ template < class T >
 T* Singleton< T >::GetInstance()
 {
     // the "__atomic_fetch_or" will set the value using OR opperation and will
-    // return th pervious value that was inside the variable.
+    // return the pervious value that was inside the variable.
 
     if (!m_instance)
     {

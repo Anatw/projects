@@ -8,7 +8,7 @@ DEPS=#hash_table.h
 INC_DIR:=-I ../../include
 OBJ_LIB:=#../../obj/
 
-SYS_LIB:=-lboost_system -lboost_chrono -lboost_thread -ldl#-lglut_utils -lpoint -lboost_filesystem
+SYS_LIB:=-lboost_system -lboost_thread -lboost_chrono -lpthread#-lglut_utils -lpoint -lboost_filesystem
  
 LIB := #doubly_linked_list.o
 OBJ :=$(NAME).cpp $(NAME)_test.cpp /home/anat/git/anat-wax/cpp/src/project/src/Logger/logger.cpp

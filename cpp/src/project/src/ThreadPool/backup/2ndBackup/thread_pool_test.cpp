@@ -17,38 +17,35 @@ Reviewer: Daria Korotkova
 
 using namespace ilrd;
 
-void DoSomething()
-{
-    std::cout << "Something" << std::endl;
-    static int i = 0;
-    std::cout << i++ << std::endl;
-}
+// void DoSomething()
+// {
+//     // std::cout << "Something" << std::endl;
+//     static int i = 0;
+//     std::cout << i++ << std::endl;
+// }
 
-void IncreaseAmountOfThreads(ThreadPool& pool)
-{
-    pool.SetThreadsAmount(15);
-}
+// void IncreaseAmountOfThreads(ThreadPool& pool)
+// {
+//     pool.SetThreadsAmount(15);
+// }
 
-void DencreaseAmountOfThreads(ThreadPool& pool)
-{
-    pool.SetThreadsAmount(5);
-}
+// void DencreaseAmountOfThreads(ThreadPool& pool)
+// {
+//     pool.SetThreadsAmount(5);
+// }
 
 int main()
 {
-    ThreadPool::ActionFunc func(DoSomething);
-    ThreadPool::TASK_PTR task_ptr(new ThreadPool::Task(func));
+    // ThreadPool::Task task(DoSomething);
 
-    ThreadPool pool(1);
-    for (int counter = 1; counter; --counter)
-    {
-        pool.AddTask(task_ptr, ThreadPool::HIGH);
-    }
+    // ThreadPool pool(1);
+    // for (int counter = 10; counter; --counter)
+    // {
+    //     pool.AddTask(task);
+    // }
 
-    std::cout << "number of threads in the thread pool is: "
-              << pool.GetAmountOfThreads() << std::endl;
-
-    pool.Start();
+    // std::cout << "number of threads in the thread pool is: "
+    //           << pool.GetAmountOfThreads() << std::endl;
     // pool.Pause();
     // sleep(3);
     // pool.Resume();

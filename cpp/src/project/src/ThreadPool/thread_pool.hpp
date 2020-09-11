@@ -8,14 +8,19 @@ Reviewer: Daria Korotkova
 #ifndef __ILRD_RD8586__HPP_
 #define __ILRD_RD8586__HPP__
 
+#include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <boost/interprocess/sync/interprocess_semaphore.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <map>
 #include <queue>
 #include <vector>
 
+#include "priority_queue.hpp"
 #include "waitable_queue.hpp"
 
 namespace ilrd
@@ -24,6 +29,10 @@ namespace ilrd
 class ThreadPool : private boost::noncopyable
 {
 public:
+    class Task;
+    typedef boost::function< void(void) > ActionFunc;
+    typedef boost::shared_ptr< ThreadPool::Task > TASK_PTR;
+
     enum Priority
     {
         HIGH = 1,
@@ -31,103 +40,97 @@ public:
         LOW
     };
 
-    class Task;
-    typedef boost::function< void() > ActionFunc;
-    typedef boost::shared_ptr< boost::thread > SHARED_PTR;
-    typedef std::pair< Priority, Task > PriorityAndTask;
-    typedef boost::shared_ptr< PriorityAndTask > taskPtr;
-
     class Task
     {
     public:
         Task(ActionFunc func) : m_exec_func(func)
         {
         }
-
         virtual ~Task()
         {
         }
-
-        virtual void operator()(); // activate the ActionFunc
+        virtual void operator()();
 
     private:
         ActionFunc m_exec_func;
     };
 
     explicit ThreadPool(size_t num_of_threads);
-
     ~ThreadPool();
 
-    // Add a new task, and (in the future) will returns a FutureObject
-    void AddTask(const Task task, Priority priority = MIDDLE);
-
-    // SetNumberOfThreads which gets new total of threads and add/remove threads
-    // from the pool
-    bool SetThreadsAmount(size_t new_amount);
-
-    // Exits all threads - if a thread is in the middle of a task - it will wait
-    // for the task to end before stoping the thread:
-    void Start();
-    void Stop();
-    void Pause();  // Move all threads in blocking mode
-    void Resume(); // Resume all threads to work again (non-blocking mode)
-
+    void SetThreadsAmount(size_t new_amount); // Set a new amount of threads
     size_t GetAmountOfThreads();
 
+    void AddTask(TASK_PTR task, int priority = 2);
+
+    void Start();
+    void Pause();  // Pause all threads
+    void Resume(); // Resume all threads to work again
+    void Stop();
+
 private:
-    friend class ActiveThreads;
-
-    class Thread;
-    // typedef std::pair< int, Task > PriorityAndTask;
-    typedef boost::shared_ptr< Task > task_ptr;
-
-    void InitializeThreads(size_t num_of_threads);
-    boost::thread::id PrepareForDelete();
-    void DeleteThread();
+    friend class ActiveThread;
+    typedef std::pair< int, TASK_PTR > PriorityAndTask;
 
     size_t m_num_threads;
-    std::vector< Thread > m_threads;
-    WaitableQueue< std::priority_queue< std::pair< int, task_ptr > >, Task >
-        m_tasks;
-
-    WaitableQueue< std::queue< Task >, Task > m_tasks;
-
+    // This map is m_callback bind to Stop() of Active Thread
+    std::map< boost::thread::id, boost::function< void(void) > > m_callbacks;
     boost::condition_variable m_cond;
     boost::mutex m_pause_mutex;
-    bool m_paused;
-    std::map< boost::thread::id, bool >
-        m_thread_running; // flag to run activate flags in a loop
-    bool ShouldThreadRun(boost::thread::id thread_id);
+    boost::interprocess::interprocess_semaphore m_semaphore;
 
+    bool CompareFunc(PriorityAndTask, PriorityAndTask);
+    void ThreadsInit(size_t num_fo_threads);
+    void PauseThread();
+    void KillThread();
+
+private: //  ActiveThread
+    // option  Active Object
     class ActiveThread
     {
     public:
-        enum Status
+        enum ToRun
         {
             STOP = 0,
             RUN
         };
 
-        ActiveThread();
+        ActiveThread(ThreadPool& thread_pool);
         ~ActiveThread();
 
-        bool GetThreadState();
-        inline boost::thread::id GetThreadID()
-        {
-            return m_thread_id;
-        }
+        void ThreadFunc();
+        void StopRunning();
 
-        inline void ChangeState(bool val)
-        {
-            m_state = val;
-        }
-        SHARED_PTR m_thread;
-
-    private:
-        void ThreadTask();
-        boost::thread::id m_thread_id;
         bool m_state;
+
+        boost::thread m_thread;
+        ThreadPool& m_myPool;
     };
+
+private:
+    typedef boost::shared_ptr< ThreadPool::ActiveThread > ActiveThreadPtr;
+    typedef std::pair< boost::thread::id, boost::function< void() > >
+        IdAndCallback;
+
+    struct Compare
+    {
+        bool operator()(PriorityAndTask a, PriorityAndTask b)
+        {
+            return (a.first > b.first);
+        }
+    };
+
+    typedef WaitableQueue<
+        PriorityQueue< PriorityAndTask, std::vector< PriorityAndTask >,
+                       Compare >,
+        PriorityAndTask >
+        TASKS_QUQUE;
+
+    TASKS_QUQUE m_tasks;
+
+    // this queue is ment to push inside ActiveThread objects whos threads are
+    // meant to be deleted:
+    WaitableQueue< std::queue< ActiveThread* >, ActiveThread* > joining_queue;
 };
 
 } // namespace ilrd
