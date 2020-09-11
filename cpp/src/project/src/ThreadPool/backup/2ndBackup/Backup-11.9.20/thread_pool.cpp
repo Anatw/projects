@@ -40,7 +40,8 @@ void DefaultFunc()
 ////////////////////////////////////////////////////////////////////////////////
 
 ThreadPool::ActiveThread::ActiveThread(ThreadPool& thread_pool)
-    : m_state(RUN), m_myPool(thread_pool)
+    : m_state(RUN), m_thread(boost::bind(&ActiveThread::ThreadFunc, this)),
+      m_myPool(thread_pool)
 {
     // Initialize threads in false state, activate them only inside Start().
 }
@@ -116,9 +117,6 @@ void ThreadPool::ThreadsInit(size_t num_of_threads)
     for (size_t i = 0; i < num_of_threads; ++i)
     {
         thread = new ActiveThread(*this);
-        thread->m_thread =
-            boost::thread(boost::bind(&ActiveThread::ThreadFunc, thread));
-
         std::cout << "Creation" << thread->m_thread.get_id() << std::endl;
         m_callbacks.insert(
             std::make_pair(boost::this_thread::get_id(),
