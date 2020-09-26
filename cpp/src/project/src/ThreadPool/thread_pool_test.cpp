@@ -20,7 +20,7 @@ using namespace ilrd;
 void DoSomething()
 {
     std::cout << "Something" << std::endl;
-    static int i = 0;
+    static int i = 1;
     std::cout << i++ << std::endl;
 }
 
@@ -34,13 +34,15 @@ void DencreaseAmountOfThreads(ThreadPool& pool)
     pool.SetThreadsAmount(5);
 }
 
+#define NUM_THREADS (3)
+
 int main()
 {
     ThreadPool::ActionFunc func(DoSomething);
     ThreadPool::TASK_PTR task_ptr(new ThreadPool::Task(func));
 
-    ThreadPool pool(1);
-    for (int counter = 1; counter; --counter)
+    ThreadPool pool(NUM_THREADS);
+    for (int counter = NUM_THREADS; counter; --counter)
     {
         pool.AddTask(task_ptr, ThreadPool::HIGH);
     }
@@ -49,42 +51,40 @@ int main()
               << pool.GetAmountOfThreads() << std::endl;
 
     pool.Start();
-    // pool.Pause();
-    // sleep(3);
-    // pool.Resume();
+    pool.Pause();
+    sleep(3);
+    pool.Resume();
 
-    // sleep(3);
+    sleep(3);
 
-    // DencreaseAmountOfThreads(pool);
+    DencreaseAmountOfThreads(pool);
 
-    // std::cout << "Dencreased amount of threads to 5 - number of threads in
-    // the "
-    //              "thread pool is: "
-    //           << pool.GetAmountOfThreads() << std::endl;
-
-    // // pool.Stop();
-
-    // IncreaseAmountOfThreads(pool);
-    // sleep(3);
-    // for (int counter = 10; counter; --counter)
-    // {
-    //     pool.AddTask(task);
-    // }
-
-    // std::cout << "Increased amount of threads to 15 - number of threads in
-    // the "
-    //              "thread pool is: "
-    //           << pool.GetAmountOfThreads() << std::endl;
-
-    // for (int counter = 5; counter; --counter)
-    // {
-    //     pool.AddTask(task);
-    // }
-    // for (int counter = 15; counter; --counter)
-    // {
-    // }
+    std::cout << "Dencreased amount of threads to 5 - number of threads in the"
+                 "thread pool is: "
+              << pool.GetAmountOfThreads() << std::endl;
 
     // pool.Stop();
+
+    IncreaseAmountOfThreads(pool);
+    sleep(3);
+    for (int counter = 10; counter; --counter)
+    {
+        pool.AddTask(task_ptr);
+    }
+
+    std::cout << "Increased amount of threads to 15 - number of threads in the "
+                 "thread pool is: "
+              << pool.GetAmountOfThreads() << std::endl;
+
+    for (int counter = 5; counter; --counter)
+    {
+        pool.AddTask(task_ptr);
+    }
+    for (int counter = 15; counter; --counter)
+    {
+    }
+
+    pool.Stop();
 
     return (0);
 }

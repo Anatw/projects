@@ -65,19 +65,19 @@ void WaitableQueue< QUEUE, T >::Push(const T& val)
     // if the queue was empty, than the condition variable should be notified -
     // in order to wake a sleeping thread on the pop() method (if there are any
     // there...)
-    bool const was_empty = m_queue.empty();
+    // bool const was_empty = m_queue.empty();
 
     m_queue.push(val);
 
     // unlocking here so that if a thread is beeing waked up, it will be able to
     // lock the mutex
     lock.unlock();
+    m_pushflag.notify_one();
 
     // if (was_empty)
     // {
     //     m_pushflag.notify_one();
     // }
-    m_pushflag.notify_one();
 }
 
 template < class QUEUE, typename T >
@@ -86,7 +86,7 @@ void WaitableQueue< QUEUE, T >::Pop(T& peaked_value)
     boost::unique_lock< boost::mutex > lock(m_mutex);
 
     // lock the conditional variable while the queue is empty
-    while (m_queue.empty())
+    while (Empty())
     {
         // the wait unlocks the mutex until the conditional variable is
         // notified, and than lock the mutex again
@@ -99,12 +99,12 @@ void WaitableQueue< QUEUE, T >::Pop(T& peaked_value)
 template < class QUEUE, typename T >
 bool WaitableQueue< QUEUE, T >::Pop(T& peaked_value, Millisec timeout)
 {
-    boost::unique_lock< boost::mutex > lock(m_mutex);
     boost::system_time this_time = boost::get_system_time() + timeout;
+
+    boost::unique_lock< boost::mutex > lock(m_mutex);
 
     while (m_queue.empty())
     {
-        // boost::systemtime
         if (!m_pushflag.timed_wait(lock, this_time))
         {
             return false;
@@ -113,13 +113,13 @@ bool WaitableQueue< QUEUE, T >::Pop(T& peaked_value, Millisec timeout)
 
     peaked_value = m_queue.front();
     m_queue.pop();
-
     return true;
 }
+
 template < class QUEUE, typename T >
 bool WaitableQueue< QUEUE, T >::Empty()
 {
-    boost::unique_lock< boost::mutex > lock(m_mutex);
+    // boost::unique_lock< boost::mutex > lock(m_mutex);
 
     return (m_queue.empty());
 }

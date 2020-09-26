@@ -69,20 +69,20 @@ public:
     void Stop();
 
 private:
-    friend class ActiveThread;
     typedef std::pair< int, TASK_PTR > PriorityAndTask;
 
     size_t m_num_threads;
-    // This map is m_callback bind to Stop() of Active Thread
-    std::map< boost::thread::id, boost::function< void(void) > > m_callbacks;
+
     boost::condition_variable m_cond;
     boost::mutex m_pause_mutex;
     boost::interprocess::interprocess_semaphore m_semaphore;
+    boost::interprocess::interprocess_semaphore m_init_sem;
 
     bool CompareFunc(PriorityAndTask, PriorityAndTask);
     void ThreadsInit(size_t num_fo_threads);
     void PauseThread();
     void KillThread();
+    void DeleteFromVector(boost::thread::id id);
 
 private: //  ActiveThread
     // option  Active Object
@@ -98,12 +98,30 @@ private: //  ActiveThread
         ActiveThread(ThreadPool& thread_pool);
         ~ActiveThread();
 
+        void StartThread();
+        void JoinThread();
+
         void ThreadFunc();
         void StopRunning();
+        inline boost::thread::id GetID() const
+        {
+            return (m_thread.get_id());
+        }
 
-        bool m_state;
+        inline void SetFlag(bool value)
+        {
+            m_state = value;
+        }
+
+        inline bool GetFlag() const
+        {
+            return (m_state);
+        }
 
         boost::thread m_thread;
+
+    private:
+        bool m_state;
         ThreadPool& m_myPool;
     };
 
@@ -127,10 +145,15 @@ private:
         TASKS_QUQUE;
 
     TASKS_QUQUE m_tasks;
+    // std::vector< ActiveThreadPtr > m_threads;
 
-    // this queue is ment to push inside ActiveThread objects whos threads are
-    // meant to be deleted:
-    WaitableQueue< std::queue< ActiveThread* >, ActiveThread* > joining_queue;
+    // this queue is ment to push inside ActiveThread objects whos threads
+    // are meant to be deleted:
+    std::queue< boost::thread::id > joining_queue;
+
+    // This map is m_callback bind to Stop() of Active Thread
+    // std::map< boost::thread::id, boost::function< void(void) > > m_callbacks;
+    std::map< boost::thread::id, ActiveThreadPtr > m_threads;
 };
 
 } // namespace ilrd

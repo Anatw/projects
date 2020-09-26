@@ -20,6 +20,10 @@ Reviewer: Daria Korotkova
 #include "thread_pool.hpp"
 
 using namespace ilrd;
+// ADD try and catch for the operator ()() of catch of "..."
+// No spinlock - use waitable queue
+// don't call the disdtructore directly
+// interface between the thread pool and the active thread.
 
 ////////////////////////////////////////////////////////////////////////////////
 //                             Task functions:                                //
@@ -40,7 +44,7 @@ void DefaultFunc()
 ////////////////////////////////////////////////////////////////////////////////
 
 ThreadPool::ActiveThread::ActiveThread(ThreadPool& thread_pool)
-    : m_state(RUN), m_myPool(thread_pool)
+    : m_state(STOP), m_myPool(thread_pool)
 {
     // Initialize threads in false state, activate them only inside Start().
 }
@@ -49,7 +53,9 @@ ThreadPool::ActiveThread::ActiveThread(ThreadPool& thread_pool)
 
 ThreadPool::ActiveThread::~ActiveThread()
 {
-    m_thread.join();
+    std::cout << "Active Thread - Dtor - ID: " << std::endl;
+    // m_thread.join();
+    sleep(2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,29 +67,50 @@ void ThreadPool::ActiveThread::StopRunning()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+void ThreadPool::ActiveThread::StartThread()
+{
+    m_thread = boost::thread(boost::bind(&ActiveThread::ThreadFunc, this));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void ThreadPool::ActiveThread::JoinThread()
+{
+    m_thread.join();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void ThreadPool::ActiveThread::ThreadFunc()
 {
     // boost::unique_lock< boost::mutex > lock(m_myPool->m_pause_mutex);
     // m_myPool->m_cond.wait(lock);
-    m_myPool.m_semaphore.wait();
+    // m_myPool.m_semaphore.wait();
+    m_myPool.m_init_sem.wait();
 
     m_state = RUN;
 
     while (RUN == this->m_state)
     {
-        std::cout << boost::this_thread::get_id() << std::endl;
         TASK_PTR task_ptr(new Task(DefaultFunc));
         PriorityAndTask to_pop(MIDDLE, task_ptr);
 
-        if (m_myPool.m_tasks.Pop(to_pop,
-                                 TASKS_QUQUE::Millisec(5000))) // 5 seconds
+        if (1 == m_myPool.m_tasks.Pop(to_pop,
+                                      TASKS_QUQUE::Millisec(5000))) // 5 seconds
         {
-            std::cout << "ThreadFunc" << std::endl;
             to_pop.second->operator()();
         }
+        else // Queue is empty
+        {
+            ;
+        }
     }
+    // std::cout << "this is  : " << this;
+    sleep(1);
+    m_myPool.joining_queue.push(this->GetID());
+    m_myPool.m_semaphore.post();
 
-    m_myPool.joining_queue.Push(this);
+    --m_myPool.m_num_threads;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -111,18 +138,18 @@ void ThreadPool::Stop()
 
 void ThreadPool::ThreadsInit(size_t num_of_threads)
 {
-    ActiveThread* thread;
-
     for (size_t i = 0; i < num_of_threads; ++i)
     {
-        thread = new ActiveThread(*this);
-        thread->m_thread =
-            boost::thread(boost::bind(&ActiveThread::ThreadFunc, thread));
+        ActiveThreadPtr thread(new ActiveThread(*this));
+        // std::cout << "heap adress is " << thread.get();
+        // m_callbacks.insert(
+        //     std::make_pair(boost::this_thread::get_id(),
+        //                    boost::bind(&ActiveThread::StopRunning, thread)));
 
-        std::cout << "Creation" << thread->m_thread.get_id() << std::endl;
-        m_callbacks.insert(
-            std::make_pair(boost::this_thread::get_id(),
-                           boost::bind(&ActiveThread::StopRunning, thread)));
+        // m_threads.push_back(thread);
+        thread->StartThread();
+        m_threads.insert(std::pair< boost::thread::id, ActiveThreadPtr >(
+            thread->GetID(), thread));
 
         ++this->m_num_threads;
     }
@@ -130,10 +157,12 @@ void ThreadPool::ThreadsInit(size_t num_of_threads)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ThreadPool::ThreadPool(size_t num_of_threads) : m_num_threads(0), m_semaphore(0)
+ThreadPool::ThreadPool(size_t num_of_threads)
+    : m_num_threads(0), m_semaphore(0), m_init_sem(0)
 {
     // Initialize as many threads as the user requested and place them inside
     LOG_DEBUG(__FILE__ + std::string("::ThreadPool()"));
+    std::cout << "ThreadPool - ctor" << std::endl;
 
     ThreadsInit(num_of_threads);
 }
@@ -151,8 +180,9 @@ void ThreadPool::Start()
 {
     for (size_t i = 0; i < m_num_threads; ++i)
     {
-        m_semaphore.post();
+        m_init_sem.post();
     }
+    // sleep(1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -161,7 +191,6 @@ void ThreadPool::AddTask(TASK_PTR task, int priority)
 {
     // Add the new task to the waitable queue:
     // m_tasks.Push(std::make_pair(task, priority));
-    std::cout << "ADDING TASK" << std::endl;
     m_tasks.Push(PriorityAndTask(priority, task));
 }
 
@@ -169,7 +198,19 @@ void ThreadPool::AddTask(TASK_PTR task, int priority)
 
 void ThreadPool::KillThread()
 {
-    m_callbacks.find(boost::this_thread::get_id())->second();
+    // m_callbacks.find(boost::this_thread::get_id())->second();
+    std::map< boost::thread::id, ActiveThreadPtr >::iterator id =
+        m_threads.find(boost::this_thread::get_id());
+
+    if (id != m_threads.end())
+    {
+        id->second->SetFlag(ActiveThread::STOP);
+    }
+    else
+    {
+        // LOG
+        std::cout << "whoops, id didn't work :(" << std::endl;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -192,20 +233,13 @@ void ThreadPool::SetThreadsAmount(size_t new_amount)
         // Delete amount_to_change more threads in the thread pool:
         // push to the task queue amount_to_change quantity of mission to delete
         // a thread:
-        std::stack< Task > temp_task_stack;
-        while (!m_tasks.Empty())
-        {
-            TASK_PTR task_ptr(new Task(DefaultFunc));
-            PriorityAndTask to_pop(MIDDLE, task_ptr);
-            m_tasks.Pop(to_pop,
-                        TASKS_QUQUE::Millisec(5000)); // 5 seconds);
-            // temp_task_stack.push(task);
-        }
 
         // make_shared is like a "new" to shared pointer.
         TASK_PTR task_ptr(boost::make_shared< Task >(
             boost::bind(&ThreadPool::KillThread, this)));
-        PriorityAndTask to_push(HIGH, task_ptr);
+
+        PriorityAndTask to_push((LOW + 1), task_ptr);
+
         size_t amount_to_delete = (amount_to_change * (-1));
         while (amount_to_change < 0)
         {
@@ -214,12 +248,19 @@ void ThreadPool::SetThreadsAmount(size_t new_amount)
             ++amount_to_change;
         }
 
-        ActiveThread* thread_to_delete;
+        boost::thread::id thread_to_delete;
         while (amount_to_delete)
         {
-            joining_queue.Pop(thread_to_delete);
-            delete thread_to_delete;
+            m_semaphore.wait();
+            thread_to_delete = joining_queue.front();
+            joining_queue.pop();
 
+            static int i = 1;
+            std::cout << "i = " << i++ << std::endl;
+
+            m_threads.find(thread_to_delete)->second->JoinThread();
+            // thread_to_delete->JoinThread();
+            m_threads.erase(thread_to_delete);
             --amount_to_delete;
         }
     }
@@ -242,7 +283,7 @@ void ThreadPool::Pause()
 
 void ThreadPool::Resume()
 {
-    m_cond.notify_all();
+    m_cond.notify_all(); // CHANGE TO POST WITH A SWMAPHORE
 }
 
 ////////////////////////////////////////////////////////////////////////////////
