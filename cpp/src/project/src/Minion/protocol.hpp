@@ -22,7 +22,7 @@ struct Request
         return sizeof(*this);
     }
 
-    char m_mode;
+    char m_mode; /* (0 - read, 1 - write) */
     uint64_t m_uid;
     uint64_t m_index;
     char m_data[1];
@@ -35,7 +35,7 @@ struct Response
         return sizeof(*this);
     }
 
-    char m_mode;
+    char m_mode; /* (0 - read, 1 - write) */
     uint64_t m_uid;
     char m_status;
     char m_data[1];

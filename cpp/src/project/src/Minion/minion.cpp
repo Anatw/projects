@@ -27,7 +27,7 @@ Minion::Minion(int port, size_t num_of_blocks, int master_port)
 {
     (void)master_port;
 
-    /* (0 - read, 1 - writparamse) */
+    /* (0 - read, 1 - write) */
     COMMAND_FACTORY->Add(0, ReadBuilder);
     COMMAND_FACTORY->Add(1, WriteBuilder);
 

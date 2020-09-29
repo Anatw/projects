@@ -1,9 +1,9 @@
 /*******************************************************************************
 base_command (part of the Minion final project)
 
-The essense of this class is to cancle the if statements inside the Minion
+The essense of this class is to cancel the if statements inside the Minion
 class, in the OnRequest() method. The factory will create, on runtime, the
-correct
+correct read/writre request.
 
 Written by Anat Wax, anatwax@gmail.com
 Created: 19.8.20

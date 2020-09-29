@@ -186,7 +186,7 @@ int main()
     Insert(list, 11);
     Insert(list, 2);
 
-    ClearDuplicates(list->head);
+    /* ClearDuplicates(list->head); */
 
     return (0);
 }

@@ -53,11 +53,13 @@ void Factory< KEY, BASE, PARAMS, BUILDER >::Add(KEY key, BUILDER creation_func)
     m_factory_creation[key] = creation_func;
 }
 
+// This function locates the requested key inside the map and the activate it's
+// callback (which is a builder function for the factory to create a new object)
 template < class KEY, class BASE, class PARAMS, class BUILDER >
 BASE* Factory< KEY, BASE, PARAMS, BUILDER >::Create(KEY key,
                                                     PARAMS build_params) const
 {
-    BASE* return_val = NULL;
+    BASE* return_object_ref = NULL;
     typename std::map< KEY, BUILDER >::const_iterator iter;
     iter = m_factory_creation.find(key);
     if (m_factory_creation.end() == iter)
@@ -66,10 +68,10 @@ BASE* Factory< KEY, BASE, PARAMS, BUILDER >::Create(KEY key,
     }
     else
     {
-        return_val = iter->second(build_params);
+        return_object_ref = iter->second(build_params);
     }
 
-    return (return_val);
+    return (return_object_ref);
 }
 
 } // namespace ilrd
