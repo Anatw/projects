@@ -1,20 +1,24 @@
 /*******************************************************************************
-Comment and un-comment the defines to see both phases (one at a time).
+A program that creates a singly linked list and has a function,
+ClearDuplicates(), that clear ALL occurences of the node containing the data if
+the data appers more than once in the list.
 
-WS name
-Templates + STL (Histo)
-Written by Anat Wax, anatwax@gmail.com
-Created: 15.6.20
-Reviewer:
+Written by Anat Wax,
+anatwax@gmail.com Created: 26.9.20
 *******************************************************************************/
 #include <errno.h>  /* error massages */
+#include <stdint.h> /* uint8_t */
 #include <stdio.h>  /* printf(), size_t */
 #include <stdlib.h> /* malloc(), free(), abs(), size_t */
 #include <string.h> /* size_t, atoi(), memset() */
 
-#define NUMS_IN_INT (4294967296) /* -2,147,483,648 - 2,147,483,647 */
+/*#define DNDBUG*/
+
+#define POS_INT (2147483647) /* -2,147,483,648 - 2,147,483,647 */
+#define NEG_INT (2147483648) /* -2,147,483,648 - 2,147,483,647 */
 #define CONVERT (2147483648)
 #define STRUCTURAL_NODE (533422123)
+#define CHAR (255)
 
 typedef struct Node
 {
@@ -22,30 +26,13 @@ typedef struct Node
     struct Node* next;
 } node_t;
 
-/*************************/
-
-typedef struct NodeInfo
-{
-    char occurences;
-    node_t* previous_first_node;
-} node_info_t;
-
-/*************************/
-
-typedef struct ArrayIndexes
-{
-    node_info_t array[NUMS_IN_INT];
-} array_indexes_t;
-
-/*************************/
-
 typedef struct SLL
 {
     node_t* m_array;
     node_t* head;
-    node_t* tail;
     node_t* last_node;
-
+    uint8_t* pos_occur_counter;
+    uint8_t* neg_occur_counter;
 } sll_t;
 
 /******************************************************************************/
@@ -61,7 +48,16 @@ node_t* CreateNode(sll_t* list, int data)
 
     new_node->data = data;
     new_node->next = NULL;
-    list->last_node = new_node;
+
+    if (0 <= data) /* positive data */
+    {
+        ++list->pos_occur_counter[data];
+    }
+    else
+    {
+        data *= (-1);
+        ++list->neg_occur_counter[data];
+    }
 
     return (new_node);
 }
@@ -75,12 +71,23 @@ sll_t* CreateSLL()
         exit(EXIT_FAILURE);
     }
 
+    list->pos_occur_counter = (uint8_t*)calloc(POS_INT, sizeof(uint8_t));
+    if (!list->pos_occur_counter)
+    {
+        printf("ERROR in allocating list->pos_occur_counter\n");
+        exit(EXIT_FAILURE);
+    }
+
+    list->neg_occur_counter = (uint8_t*)calloc(NEG_INT, sizeof(uint8_t));
+    if (!list->neg_occur_counter)
+    {
+        printf("ERROR in allocating list->neg_occur_counter\n");
+        free(list->pos_occur_counter);
+        list->pos_occur_counter = NULL;
+        exit(EXIT_FAILURE);
+    }
+
     list->head = CreateNode(list, STRUCTURAL_NODE);
-    list->head->next = list->tail;
-
-    list->tail = CreateNode(list, STRUCTURAL_NODE);
-    list->tail->next = NULL;
-
     list->last_node = list->head;
 
     return (list);
@@ -89,104 +96,163 @@ sll_t* CreateSLL()
 void Insert(sll_t* list, int data)
 {
     node_t* node = CreateNode(list, data);
-    node->next = list->tail;
+    list->last_node->next = node;
     list->last_node = node;
 }
 
-void DeleteNextNode(node_t* to_delete)
+node_t* SLLRemove(node_t* who)
 {
-    to_delete->next = to_delete->next->next;
+    node_t* temp = who->next;
+
+    who->data = who->next->data;
+    who->next = who->next->next;
+
+    free(temp);
+    temp = NULL;
+
+    return (who);
 }
 
-array_indexes_t* IniailizeDupArray()
+void ClearDuplicates(sll_t* list)
 {
-    array_indexes_t* array_info =
-        (array_indexes_t*)malloc(sizeof(array_indexes_t));
+    node_t* current_node = list->head->next;
 
-    if (!array_info)
+    while (NULL != current_node->next)
     {
-        printf("ERROR in initializating a new list's array\n");
-        exit(EXIT_FAILURE);
-    }
-
-    return (array_info);
-}
-
-void ClearDuplicates(node_t* head)
-{
-    node_t* temp_node = NULL;
-    node_t* next_node = head->next;
-    int current_data = 0;
-
-    array_indexes_t* array_info = IniailizeDupArray();
-
-    ++(array_info->array[head->data].occurences);
-
-    while (NULL != head)
-    {
-        if (next_node->data > 0)
+        if (current_node->data >= 0) /* Positive data */
         {
-            current_data = next_node->data + CONVERT;
-
-            if (0 == (array_info->array[current_data]
-                          .occurences)) /* First occurence of the data */
+            if (1 < (list->pos_occur_counter[current_node->data]))
             {
-                ++array_info->array[current_data].occurences;
-                array_info->array[current_data].previous_first_node = head;
-            }
-            else /* second or more occurences of the data */
-            {
-                if (NULL != array_info->array[current_data].previous_first_node)
-                {
-                    DeleteNextNode(
-                        array_info->array[current_data].previous_first_node);
-                    array_info->array[current_data].previous_first_node = NULL;
-                }
-
-                temp_node = head;
-                head = head->next;
-                DeleteNextNode(temp_node);
+                SLLRemove(current_node);
             }
         }
         else
         {
-            current_data = current_data;
-
-            if (0 == (array_info->array[current_data]
-                          .occurences)) /* First occurence of the data */
+            if (1 < (list->neg_occur_counter[-(current_node->data)]))
             {
-                ++array_info->array[current_data].occurences;
-                array_info->array[current_data].previous_first_node = head;
+                SLLRemove(current_node);
             }
-            else /* second or more occurences of the data */
-            {
-                if (NULL != array_info->array[current_data].previous_first_node)
-                {
-                    DeleteNextNode(
-                        array_info->array[current_data].previous_first_node);
-                    array_info->array[current_data].previous_first_node = NULL;
-                }
+        }
 
-                temp_node = head;
-                head = head->next;
-                DeleteNextNode(temp_node);
+        if (current_node->next != NULL)
+        {
+            /* The current_node can only change if you are not in a middle of a
+             * multy-erasing situation  - only if the next node's data doesn't
+             * appear multiple time in the list than the curren_node can change
+             */
+            if (((current_node->data >= 0) &&
+                 1 >= (list->pos_occur_counter[current_node->data])) ||
+                ((current_node->data < 0) &&
+                 1 >= (list->neg_occur_counter[-(current_node->data)])))
+            {
+                current_node = current_node->next;
             }
         }
     }
+}
+
+void PrintList(sll_t* list)
+{
+#ifdef DNDBUG
+    int counter = 0;
+#endif /* DNDBUG */
+    node_t* node = list->head->next;
+    while (NULL != node->next)
+    {
+        printf("%d->", node->data);
+        node = node->next;
+#ifdef DNDBUG
+        ++counter;
+#endif /* DNDBUG */
+    }
+    printf("%d->", node->data);
+    printf("NULL\n");
+#ifdef DNDBUG
+    printf("counter = %d\n", counter);
+#endif /* DNDBUG */
+}
+
+void DeleteList(sll_t* list)
+{
+#ifdef DNDBUG
+    int counter = 0;
+#endif /* DNDBUG */
+    node_t* node = list->head;
+    node_t* next_node = node->next;
+
+    while (NULL != node->next)
+    {
+        free(node);
+        node = NULL;
+#ifdef DNDBUG
+        ++counter;
+#endif /* DNDBUG */
+
+        node = next_node;
+        next_node = next_node->next;
+    }
+
+    free(node);
+    node = NULL;
+    free(list->pos_occur_counter);
+    list->pos_occur_counter = NULL;
+    free(list->neg_occur_counter);
+    list->neg_occur_counter = NULL;
+
+    free(list);
+    list = NULL;
+
+#ifdef DNDBUG
+    printf("DeleteList counter = %d\n", counter);
+#endif /* DNDBUG */
 }
 
 int main()
 {
     sll_t* list = CreateSLL();
+    int i = 355;
     Insert(list, 1);
-    Insert(list, 2);
+    Insert(list, 2133);
+    while (i > 0)
+    {
+        Insert(list, 21);
+        --i;
+    }
+    Insert(list, 2133);
+    Insert(list, 2133);
+    Insert(list, 2133);
+    Insert(list, 2133);
+    Insert(list, 1);
     Insert(list, 4);
     Insert(list, 7);
-    Insert(list, 2);
+    Insert(list, 21);
     Insert(list, 11);
-    Insert(list, 2);
+    Insert(list, 21);
+    Insert(list, -22);
+    Insert(list, 0);
+    Insert(list, 0);
+    Insert(list, 8862);
+    Insert(list, 8356722);
+    Insert(list, 22);
+    Insert(list, 21);
+    Insert(list, -22);
+    Insert(list, -2);
+    Insert(list, 0);
+    Insert(list, 0);
+    Insert(list, 0);
+    Insert(list, 0);
+    Insert(list, 0);
+    Insert(list, 5);
 
-    /* ClearDuplicates(list->head); */
+    printf("Before:\n");
+    PrintList(list);
+
+    ClearDuplicates(list);
+
+    printf("\nAfter:\n");
+    PrintList(list);
+
+    DeleteList(list);
 
     return (0);
 }
