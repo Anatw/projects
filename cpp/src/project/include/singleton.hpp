@@ -22,6 +22,15 @@ namespace ilrd
 //                           Class declaration:                               //
 ////////////////////////////////////////////////////////////////////////////////
 
+// The GetInstance method must be static - because the constructor is private,
+// the only way to create a singleton is with a method that is not connected to
+// a specific clase, hence - a static method, which is a global method, that the
+// user can call to using the class'es namespace
+//(inside the main:
+// T t = Singleton< T >::GetInstance();)
+// and because GetInstance is statis and static functions can touch only static
+// varibles, the variables inside the singleton class must also be static.
+
 template < class T >
 class Singleton : private boost::noncopyable
 {
