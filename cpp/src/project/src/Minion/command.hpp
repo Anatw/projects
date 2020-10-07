@@ -31,6 +31,8 @@ public:
     virtual void operator()() = 0;
 };
 
+/////////////////////////
+
 class Params
 {
 public:
@@ -45,10 +47,12 @@ public:
     const Request& m_request;
 };
 
-class WriteCommand : public BaseCommand
+/////////////////////////
+
+class ReadCommand : public BaseCommand
 {
 public:
-    WriteCommand(Params params) : m_params(params)
+    ReadCommand(Params params) : m_params(params)
     {
     }
 
@@ -57,11 +61,12 @@ public:
 private:
     Params m_params;
 };
+/////////////////////////
 
-class ReadCommand : public BaseCommand
+class WriteCommand : public BaseCommand
 {
 public:
-    ReadCommand(Params params) : m_params(params)
+    WriteCommand(Params params) : m_params(params)
     {
     }
 

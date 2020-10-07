@@ -34,7 +34,7 @@ void DencreaseAmountOfThreads(ThreadPool& pool)
     pool.SetThreadsAmount(5);
 }
 
-#define NUM_THREADS (3)
+#define NUM_THREADS (4)
 
 int main()
 {

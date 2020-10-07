@@ -55,7 +55,7 @@ ThreadPool::ActiveThread::~ActiveThread()
 {
     std::cout << "Active Thread - Dtor - ID: " << std::endl;
     // m_thread.join();
-    sleep(2);
+    sleep(1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -138,9 +138,28 @@ void ThreadPool::Stop()
 
 void ThreadPool::ThreadsInit(size_t num_of_threads)
 {
+    // ActiveThread* thread = NULL;
+    ActiveThread* thread;
     for (size_t i = 0; i < num_of_threads; ++i)
     {
-        ActiveThreadPtr thread(new ActiveThread(*this));
+        LOG_DEBUG(__FILE__ +
+                  std::string("::ThreadInit():creating active thread"));
+        try
+        {
+            // thread = new ActiveThread(*this);
+            // ActiveThreadPtr thread(new ActiveThread(*this));
+            thread = new ActiveThread(*this);
+        }
+        catch (...)
+        {
+            LOG_ERROR(
+                __FILE__ +
+                std::string(
+                    "::TrheadInit: ERROR in new ActiveThread allocation"));
+
+            std::cout << " cought an error in creating an active thread "
+                      << std::endl;
+        }
         // std::cout << "heap adress is " << thread.get();
         // m_callbacks.insert(
         //     std::make_pair(boost::this_thread::get_id(),
@@ -148,8 +167,7 @@ void ThreadPool::ThreadsInit(size_t num_of_threads)
 
         // m_threads.push_back(thread);
         thread->StartThread();
-        m_threads.insert(std::pair< boost::thread::id, ActiveThreadPtr >(
-            thread->GetID(), thread));
+        m_threads.insert(std::make_pair(thread->GetID(), thread));
 
         ++this->m_num_threads;
     }
@@ -217,15 +235,25 @@ void ThreadPool::KillThread()
 
 void ThreadPool::SetThreadsAmount(size_t new_amount)
 {
+    LOG_DEBUG(__FILE__ + std::string("::SetThreadsAmount() entering function"));
     ssize_t amount_to_change = new_amount - m_num_threads;
 
     if (0 == amount_to_change)
     {
         ;
+        LOG_DEBUG(__FILE__ +
+                  std::string(
+                      "::SetThreadsAmount() - no change in amout was needed"));
     }
     else if (amount_to_change > 0)
     {
         // Create amount_to_change more threads in the thread pool:
+        ssize_t i = amount_to_change;
+        for (; i > 0; --i)
+        {
+            m_init_sem.post();
+        }
+
         ThreadsInit(amount_to_change);
     }
     else

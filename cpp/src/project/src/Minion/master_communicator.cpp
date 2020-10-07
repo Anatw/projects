@@ -44,12 +44,9 @@ void MasterCommunicator::ReadRequest(int fd) const
                  recvfrom(fd, buffer, size, MSG_WAITALL,
                           (struct sockaddr*)&m_master_address, &addr_len)))
     {
-        char log_msg[MSG_SIZE] = {0};
-        sprintf(log_msg,
-                "%s: inside ReadRequest(): error in read request (recvfrom())",
-                __FILE__);
-        LOG_ERROR(log_msg);
-
+        LOG_ERROR(
+            __FILE__ +
+            std::string("::ReadRequest(): error in read request (recvfrom())"));
         throw runtime_error("error in read request (recvfrom())");
     }
 
@@ -59,12 +56,11 @@ void MasterCommunicator::ReadRequest(int fd) const
 
     m_arFunc(*request);
 
-    char log_msg[MSG_SIZE] = {0};
-    sprintf(log_msg,
-            "%s: inside ReadRequest(): Request read from MasterCommunicator "
-            "and was sent to Request()[m_mode = %c]",
-            __FILE__, request->m_mode);
-    LOG_INFO(log_msg);
+    LOG_INFO(
+        __FILE__ +
+        std::string("::ReadRequest(): Request read from MasterCommunicator "
+                    "and was sent to Request() | m_mode =" +
+                    request->m_mode));
 
     delete request;
 }

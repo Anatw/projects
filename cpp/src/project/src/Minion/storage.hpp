@@ -61,23 +61,7 @@ Storage< BLOCK_SIZE >::Storage(size_t num_blocks)
     LOG_INFO("inside Storage(): opened a storage file - 'storage_file.txt'");
 }
 
-template < size_t BLOCK_SIZE >
-void Storage< BLOCK_SIZE >::Write(size_t index, const void* src)
-{
-    std::cout << "index:\n\n" << index << std::endl;
-    assert(index <= m_blocks_capacity);
-
-    std::fstream storage_file;
-    storage_file.open("storage_file.txt");
-    storage_file.seekp((index * BLOCK_SIZE), std::fstream::beg);
-    storage_file.write(static_cast< const char* >(src), BLOCK_SIZE);
-
-    char log_msg[MSG_SIZE] = {0};
-    sprintf(log_msg, "%s: inside Write(): wrote to index %ld", __FILE__, index);
-    LOG_INFO(log_msg);
-
-    storage_file.close();
-}
+////////////////////////////////////////////////////////////////////////////////
 
 template < size_t BLOCK_SIZE >
 void Storage< BLOCK_SIZE >::Read(size_t index, void* dest) const
@@ -89,10 +73,25 @@ void Storage< BLOCK_SIZE >::Read(size_t index, void* dest) const
     storage_file.seekg((index * BLOCK_SIZE), std::fstream::beg);
     storage_file.read(static_cast< char* >(dest), BLOCK_SIZE);
 
-    char log_msg[MSG_SIZE] = {0};
-    sprintf(log_msg, "%s: inside Read(): reading from index %ld", __FILE__,
-            index);
-    LOG_INFO(log_msg);
+    LOG_INFO(__FILE__ + std::string("::Read(): reading from index" + index));
+
+    storage_file.close();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+template < size_t BLOCK_SIZE >
+void Storage< BLOCK_SIZE >::Write(size_t index, const void* src)
+{
+    std::cout << "index:\n\n" << index << std::endl;
+    assert(index <= m_blocks_capacity);
+
+    std::fstream storage_file;
+    storage_file.open("storage_file.txt");
+    storage_file.seekp((index * BLOCK_SIZE), std::fstream::beg);
+    storage_file.write(static_cast< const char* >(src), BLOCK_SIZE);
+
+    LOG_INFO(__FILE__ + std::string("::Write(): reading from index" + index));
 
     storage_file.close();
 }

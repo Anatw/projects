@@ -55,18 +55,18 @@ T* Singleton< T >::m_instance = NULL;
 template < typename T >
 int Singleton< T >::m_is_initializing = false;
 
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+/////////////////////////////
 
 template < class T >
 T* Singleton< T >::GetInstance()
 {
-    // the "__atomic_fetch_or" will set the value using OR opperation and will
-    // return the pervious value that was inside the variable.
-
     if (!m_instance)
     {
-        // This will change the value inside m_is_initializing to true, and will
-        // check if it was priviously "false":
+        // The "__atomic_fetch_or" will set the value using OR opperation and
+        // will return the pervious value that was inside the variable - so this
+        // will change the value inside m_is_initializing to true, and will
+        // check if it's value was priviously "false":
         if (false ==
             (__atomic_fetch_or(&m_is_initializing, true, __ATOMIC_SEQ_CST)))
         {

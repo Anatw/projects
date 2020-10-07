@@ -24,10 +24,10 @@ void ReadCommand::operator()()
     }
     catch (...)
     {
-        char log_msg[MSG_SIZE] = {0};
-        sprintf(log_msg, "%s: inside ReadRequest(): error in Read() method",
-                __FILE__);
-        LOG_ERROR(log_msg);
+        m_params.m_response.m_status = 1;
+
+        LOG_ERROR(__FILE__ +
+                  std::string("::ReadRequest(): error in Read() method"));
 
         throw std::runtime_error("error in Read() method");
     }
@@ -42,21 +42,21 @@ void WriteCommand::operator()()
     }
     catch (...)
     {
-        char log_msg[MSG_SIZE] = {0};
-        sprintf(log_msg, "%s: inside ReadRequest(): error in Write() method",
-                __FILE__);
-        LOG_ERROR(log_msg);
+        m_params.m_response.m_status = 1;
+
+        LOG_ERROR(__FILE__ +
+                  std::string("::ReadRequest(): error in Write() method"));
 
         throw std::runtime_error("error in Write() method");
     }
 }
 
-BaseCommand* ilrd::WriteBuilder(Params m_params)
-{
-    return (new WriteCommand(m_params));
-}
-
 BaseCommand* ilrd::ReadBuilder(Params m_params)
 {
     return (new ReadCommand(m_params));
+}
+
+BaseCommand* ilrd::WriteBuilder(Params m_params)
+{
+    return (new WriteCommand(m_params));
 }

@@ -27,36 +27,30 @@ UDPConnector::UDPConnector(int port)
 
     struct sockaddr_in server_address;
     memset(&server_address, 0, sizeof(server_address));
-    server_address.sin_family = AF_INET;
+    server_address.sin_family = AF_INET; /* address family: AF_INET */
+    /* port in network byte order - this is why the "htons" is there...: */
     server_address.sin_port = htons(port);
-    server_address.sin_addr.s_addr = INADDR_ANY;
+    server_address.sin_addr.s_addr = INADDR_ANY; /* internet address */
 
     if (0 > bind(m_fd, (const struct sockaddr*)&server_address,
                  sizeof(server_address)))
     {
         close(m_fd);
 
-        char log_msg[MSG_SIZE] = {0};
-        sprintf(log_msg, "%s: inside UDPConnector(): Error in bind()",
-                __FILE__);
-        LOG_ERROR(log_msg);
+        LOG_ERROR(__FILE__ + std::string("::UDPConnector(): Error in bind()"));
 
         throw runtime_error("error in bind function");
     }
 
-    char log_msg[MSG_SIZE] = {0};
-    sprintf(log_msg,
-            "%s: inside UDPConnector(): Finished binding process with port no. "
-            "%d. m_fd = %d",
-            __FILE__, port, m_fd);
-    LOG_INFO(log_msg);
+    LOG_INFO(__FILE__ +
+             std::string(
+                 "::UDPConnector(): FINISHED binding process with port no. " +
+                 port + std::string(". m_fd = " + m_fd)));
 }
 
 UDPConnector::~UDPConnector()
 {
-    char log_msg[MSG_SIZE] = {0};
-    sprintf(log_msg, "%s: inside ~UDPConnector(): Dtor activated", __FILE__);
-    LOG_INFO(log_msg);
+    LOG_INFO(__FILE__ + std::string("::~UDPConnector(): Dtor activated"));
 
     close(m_fd);
 }
