@@ -10,14 +10,40 @@ Reviewer:
 #define __ILRD_RD8586_STUDENT_HPP_
 
 #include <boost/noncopyable.hpp> // boost::noncopyable
+#include <string>
+
+#include "subject.hpp"
 
 namespace ilrd
 {
 class Student
 {
 public:
+    Student(const std::string name, const int id, std::string faculty,
+            int year = 0);
+    void Print() const;
+    void AddSubject(const Subject* subject);
+    void RemoveSubject(const std::string subject);
+
+    inline int GetID() const
+    {
+        return m_id;
+    }
+    inline std::string GetName() const
+    {
+        return m_name;
+    }
+
 private:
+    std::string m_name;
+    int m_id;
+    int m_year;
+    std::string m_faculty;
+    int NUM_SUBJECTS; // 10
+    Subject* m_subjects[11];
+    int m_num_subjects;
 };
+
 } // namespace ilrd
 
 #endif /* __ILRD_RD8586_STUDENT_HPP_ */
