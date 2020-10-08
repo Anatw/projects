@@ -129,6 +129,7 @@ void Collage::AddStudent(Student* student)
 void Collage::RemoveStudent(int id)
 {
     std::string student_name;
+    std::string faculty_name;
     std::map< int, Student* >::iterator iterator = m_students.find(id);
 
     if (iterator == m_students.end())
@@ -139,12 +140,20 @@ void Collage::RemoveStudent(int id)
     }
 
     student_name = iterator->second->GetName();
+    faculty_name = iterator->second->GetFaculty();
 
     // remove student to the relevant faculty:
-    // std::vector< Faculty >::iterator faculty_iterator = std::find(
-    //     m_faculties.begin(), m_faculties.end(),
-    //     iterator->second->GetFaculty());
-    // faculty_iterator->RemoveStudent(iterator->second->GetID());
+    std::vector< Faculty >::iterator faculty_iterator = m_faculties.begin();
+
+    for (; faculty_iterator != m_faculties.end(); ++faculty_iterator)
+    {
+        if (iterator->second->GetFaculty() == faculty_name)
+        {
+            faculty_iterator->RemoveStudent(iterator->second->GetID());
+            break;
+        }
+    }
+
     RemoveStudent(student_name);
     m_students.erase(iterator);
 }
