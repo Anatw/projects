@@ -13,7 +13,7 @@ Reviewer:
 
 using namespace ilrd;
 
-Faculty::Faculty(const std::string& name) : m_name(name)
+Faculty::Faculty(const std::string& name) : m_faculty_name(name)
 {
 }
 
@@ -94,6 +94,25 @@ void Faculty::PrintFacultyStudents(std::map< int, Student* >& m_students) const
              ++inner_it)
         {
             m_students.find(*inner_it)->second->Print();
+        }
+    }
+}
+
+void Faculty::RemoveStudent(const int id)
+{
+    std::vector< std::vector< int > >::iterator iterator = m_years.begin();
+    std::vector< int >::const_iterator inner_it;
+
+    for (; iterator != m_years.end(); ++iterator)
+    {
+        for (inner_it = iterator->begin(); inner_it != iterator->end();
+             ++inner_it)
+        {
+            if (id == (*inner_it)) // find year in the faculty array
+            {
+                // Delete student from detabase:
+                // iterator->erase(inner_it, inner_it);
+            }
         }
     }
 }

@@ -19,6 +19,8 @@ namespace ilrd
 class Student
 {
 public:
+    // for now I'm assuming that the faculty name entered is valid. In actual
+    // working system - this should be checked.
     Student(const std::string name, const int id, std::string faculty,
             int year = 0);
     void Print() const;
@@ -32,6 +34,16 @@ public:
     inline std::string GetName() const
     {
         return m_name;
+    }
+
+    inline std::string GetFaculty() const
+    {
+        return m_faculty;
+    }
+
+    inline int GetYear() const
+    {
+        return m_year;
     }
 
 private:

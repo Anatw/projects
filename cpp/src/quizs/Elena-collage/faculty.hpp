@@ -24,14 +24,15 @@ public:
     void AddStudent(const int year, const int students_id);
     void PrintYear(std::map< int, Student* >& m_students, int year) const;
     void PrintFacultyStudents(std::map< int, Student* >& m_students) const;
+    void RemoveStudent(const int id);
 
     inline std::string GetFacultyName() const
     {
-        return m_name;
+        return m_faculty_name;
     }
 
 private:
-    std::string m_name;
+    std::string m_faculty_name;
     std::vector< std::vector< int > > m_years; // int id
 };
 } // namespace ilrd

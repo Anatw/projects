@@ -102,7 +102,26 @@ void Collage::AddStudent(Student* student)
     m_name_students.insert(
         std::make_pair(student->GetName(), student->GetID()));
 
-    // student->GetFaculty // insert the student to the relevant faculty
+    // insert the student to the relevant faculty:
+    std::string faculty_name = student->GetFaculty();
+    std::vector< Faculty >::iterator iterator = m_faculties.begin();
+
+    for (; iterator != m_faculties.end(); ++iterator)
+    {
+        if (iterator->GetFacultyName() == faculty_name)
+        {
+            iterator->AddStudent(student->GetYear(), student->GetID());
+            break;
+        }
+        else
+        {
+            std::cout
+                << "ERROR in adding student to a faculty - faculty is not "
+                   "inside list!"
+                << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -120,9 +139,14 @@ void Collage::RemoveStudent(int id)
     }
 
     student_name = iterator->second->GetName();
-    m_students.erase(iterator);
 
+    // remove student to the relevant faculty:
+    // std::vector< Faculty >::iterator faculty_iterator = std::find(
+    //     m_faculties.begin(), m_faculties.end(),
+    //     iterator->second->GetFaculty());
+    // faculty_iterator->RemoveStudent(iterator->second->GetID());
     RemoveStudent(student_name);
+    m_students.erase(iterator);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

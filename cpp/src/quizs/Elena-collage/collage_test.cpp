@@ -11,17 +11,19 @@ Reviewer:
 
 using namespace ilrd;
 
-void AddStudent()
+Student AddStudent()
 {
-    Student kate(std::string("kath Bush"), 123456789,
-                 std::string("faculty of life"), 0);
+    Student kate(std::string("kath Bush"), 123456789, std::string("science"),
+                 0);
     Subject* subject = new Subject(std::string("Music"));
     kate.AddSubject(subject);
     Subject* subject2 = new Subject(std::string("Math"));
     kate.AddSubject(subject2);
     Subject* subject3 = new Subject(std::string("software engeneer"));
     kate.AddSubject(subject3);
-    kate.Print();
+    /*kate.Print();*/
+
+    return (kate);
 }
 
 int main()
@@ -29,6 +31,11 @@ int main()
     /*AddStudent();*/
     Collage collage;
     collage.AddFaculty(std::string("science"));
+    collage.AddFaculty(std::string("music"));
+
+    Student student = AddStudent();
+    collage.AddStudent(&student);
+    collage.PrintStudents();
 
     return (0);
 }
