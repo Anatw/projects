@@ -36,8 +36,9 @@ int main()
     Student student = AddStudent();
     collage.AddStudent(&student);
     collage.PrintStudents();
-    // Subject* dance = new Subject(std::string("dance"));
-    // collage.ChangeSubject(student.GetID(), std::string("science"), dance);
+    Subject* dance = new Subject(std::string("dance"));
+    collage.ChangeSubject(student.GetID(), std::string("science"), dance);
+    collage.PrintStudents();
 
     return (0);
 }

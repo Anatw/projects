@@ -47,8 +47,9 @@ void Student::AddSubject(const Subject* subject)
 {
     if (10 >= m_num_subjects)
     {
-        // error - no room for new subject
-        // return;
+        std::cout << "List of subject is full! You cannot add a new subject"
+                  << std::endl;
+        return;
     }
 
     m_subjects[m_num_subjects++] = const_cast< Subject* >(subject);
@@ -62,7 +63,7 @@ void Student::RemoveSubject(const std::string subject)
     int i = 0;
     int j = 0;
 
-    for (; i < NUM_SUBJECTS; ++i)
+    for (; i < m_num_subjects; ++i)
     {
         if (subject == m_subjects[i]->GetName())
         {
