@@ -25,7 +25,7 @@ public:
             int year = 0);
     void Print() const;
     void AddSubject(const Subject* subject);
-    void RemoveSubject(const std::string subject);
+    bool RemoveSubject(const std::string subject);
 
     inline int GetID() const
     {

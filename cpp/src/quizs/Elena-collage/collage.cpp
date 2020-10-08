@@ -104,23 +104,24 @@ void Collage::AddStudent(Student* student)
 
     // insert the student to the relevant faculty:
     std::string faculty_name = student->GetFaculty();
-    std::vector< Faculty >::iterator iterator = m_faculties.begin();
+    std::vector< Faculty >::iterator faculty_iterator = m_faculties.begin();
 
-    for (; iterator != m_faculties.end(); ++iterator)
+    for (; faculty_iterator != m_faculties.end(); ++faculty_iterator)
     {
-        if (iterator->GetFacultyName() == faculty_name)
+        if (faculty_iterator->GetFacultyName() == faculty_name)
         {
-            iterator->AddStudent(student->GetYear(), student->GetID());
+            faculty_iterator->AddYear(student->GetYear());
+            faculty_iterator->AddStudent(student->GetYear(), student->GetID());
             break;
         }
-        else
-        {
-            std::cout
-                << "ERROR in adding student to a faculty - faculty is not "
-                   "inside list!"
-                << std::endl;
-            exit(EXIT_FAILURE);
-        }
+    }
+
+    if (faculty_iterator == m_faculties.end())
+    {
+        std::cout << "ERROR in adding student to a faculty - faculty is not "
+                     "inside list!"
+                  << std::endl;
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -173,8 +174,10 @@ void Collage::ChangeSubject(int student_id, std::string subject_to_remove,
 {
     std::map< int, Student* >::iterator iterator = m_students.find(student_id);
 
-    iterator->second->RemoveSubject(subject_to_remove);
-    iterator->second->AddSubject(subject_to_add);
+    if (iterator->second->RemoveSubject(subject_to_remove) == true)
+    {
+        iterator->second->AddSubject(subject_to_add);
+    }
 }
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -27,19 +27,17 @@ void Faculty::AddYear(const int year)
     // check if year already exists in the faculty database:
     while (iterator != m_years.end())
     {
-        inner_it = iterator->begin();
-        if (year == inner_it[0])
+        for (inner_it = iterator->begin(); year == inner_it[0]; ++inner_it)
         {
-            std::cout << "ERROR - year already exists in faculty database"
-                      << std::endl;
-            exit(EXIT_FAILURE);
+            std::cout << "year already exists in faculty database" << std::endl;
+            return;
         }
 
-        ++inner_it;
+        ++iterator;
     }
 
     std::vector< int > new_year;
-    new_year[0] = year;
+    new_year.push_back(year);
     m_years.push_back(new_year);
 }
 
@@ -56,7 +54,8 @@ void Faculty::AddStudent(const int year, const int students_id)
         if (inner_it[0] == year) // find year in the faculty array
         {
             // Insert student into the detabase of the specified year:
-            iterator->insert(inner_it, students_id);
+            // iterator->insert(inner_it, students_id);
+            iterator->push_back(students_id);
         }
     }
 }
@@ -72,7 +71,8 @@ void Faculty::PrintYear(std::map< int, Student* >& m_students, int year) const
         inner_it = iterator->begin();
         if (inner_it[0] == year) // find year in the faculty array
         {
-            for (; inner_it != iterator->end(); ++inner_it)
+            // print all students' ids:
+            for (++inner_it; inner_it != iterator->end(); ++inner_it)
             {
                 m_students.find(*inner_it)->second->Print();
             }
@@ -90,7 +90,9 @@ void Faculty::PrintFacultyStudents(std::map< int, Student* >& m_students) const
 
     for (; iterator != m_years.end(); ++iterator)
     {
-        for (inner_it = iterator->begin(); inner_it != iterator->end();
+        // (begin + 1) because begin is the year itself and not an actual
+        // student id:
+        for (inner_it = (iterator->begin() + 1); inner_it != iterator->end();
              ++inner_it)
         {
             m_students.find(*inner_it)->second->Print();

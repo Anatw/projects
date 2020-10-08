@@ -45,19 +45,21 @@ void Student::Print() const
 
 void Student::AddSubject(const Subject* subject)
 {
-    if (10 >= m_num_subjects)
+    if (10 > m_num_subjects)
+    {
+        m_subjects[m_num_subjects++] = const_cast< Subject* >(subject);
+    }
+    else
     {
         std::cout << "List of subject is full! You cannot add a new subject"
                   << std::endl;
         return;
     }
-
-    m_subjects[m_num_subjects++] = const_cast< Subject* >(subject);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Student::RemoveSubject(const std::string subject)
+bool Student::RemoveSubject(const std::string subject)
 {
     Subject* to_remove = NULL;
     int i = 0;
@@ -79,7 +81,16 @@ void Student::RemoveSubject(const std::string subject)
             j = i + 1;
             m_subjects[i++] = m_subjects[j];
         }
+
+        --m_num_subjects;
+    }
+    else
+    {
+        std::cout << "subject to delete: \"" << subject
+                  << "\" is not inside the students subjects list" << std::endl;
+        return false;
     }
 
     delete (to_remove);
+    return true;
 }
