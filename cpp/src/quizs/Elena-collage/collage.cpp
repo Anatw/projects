@@ -53,22 +53,6 @@ void Collage::PrintStudents(int year)
 
 void Collage::PrintStudents(std::string faculty)
 {
-    // size_t num_faculties = m_faculties.size();
-    // size_t i = 0;
-
-    // if (m_faculties.end() != std::find(m_faculties.begin(),
-    // m_faculties.end(), faculty))
-    // {
-
-    // }
-
-    // for (; i < num_faculties; ++i)
-    // {
-    //     if (faculty == m_faculties[i].)
-    //     {
-    //         m_faculties[i].PrintFacultyStudents(m_students);
-    //     }
-    // }
     std::vector< Faculty >::iterator iterator = m_faculties.begin();
 
     for (; iterator != m_faculties.end(); ++iterator)

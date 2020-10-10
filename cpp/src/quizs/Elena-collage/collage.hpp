@@ -10,6 +10,7 @@ Reviewer:
 #define __ILRD_RD8586_COLLAGE_HPP_
 
 #include <boost/noncopyable.hpp> // boost::noncopyable
+#include <boost/thread/mutex.hpp>
 #include <map>
 #include <string>
 #include <vector>
@@ -48,6 +49,8 @@ private:
     std::vector< Faculty > m_faculties;
     std::map< int, Student* > m_students;         // int id, std::stringname
     std::map< std::string, int > m_name_students; // std::string name, int id
+
+    boost::mutex m_students_mutex;
 };
 } // namespace ilrd
 
