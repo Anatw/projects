@@ -46,6 +46,16 @@ public:
         return m_year;
     }
 
+    inline int GetNumSubjects() const
+    {
+        return m_num_subjects;
+    }
+
+    inline std::string PickSubject(int index) const
+    {
+        return m_subjects[index]->GetName();
+    }
+
 private:
     std::string m_name;
     int m_id;

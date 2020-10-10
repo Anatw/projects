@@ -55,7 +55,7 @@ ThreadPool::ActiveThread::~ActiveThread()
 {
     std::cout << "Active Thread - Dtor - ID: " << std::endl;
     // m_thread.join();
-    sleep(1);
+    sleep(2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

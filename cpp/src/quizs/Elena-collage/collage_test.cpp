@@ -52,6 +52,15 @@ Student AddStudentB1()
     return (maria);
 }
 
+void DeleteStudent(Student& student)
+{
+    int num_subjects = student.GetNumSubjects();
+    for (int i = 0; i < num_subjects; ++i)
+    {
+        student.RemoveSubject(student.PickSubject(0));
+    }
+}
+
 int main()
 {
     /*AddStudent();*/
@@ -96,6 +105,10 @@ int main()
 
     std::cout << "\n\nprinting students by faclty (\"music\"):" << std::endl;
     collage.PrintStudents(std::string("music"));
+
+    DeleteStudent(student1);
+    DeleteStudent(student2);
+    DeleteStudent(student3);
 
     return (0);
 }
