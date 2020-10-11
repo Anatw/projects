@@ -1,16 +1,17 @@
 /*******************************************************************************
-collage
+Collage header. Part of a program that manages a collage.
+Part of a simulation with Elena.
 
 Written by Anat Wax, anatwax@gmail.com
 reated: 7.10.20
-Reviewer:
 *******************************************************************************/
 
 #ifndef __ILRD_RD8586_COLLAGE_HPP_
 #define __ILRD_RD8586_COLLAGE_HPP_
 
-#include <boost/noncopyable.hpp> // boost::noncopyable
-#include <boost/thread/mutex.hpp>
+#include <boost/interprocess/sync/interprocess_semaphore.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/locks.hpp>
 #include <map>
 #include <string>
 #include <vector>
@@ -18,8 +19,6 @@ Reviewer:
 #include "faculty.hpp"
 #include "student.hpp"
 #include "subject.hpp"
-
-// add - addfaculty method
 
 namespace ilrd
 {
@@ -41,16 +40,42 @@ public:
     void AddStudent(Student* student);
     void RemoveStudent(int id);
     void RemoveStudent(std::string name);
+    Student* PeekStudent();
 
     void ChangeSubject(int student_id, std::string subject_to_remove,
                        Subject* subject_to_add);
+    inline size_t GetNumStudents() const
+    {
+        return m_students.size();
+    }
 
 private:
     std::vector< Faculty > m_faculties;
     std::map< int, Student* > m_students;         // int id, std::stringname
     std::map< std::string, int > m_name_students; // std::string name, int id
 
-    boost::mutex m_students_mutex;
+    void RemoveStudentNotTS(int id);                   // not thread safe
+    void RemoveStudentNotTS(std::string name, int id); // not thread safe
+
+    /**************************************************************************/
+    /* Sync objects. The writers will always have priority over the reader -  */
+    /* the printings should always be as accurate as possible                 */
+    /**************************************************************************/
+    // mutex to synchronise between readers themselves:
+    boost::mutex m_mutexR;
+    // mutex to synchronise between writers themselves:
+    boost::mutex m_mutexW;
+    // mutex to make sure writers get prioretised:
+    boost::mutex m_mutex_sync;
+    // consition variable - only when all writers waiting to write will finish
+    // writing - the readers can read:
+    boost::condition_variable m_cond_writer;
+    boost::condition_variable m_cond_reader;
+    // semaphore se syncronize between readers and writers
+    boost::interprocess::interprocess_semaphore m_semaphore;
+    int m_writer_counter;
+    bool m_finished_writing;
+    bool m_finished_reading;
 };
 } // namespace ilrd
 

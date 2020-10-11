@@ -1,13 +1,16 @@
 /*******************************************************************************
-WS name
-Templates + STL (Histo)
+Test for a program that manages a collage.
+Part of a simulation with Elena.
+
 Written by Anat Wax, anatwax@gmail.com
-Created: .9.20
-Reviewer:
+Created: 7.10.20
 *******************************************************************************/
-#include "collage.hpp"
+#include <atomic>
+#include <boost/thread.hpp>
 #include <iostream> // cout, cin, cerr
 #include <string>
+
+#include "collage.hpp"
 
 using namespace ilrd;
 
@@ -61,8 +64,9 @@ void DeleteStudent(Student& student)
     }
 }
 
-int main()
+void DoCoolStuff()
 {
+    std::atomic< int > thread_num(1);
     /*AddStudent();*/
     Collage collage;
     collage.AddFaculty(std::string("science"));
@@ -74,44 +78,161 @@ int main()
     collage.AddStudent(&student1);
     collage.AddStudent(&student2);
     collage.AddStudent(&student3);
-    // collage.PrintStudents();
-    // Subject* dance = new Subject(std::string("dance"));
-    // collage.ChangeSubject(student1.GetID(), std::string("Math"), dance);
-    // collage.ChangeSubject(student1.GetID(), std::string("science"), dance);
+    collage.PrintStudents();
+    Subject* dance = new Subject(std::string("dance"));
+    collage.ChangeSubject(student1.GetID(), std::string("Math"), dance);
+    collage.ChangeSubject(student1.GetID(), std::string("science"), dance);
 
-    // std::cout << "\nprinting student by id number(123456789):" << std::endl;
-    // collage.PrintStudent(KATE_ID);
+    std::cout << "\nprinting student by id number(123456789):" << std::endl;
+    collage.PrintStudent(KATE_ID);
 
-    // std::cout << "\nprinting student by name (kath Bush):" << std::endl;
-    // collage.PrintStudent(KATE_NAME);
+    std::cout << "\nprinting student by name (kath Bush):" << std::endl;
+    collage.PrintStudent(KATE_NAME);
 
-    std::cout << "\nprinting students by faculty (\"science\"):" << std::endl;
+    std::cout << "\n"
+              << thread_num++
+              << ": printing students by faculty (\"science\"):" << std::endl;
     collage.PrintStudents(std::string("science"));
 
-    std::cout << "\nprinting students by year (0):" << std::endl;
+    sleep(1);
+
+    std::cout << "\n"
+              << thread_num++
+              << ": printing students by year (0):" << std::endl;
     collage.PrintStudents(0);
 
-    std::cout << "\nprinting students by faclty (\"science\") and year (0):"
+    sleep(1);
+
+    std::cout << "\n"
+              << thread_num++
+              << ": printing students by faclty (\"science\") and year (0):"
               << std::endl;
     collage.PrintStudents(std::string("science"), 0);
 
-    std::cout << "\nprinting students by faclty (\"science\") and year (1):"
+    sleep(1);
+
+    std::cout << "\n"
+              << thread_num++
+              << ": printing students by faclty (\"science\") and year (1):"
               << std::endl;
     collage.PrintStudents(std::string("science"), 1);
 
-    std::cout << "\nprinting students by faclty (\"science\") and year (2):"
+    sleep(1);
+
+    std::cout << "\n"
+              << thread_num++
+              << ": printing students by faclty (\"science\") and year (2):"
               << std::endl;
     collage.PrintStudents(std::string("science"), 2);
 
-    std::cout << "\n\nprinting students by faclty (\"music\"):" << std::endl;
+    sleep(1);
+
+    std::cout << "\n\n"
+              << thread_num++
+              << ": printing students by faclty (\"music\"):" << std::endl;
     collage.PrintStudents(std::string("music"));
 
     DeleteStudent(student1);
     DeleteStudent(student2);
     DeleteStudent(student3);
+}
+
+Student* AddLargeStudent()
+{
+    static int id = 11111;
+    Student* student =
+        new Student("L_student", id++, std::string("large_numbers"), 0);
+    Subject* subject = new Subject(std::string("magic"));
+    (*student).AddSubject(subject);
+    Subject* subject2 = new Subject(std::string("touch"));
+    (*student).AddSubject(subject2);
+
+    return student;
+}
+
+void DeleteLargeStudent(Collage& collage)
+{
+    for (size_t i = 0; i < collage.GetNumStudents(); ++i)
+    {
+        collage.RemoveStudent(collage.PeekStudent()->GetID());
+    }
+}
+
+void LargeNumbers()
+{
+    std::atomic< int > thread_num(1);
+    /*AddStudent();*/
+    Collage collage;
+    collage.AddFaculty(std::string("large_numbers"));
+    Student* student;
+    int i = 0;
+    int num = 500;
+
+    for (i = num; i > 0; --i)
+    {
+        student = AddLargeStudent();
+        collage.AddStudent(student);
+    }
+
+    // collage.PrintStudents();
+    // Subject* dance = new Subject(std::string("dance"));
+    // collage.ChangeSubject((*student).GetID(), std::string("Math"), dance);
+    // collage.ChangeSubject((*student).GetID(), std::string("science"), dance);
+
+    // std::cout << "\nprinting student by id number(11111):" << std::endl;
+    // collage.PrintStudent(11111);
+
+    // std::cout << "\n"
+    //           << thread_num++
+    //           << ": printing students by faculty (\"large_numbers\"):"
+    //           << std::endl;
+    // collage.PrintStudents(std::string("large_numbers"));
+
+    // std::cout << "\n"
+    //           << thread_num++
+    //           << ": printing students by year (0):" << std::endl;
+    // collage.PrintStudents(0);
+
+    // std::cout
+    //     << "\n"
+    //     << thread_num++
+    //     << ": printing students by faclty (\"large_numbers\") and year (0):"
+    //     << std::endl;
+    // collage.PrintStudents(std::string("large_numbers"), 0);
+
+    // std::cout << "\n"
+    //           << thread_num++
+    //           << ": printing students by faclty (\"large_numbers\") and year"
+    //              "(1) (should be empty):"
+    //           << std::endl;
+    // collage.PrintStudents(std::string("large_numbers"), 1);
+
+    // std::cout << "\n"
+    //           << thread_num++
+    //           << ": printing students by faclty (\"large_numbers\") and year"
+    //              "(2) (should be empty):"
+    //           << std::endl;
+    // collage.PrintStudents(std::string("large_numbers"), 2);
+
+    // std::cout << "\n\n"
+    //           << thread_num++
+    //           << ": printing students by faclty (\"music\"):" << std::endl;
+    // collage.PrintStudents(std::string("music"));
+
+    DeleteLargeStudent(collage);
+    // delete dance;
+    delete student;
+}
+
+int main()
+{
+    // boost::thread thread1(DoCoolStuff);
+    boost::thread thread3(LargeNumbers);
+    // boost::thread thread2(DoCoolStuff);
+
+    // thread1.join();
+    thread3.join();
+    // thread2.join();
 
     return (0);
 }
-////////////////////////////////////////////////////////////////////////////////
-//                           Inline functions:                                //
-////////////////////////////////////////////////////////////////////////////////

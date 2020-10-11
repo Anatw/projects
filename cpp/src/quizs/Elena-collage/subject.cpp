@@ -1,9 +1,9 @@
 /*******************************************************************************
-WS name
-Templates + STL (Histo)
+Subject class. Part of a program that manages a collage.
+Part of a simulation with Elena.
+
 Written by Anat Wax, anatwax@gmail.com
-Created: .9.20
-Reviewer:
+reated: 7.10.20
 *******************************************************************************/
 #include <iostream> // cout, cin, cerr
 

@@ -1,8 +1,9 @@
 /*******************************************************************************
+Subject header. Part of a program that manages a collage.
+Part of a simulation with Elena.
 
 Written by Anat Wax, anatwax@gmail.com
 reated: 7.10.20
-Reviewer:
 *******************************************************************************/
 
 #ifndef __ILRD_RD8586_SUBJECT_HPP_

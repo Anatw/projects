@@ -43,13 +43,14 @@ void Read()
 
 void Write()
 {
+    // int write_counter = 0;
     mutexS.lock();
     // mutexW.lock();
-    //++write_counter;
-    // mutexW.unlock();
+    // if (++write_counter == 1);
+    //{
     semaphore_w.wait();
-    // int write_counter = 0;
-
+    //     mutexW.unlock();
+    //}
     mutexS.unlock();
 
     //

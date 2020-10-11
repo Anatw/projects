@@ -2,7 +2,7 @@
 # Makefile - Version 4
 NAME:=collage_test
 CC=g++
-CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
+CFLAGS=-pedantic-errors -Wall -Wextra -g#pd#
 F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#
 DEPS=#hash_table.h
 INC_DIR:=#-I ../../include
@@ -28,7 +28,7 @@ test: $(OBJ)
 # -ldl for linker to be able to load the #include <dlfcn.h> (dlopen(), dlclose(), dlsym()) to work
 	@echo 
 	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out  $(SYS_LIB)
-	./a.out
+	valgrind ./a.out
 
 testwithoutrun: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(INC_DIR) $(OBJ_LIB)$(LIB) -o a.out  $(SYS_LIB)

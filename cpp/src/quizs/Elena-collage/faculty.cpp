@@ -1,9 +1,9 @@
 /*******************************************************************************
-WS name
-Templates + STL (Histo)
+Faculty class. Part of a program that manages a collage.
+Part of a simulation with Elena.
+
 Written by Anat Wax, anatwax@gmail.com
-Created: .9.20
-Reviewer:
+reated: 7.10.20
 *******************************************************************************/
 #include <iostream> // cout, cin, cerr
 #include <map>
@@ -60,6 +60,8 @@ void Faculty::AddStudent(const int year, const int students_id)
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void Faculty::PrintYear(std::map< int, Student* >& m_students, int year) const
 {
     std::vector< std::vector< int > >::const_iterator iterator =
@@ -82,6 +84,8 @@ void Faculty::PrintYear(std::map< int, Student* >& m_students, int year) const
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void Faculty::PrintFacultyStudents(std::map< int, Student* >& m_students) const
 {
     std::vector< std::vector< int > >::const_iterator iterator =
@@ -100,6 +104,8 @@ void Faculty::PrintFacultyStudents(std::map< int, Student* >& m_students) const
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void Faculty::RemoveStudent(const int id)
 {
     std::vector< std::vector< int > >::iterator iterator = m_years.begin();
@@ -108,12 +114,14 @@ void Faculty::RemoveStudent(const int id)
     for (; iterator != m_years.end(); ++iterator)
     {
         for (inner_it = iterator->begin(); inner_it != iterator->end();
-             ++inner_it)
+             ++inner_it) // find year in the faculty array
         {
-            if (id == (*inner_it)) // find year in the faculty array
+            // if ID inside year is a match - delete student from detabase
+            if (id == (*inner_it))
             {
-                // Delete student from detabase:
                 // iterator->erase(inner_it, inner_it);
+                iterator->erase(inner_it);
+                return;
             }
         }
     }
