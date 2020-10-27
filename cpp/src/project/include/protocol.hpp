@@ -17,6 +17,13 @@ const size_t MAX_BLOCK_SIZE = 4096;
 
 struct Request
 {
+    enum MODE
+    {
+        READ = 0,
+        WRITE = 1
+
+    };
+
     inline size_t RequestSize()
     {
         return sizeof(*this);

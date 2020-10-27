@@ -6,10 +6,13 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
+#include <sys/inotify.h>
 
 #include "reactor.hpp"
 #include "master_storage_manager.hpp"
 #include "minion_info.hpp"
+#include "logger.hpp"
+#include "master_protocol.hpp"
 
 namespace ilrd
 {
@@ -20,42 +23,45 @@ class IMasterCommunicator
 class UDPcommunicator : public IMasterCommunicator, private boost::noncopyable
 {
 public:
+    class Broadcaster;
+    typedef Broadcaster MinionUDPIdentifier;
+
     UDPcommunicator(int port, Reactor &reactor, MasterStorageManager &storage_manager);
     ~UDPcommunicator();
 private:
-    class UDPMinion : public MinionInfo
-    {
-    public:
-        UDPMinion(int fd, int port, const std::string &ip);
-        void Send(char* data);
-        int GetFd();
-        int GetPort();
-        std::string GetIp();
+        class UDPMinion : public MinionInfo
+        {
+        public:
+            UDPMinion(int fd, int port, const std::string &ip);
+            void Send(char* data);
+            inline int GetFd();
+            inline int GetPort();
+            inline std::string GetIp();
 
-    private:
-        int m_fd;
-        int m_port;
-        std::string m_ip;
-    };
+        private:
+            int m_fd;
+            int m_port;
+            std::string m_ip;
+        };
 
-    class MinionUDPIdentifier
-    {
-    public:
-        // Init in a new thread, Open a socket for UDP broadcast
-        MinionUDPIdentifier(int port);
-        int GetFd();
-        ~MinionUDPIdentifier();
-    private:
-        int m_fd;
-        int m_port;
-        bool m_is_on;
-        boost::thread m_sending_thread;
+        class Broadcaster
+        {
+        public:
+            // Init in a new thread, Open a socket for UDP broadcast
+            Broadcaster(int port);
+            inline int GetFd();
+            ~Broadcaster();
+        private:
+            int m_fd;
+            int m_port;
+            bool m_is_on;
+            boost::thread m_sending_thread;
 
-        // send the bradcasatmessage every 1 second 
-        void SendBroadCast();
-        // void CheckMinionsStatus();
+            // send the bradcasatmessage every 1 second 
+            void SendBroadCast();
+            // void CheckMinionsStatus();
 
-    };
+        };
 
     void CreateMinion(int fd);
     void STDIN_Stop(int fd);

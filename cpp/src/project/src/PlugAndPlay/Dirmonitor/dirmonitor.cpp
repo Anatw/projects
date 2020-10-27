@@ -60,11 +60,7 @@ void DirMonitor::Monitor()
     int fd = inotify_init();
     if (0 > fd)
     {
-        sprintf(log_msg,
-                "%s: inside StartMonitoring()->Monitor(): error in "
-                "inotify_init() method",
-                __FILE__);
-        LOG_ERROR(log_msg);
+         LOG_ERROR(__FILE__ + std::string("::StartMonitoring()->Monitor(): error in inotify_init() method"));
     }
 
     // Set the file desciptor to watch a directory:
