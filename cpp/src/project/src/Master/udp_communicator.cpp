@@ -30,14 +30,24 @@ UDPcommunicator::UDPMinion::UDPMinion(int fd, int port, const std::string &ip) :
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Sending a udp broadcast to all the network. Only Minions that are connected to the currently sending master or Minions that are not connected to any master will respond to the broadcast
 void UDPcommunicator::Broadcaster::SendBroadCast()
 {
-    struct sockaddr_in server_address;
-    memset(&server_address, 0, sizeof(server_address));
-    server_address.sin_family = AF_INET; /* address family: AF_INET */
-    /* port in network byte order - this is why the "htons" is there...: */
-    server_address.sin_port = htons(port);
-    server_address.sin_addr.s_addr = INADDR_ANY; /* internet address */
+    struct sockaddr_in master_address;
+    memset(&master_address, 0, sizeof(master_address));
+    // address family: AF_INET:
+    master_address.sin_family = AF_INET; 
+    // port in network byte order - this is why the "htons" is there...:
+    master_address.sin_port = htons(m_port);
+    master_address.sin_addr.s_addr = INADDR_BROADCAST;
+
+    struct sockaddr_in receieve_address;
+
+    BroadcastFrom massage;
+    massage.m_uid_from = 533422123;
+    massage.m_type = 'b';
+
+    sendto(m_fd,massage,sizeof(BroadcastFrom),0,(sockaddr *)&receieve_address,sizeof(receieve_address));
 }
 
 UDPcommunicator::Broadcaster::Broadcaster(int port) : m_port(port), m_is_on(true), m_sending_thread(boost::bind(&SendBroadCast, this))

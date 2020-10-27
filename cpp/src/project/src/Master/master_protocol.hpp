@@ -26,7 +26,8 @@ namespace ilrd
     // The minion will answer to this request if he either - not connected to any master/ connected to the master that sent the broadcast.
     typedef struct BroadcastFrom
     {
-        uint32_t m_uid_from;
+        // Consider changing this m_uid_from to the UID we have implemented in c
+        uint32_t m_uid_from; 
         char m_type;
     }__attribute__((packed));
     
