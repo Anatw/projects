@@ -11,9 +11,14 @@ Version: 1
 
 #include <stdlib.h>     /*  size_t */
 #include <stdint.h>    /* unint_64_t */
+#include <boost/uuid/uuid.hpp>            // uuid class
+#include <boost/uuid/uuid_generators.hpp> // generators
+
+#include "uid.h"
 
 namespace ilrd
 {
+    typedef boost::uuids::uuid UID;
     /*Master request :
     * m_uid_from: own id;
     * m_type: 'b' - broadcast;
@@ -24,10 +29,12 @@ namespace ilrd
     */
     // The master will send this request - this is the broadcast that will be sent to the entire system.
     // The minion will answer to this request if he either - not connected to any master/ connected to the master that sent the broadcast.
-    typedef struct BroadcastFrom
+    struct BroadcastFrom
     {
-        // Consider changing this m_uid_from to the UID we have implemented in c
-        uint32_t m_uid_from; 
+        // In my API I changed m_uid_from (and all other uid variables) from uint32_t to Uid_t (the one that we have implemented in c)
+        // m_uid_not_relevant was added for easier use with the same function to receieve transmition from masters
+        UID m_uid_from;
+        UID m_uid_not_relevant; 
         char m_type;
     }__attribute__((packed));
     
@@ -38,8 +45,8 @@ namespace ilrd
     */
     struct AssigmentRequest
     {
-        uint32_t m_uid_master;
-        uint32_t m_uid_minion;
+        UID m_uid_master;
+        UID m_uid_minion;
         char m_type;
     }__attribute__((packed));
 
@@ -50,7 +57,7 @@ namespace ilrd
     */ 
     struct AssigmentResponse
     {
-        uint32_t m_uid_minion;
+        UID m_uid_minion;
         char m_type;
         char m_status;
     }__attribute__((packed));

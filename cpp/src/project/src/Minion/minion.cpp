@@ -1,5 +1,9 @@
 /*******************************************************************************
 Minion class
+The Minion receieves two ports:
+port - which is the general udp broadcasting comuunication port for communication with Mastes in the system
+master_port - which is a port for udp communication, for read/write requests from his master.
+
 Written by Anat Wax, anatwax@gmail.com
 Created: 9.8.20
 Reviewer: Daria Korotkova
@@ -23,12 +27,10 @@ DerievedListener* listener = new DerievedListener;
 
 Minion::Minion(int port, size_t num_of_blocks, int master_port)
     : m_reactor(listener),
-      m_communicator(port, m_reactor,
+      m_communicator(port, master_port, m_reactor,
                      boost::bind(&Minion::OnRequest, this, _1)),
       m_storage(num_of_blocks)
 {
-    (void)master_port;
-
     /* (0 - read, 1 - write) */
     COMMAND_FACTORY->Add(0, ReadBuilder);
     COMMAND_FACTORY->Add(1, WriteBuilder);

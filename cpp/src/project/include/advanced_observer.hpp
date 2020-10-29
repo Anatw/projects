@@ -7,10 +7,11 @@ Reviewer: Ivanna Fleisher
 #define ILRD_RD8586_ADVANCED_OBSERVER_HPP
 
 #include <boost/function.hpp> // boost::function
+#include <boost/noncopyable.hpp>
 #include <cassert>            // assert
 #include <iostream>           // cout
 
-#include "advanced_observer.hpp"
+// #include "advanced_observer.hpp"
 
 #define LOG_ERR(X) (std::cerr << "ERROR: " << (X) << std::endl)
 #define LOG_WRN(X) (std::cerr << "WARNING: " << (X) << std::endl)
@@ -23,10 +24,10 @@ typedef boost::function< void(int) > CallbackPointer;
 
 namespace detail
 {
-inline void EmptyFunction()
-{
-    std::cout << "default EmpthFunctions() was called" << std::endl;
-}
+    inline void EmptyFunction()
+    {
+        std::cout << "default EmpthyFunctions() was called" << std::endl;
+    }
 } // namespace detail
 
 // observer
