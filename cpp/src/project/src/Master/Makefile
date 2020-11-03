@@ -1,6 +1,6 @@
 # makefile - cpp
 # Makefile - Version 4
-NAME:=master_storage_manager#minion#master_communicator
+NAME:=udp_communicator#master_storage_manager#minion#master_communicator
 CC=g++
 CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
 F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#
@@ -9,7 +9,7 @@ INC_DIR:=-I ../../include
 OBJ_LIB:=#../../obj/
 
 LIB := #doubly_linked_list.o 
-OBJ :=$(NAME).cpp $(NAME)_test.cpp ../Logger/logger.cpp #master_communicator.cpp ../Reactor/reactor.
+OBJ :=$(NAME).cpp  ../Logger/logger.cpp ../Reactor/reactor.cpp ../scheduler/scheduler.cpp ../scheduler/fdtimer.cpp #$(NAME)_test.cpp master_communicator.cpp ../Reactor/reactor.
 #cpp ../derived_listener.cpp command.cpp# udp_connector.cpp 
 
 # $@ -> the file name of the target of the rule

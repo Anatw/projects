@@ -25,11 +25,12 @@ public:
     virtual int GetFd() = 0;
     virtual int GetPort() = 0;
     virtual std::string GetIp() = 0;
+    // This function send the data to the Minion
     virtual void Send(char* data) = 0;
 
 private:
     int m_id;
-    bool m_status;
+    bool m_status; // 1 = working, 0 = not-working
 };
 
 inline void MinionInfo::SetStatus(bool status)

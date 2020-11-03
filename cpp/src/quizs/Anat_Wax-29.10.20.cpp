@@ -12,6 +12,9 @@ static int NoofWays(int face, int throwsVal, int sum)
 
 Authour: Anat Wax, anatwax@gmail.com
 Datecreation: 29.10.2020
+
+NOT FINISHED!!!
+I'm thinking about changing direction - and solve it recursovely (makes more sense because it feels like the number of throuws sould be equall to the number of inner loop in an iterative solution)
 *******************************************************************************/
 #include <iostream> // cout
 #include <limits> // interger min + max values
@@ -58,6 +61,29 @@ static int NoOfWays(const int face, const int num_throws, const int sum)
 
                 current_sum += inner_index;
             }
+        }
+
+        if (current_sum == sum)
+        {
+            ++ways_counter;
+        }
+    }
+    //
+    for (index = 1, throw_counter = 1;
+         index <= face && throw_counter < num_throws;
+         ++index, ++throw_counter)
+    {
+        current_sum = index;
+
+        for (inner_index = 1;
+            inner_index <= face && current_sum < sum;
+            ++inner_index)
+        {
+            temp_sum = current_sum;
+
+            current_sum = temp_sum;
+
+            current_sum += inner_index;
         }
 
         if (current_sum == sum)

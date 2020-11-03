@@ -67,7 +67,7 @@ public:
     ~Reactor();
 
     // This add() version is in case that the user has added a function, but
-    // will not need to bee in charge to remove it - it will happen automaticly
+    // will not need to be in charge to remove it - it will happen automaticly
     // for him (like the RAII principles), and we want to protect the user in
     // case he will forget to remove() this handle_and_func function - we want
     // to crete some sort of an object that in his distructor is releasing
