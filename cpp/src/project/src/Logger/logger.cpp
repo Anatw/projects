@@ -41,7 +41,7 @@ Logger::Logger()
     {
         m_pFile.open(m_filename, std::fstream::app);
     }
-    catch (std::ifstream::failure e)
+    catch (const std::ifstream::failure &e)
     {
         char msg_buffer[512] = {0};
         sprintf(msg_buffer, "Exception in opening m_pFile: %s\n", e.what());

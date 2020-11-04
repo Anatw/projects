@@ -11,7 +11,7 @@ OBJ_LIB:=#../../obj/
 SYS_LIB:=-lboost_system -lboost_thread -lboost_chrono -lpthread#-lglut_utils -lpoint -lboost_filesystem
  
 LIB := #doubly_linked_list.o
-OBJ :=$(NAME).cpp $(NAME)_test.cpp /home/anat/git/anat-wax/cpp/src/project/src/Logger/logger.cpp
+OBJ :=$(NAME).cpp $(NAME)_test.cpp ../Logger/logger.cpp
  
 # $@ -> the file name of the target of the rule
 # $< -> the first item in the Dependencies list

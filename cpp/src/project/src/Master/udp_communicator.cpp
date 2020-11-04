@@ -19,21 +19,24 @@ Version: 1
 
 #include "udp_communicator.hpp"
 
+#define DNDBUG
+
 using namespace ilrd;
 
-// UDPMinion methods:
+////////////////////////////////////////////////////////////////////////////////
+//                          UDPMinion methods:                                //
+////////////////////////////////////////////////////////////////////////////////
 
 UDPcommunicator::UDPMinion::UDPMinion(int fd, int port, const std::string &ip) : m_fd(fd), m_port(port), m_ip(ip)
 {
-    
 }
+
+//////////////////////////////////////////
 
 void UDPcommunicator::UDPMinion::Send(char* data)
 {
     struct sockaddr_in master_addres;
-
     memset(&master_addres, 0, sizeof(master_addres));
-
     master_addres.sin_family = AF_INET;
     master_addres.sin_addr.s_addr = htonl(INADDR_ANY);
     master_addres.sin_port = htons(m_port);
@@ -47,7 +50,9 @@ void UDPcommunicator::UDPMinion::Send(char* data)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// Broadcaster methods:
+////////////////////////////////////////////////////////////////////////////////
+//                      Broadcaster methods:                                  //
+////////////////////////////////////////////////////////////////////////////////
 
 // Sending a udp broadcast to all the network. Only Minions that are connected to the currently sending master or Minions that are not connected to any master will respond to the broadcast
 void UDPcommunicator::Broadcaster::SendBroadCast(int irrelevant)
@@ -92,11 +97,12 @@ void UDPcommunicator::Broadcaster::SendBroadCast(int irrelevant)
     delete massage;
 }
 
+//////////////////////////////////////////
+
 UDPcommunicator::Broadcaster::Broadcaster(int port, Scheduler &scheduler) : m_port(port), m_is_on(true), m_scheduler(scheduler)
 {
-    m_fd = socket(AF_INET, SOCK_DGRAM, 0); // creating a udp socket
-
-    if (0 > m_fd)
+    // creating a udp socket:
+    if (0 > (m_fd = socket(AF_INET, SOCK_DGRAM, 0)))
     {
         LOG_ERROR("Failed to inotify in dir_monitor.cpp");
         std::cout << "Failed to inotify in dir_monitor.cpp" << std::endl;
@@ -104,9 +110,9 @@ UDPcommunicator::Broadcaster::Broadcaster(int port, Scheduler &scheduler) : m_po
     
     // Send a broadcast every 1 second:
     m_scheduler.ScheduleAction(Scheduler::MS(1000), boost::bind(&Broadcaster::SendBroadCast, this, _1));
-
-
 }
+
+//////////////////////////////////////////
 
 UDPcommunicator::Broadcaster::~Broadcaster()
 {
@@ -116,36 +122,51 @@ UDPcommunicator::Broadcaster::~Broadcaster()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// UDPcommunicator methods:
+////////////////////////////////////////////////////////////////////////////////
+//                      UDPcommunicator methods:                              //
+////////////////////////////////////////////////////////////////////////////////
 
 void UDPcommunicator::StartMasterReactor()
 {
+#ifdef DNDBUG
+    std::cout << "inside StartMasterReactor() - starting the reactor." << std::endl;
+#endif
     m_reactor.Run();
 }
 
-void UDPcommunicator::CheckMap(int irrelevant)
+//////////////////////////////////////////
+
+void UDPcommunicator::CheckMinionsStatus(int irrelevant)
 {
     (void)irrelevant;
 
     std::map<std::string, boost::shared_ptr<UDPMinion> >::const_iterator iterator = m_udp_minions.begin();
     std::map<std::string, boost::shared_ptr<UDPMinion> >::const_iterator end = m_udp_minions.end();
 
-    std::list< MinionInfo* > bad_minions;
+    std::vector< boost::shared_ptr< MinionInfo >  > bad_minions;
 
     for (; iterator != end; ++iterator)
     {
         if (iterator->second->GetStatus() == false)
         {
-            bad_minions.push_back(iterator->second.get());
+            bad_minions.push_back(iterator->second);
         }
+
+        // Set Minion's status to false for the next broadcast round:
+        iterator->second->SetStatus(false);
     }
 
     // I need to think about a way to transfer this list of not-working Minions to the master storage mamager. The way I think about it is that the udp_communicator is only in charge of communicating with the Minions in the network, the master storage is the one that is in charge to decide which minion to connect to - so the the master storage should tell the udp_communicator to send an attach request to a specific Minion - if he wishes that.
+    for (size_t i = 0; i < bad_minions.size(); ++i)
+    {
+        m_storage_manager.UnregisterMinion(bad_minions[i]);
+    }
 }
+
+//////////////////////////////////////////
 
 // Every second a broadcast will be sent. The Master's reactor will listen to any responses. When a responase arives, it will check the map - if this minion is inside the map it will set it's status to active. If it is not in the map, it will create a new minion and will add it to the map.
 // Every five seconds the map will be iterated and the Minions statuses will be checked - every minion with inactive status will be handeled.
-
 UDPcommunicator::UDPcommunicator(int port, Reactor &reactor, MasterStorageManager &storage_manager) : m_fd(socket(AF_INET, SOCK_DGRAM, 0)), m_port(port), m_reactor(reactor), m_scheduler(m_reactor), m_storage_manager(storage_manager), m_master_broadcaster(m_port, m_scheduler)
 {
     if (0 > m_fd)
@@ -157,24 +178,65 @@ UDPcommunicator::UDPcommunicator(int port, Reactor &reactor, MasterStorageManage
     // this Method will be activated when the broadcast fd is on - a response from a Minion has arrived
     m_reactor.Add(HandleAndMode(READ, m_master_broadcaster.GetFd()), (new Callback< SimpleSrc<int> >(boost::bind(&UDPcommunicator::OnMinionReply, this, _1))));
 
-    // This fd is only for read/write requests with the minions the Master has in it's storage
-     // creating a udp socket
-
-    // m_reactor_thread(boost::thread(boost::bind(&UDPcommunicator::StartMasterReactor, this)));
     m_reactor_thread = boost::thread(boost::bind(&UDPcommunicator::StartMasterReactor, this));
 
     // Add a new method to the scheduler: check map every 5 seconds - make a list of all "not-active" Minions and send it to the master storage manager:
-    m_scheduler.ScheduleAction(Scheduler::MS(5000), boost::bind(&UDPcommunicator::CheckMap, this, _1)); 
+    m_scheduler.ScheduleAction(Scheduler::MS(5000), boost::bind(&UDPcommunicator::CheckMinionsStatus, this, _1)); 
 }
+
+//////////////////////////////////////////
 
 void UDPcommunicator::OnMinionReply(int fd)
 {
-    // std::map<std::string, boost::shared_ptr<UDPMinion> >::iterator iterator = m_udp_minions.find(fd);
+    struct sockaddr_in minion_addr; 
+    memset(&minion_addr, 0, sizeof(sockaddr_in));
+    BroadcastFrom from_minion;
+    int sockaddr_size = sizeof(sockaddr_in);
 
-    UDPMinion *minion = new UDPMinion(m_master_broadcaster.GetFd(), m_port, std::string("ip check"));
+    int status = recvfrom(fd, (char *)&from_minion, sizeof(BroadcastFrom), MSG_WAITALL, (struct sockaddr *)&minion_addr, (socklen_t *)&sockaddr_size);
 
+    if (status < 0)
+    {
+        LOG_ERROR(__FILE__ + std::string("::OnMinionReply() - Error in receieving from minion"));
+    }
+
+    // Create a new UDPMinion and insert it into the map: 
+    boost::shared_ptr< UDPMinion >minion(new UDPMinion(m_master_broadcaster.GetFd(), m_port, inet_ntoa(minion_addr.sin_addr)));
+
+    switch (from_minion.m_type)    
+    {
+        case ('b') : // Broadcast response from Minion
+        {
+            // If minion replied with broadcast it mean that we are connected and that this is his master, so the Minion's status in the list should be set to true:
+            std::map<std::string, boost::shared_ptr<UDPMinion> >::iterator iterator = m_udp_minions.find(inet_ntoa(minion_addr.sin_addr));
+            iterator->second->SetStatus(true);
+
+            break;
+        }
+        case ('a') : // Attach request from Minion
+        {
+            minion->SetStatus(true);
+            m_udp_minions.insert(std::make_pair(minion->GetIp(), minion));
+
+            break;
+        }
+        case ('d') : // Detach request from Minion
+        {
+            std::map<std::string, boost::shared_ptr<UDPMinion> >::iterator iterator = m_udp_minions.find(inet_ntoa(minion_addr.sin_addr));
+            iterator->second->SetStatus(false);
+
+            m_udp_minions.erase(inet_ntoa(minion_addr.sin_addr));
+
+            break;
+        }
+    }
+
+    // This function will check the condition of the master and decide if it needs to send ack to more Minions: When this minion arive into the master storage manager - it's status is already set - if it is in the master storage map - he knows to check it's status. if not - it should decide if he wan't to connect to it:
+    m_storage_manager.RegisterNewMinion(minion);
     
 }
+
+//////////////////////////////////////////
 
 UDPcommunicator::~UDPcommunicator()
 {

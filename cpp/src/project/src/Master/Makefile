@@ -9,7 +9,7 @@ INC_DIR:=-I ../../include
 OBJ_LIB:=#../../obj/
 
 LIB := #doubly_linked_list.o 
-OBJ :=$(NAME).cpp  ../Logger/logger.cpp ../Reactor/reactor.cpp ../scheduler/scheduler.cpp ../scheduler/fdtimer.cpp #$(NAME)_test.cpp master_communicator.cpp ../Reactor/reactor.
+OBJ :=$(NAME).cpp $(NAME)_test.cpp ../Logger/logger.cpp ../Reactor/reactor.cpp ../scheduler/scheduler.cpp ../scheduler/fdtimer.cpp master_storage_manager.cpp#master_communicator.cpp ../Reactor/reactor.
 #cpp ../derived_listener.cpp command.cpp# udp_connector.cpp 
 
 # $@ -> the file name of the target of the rule

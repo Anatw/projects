@@ -20,12 +20,11 @@ Reviewer: Dean Oron
 #include "advanced_observer.hpp"
 #include "advanced_subject.hpp"
 
+
 // The type of a handle is system specific. We're using UNIX so an handle is
 // represented by an integer
 typedef int Handle;
 class IListener;
-
-#define ORIGINAL_VERSION
 
 ////////////////////////////////////////////////////////////////////////////////
 //                     IListener class & functions:                           //

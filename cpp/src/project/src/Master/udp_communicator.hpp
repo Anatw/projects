@@ -10,6 +10,7 @@
 #include <sys/inotify.h>
 
 #include "reactor.hpp"
+#include "reactor_listener.hpp"
 #include "advanced_observer.hpp"
 #include "master_storage_manager.hpp"
 #include "minion_info.hpp"
@@ -60,9 +61,8 @@ private:
             UID m_master_uid;
             Scheduler &m_scheduler;
 
-            // send the bradcasatmessage every 1 second 
+            // Send the bradcasatmessage every 1 second 
             void SendBroadCast(int irrelevant);
-            // void CheckMinionsStatus();
         };
         
         typedef Broadcaster MinionUDPIdentifier;
@@ -72,14 +72,15 @@ private:
     void OnMinionReply(int fd);
     void STDIN_Stop(int fd);
     void StartMasterReactor();
-    void CheckMap(int irrelevant);
+    void CheckMinionsStatus(int irrelevant);
     
     int m_fd ; // This is a general read/write fd for receieving responses from Minions. In addition, every minion will have it's own fd for direct communication
     int m_port; // for read/write responses from minions. This port should't be binded to reactor
     Reactor &m_reactor;
     Scheduler m_scheduler;
     MasterStorageManager &m_storage_manager;
-    std::map<std::string, boost::shared_ptr<UDPMinion> > m_udp_minions;
+    // This map contain the Minion's IP as the key, and the UDPMinion as the value:
+    std::map< std::string, boost::shared_ptr< UDPMinion > > m_udp_minions;
     Broadcaster m_master_broadcaster;
     boost::thread m_reactor_thread;
 };

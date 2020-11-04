@@ -81,7 +81,7 @@ int main()
         perror("ERROR in recvfrom - inside udo broadcast\n");
         exit(EXIT_FAILURE);
     }
-
+    printf("string inet-ntoa: %s\n", inet_ntoa(their_addr.sin_addr));
     printf("udp broadcast client recieved %s\n", buffer);
 
     close(sockfd);

@@ -76,7 +76,7 @@ static void SendRecieveFunc(int socket_fd, struct sockaddr_in server_addr)
                                          BUF_SIZE,
                                          MSG_WAITALL,
                                          (struct sockaddr *)&server_addr,
-                                         &length)))
+                                         (socklen_t *)&length)))
         {
             perror("ERROR in recvfrom in UDP client\n");
             exit(EXIT_FAILURE);

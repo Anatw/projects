@@ -83,9 +83,6 @@ void ThreadPool::ActiveThread::JoinThread()
 
 void ThreadPool::ActiveThread::ThreadFunc()
 {
-    // boost::unique_lock< boost::mutex > lock(m_myPool->m_pause_mutex);
-    // m_myPool->m_cond.wait(lock);
-    // m_myPool.m_semaphore.wait();
     m_myPool.m_init_sem.wait();
 
     m_state = RUN;
@@ -122,7 +119,7 @@ void ThreadPool::PauseThread()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                  get      ThreadPool functions: //
+//                         ThreadPool functions:                              //
 ////////////////////////////////////////////////////////////////////////////////
 
 void ThreadPool::Stop()
@@ -138,7 +135,6 @@ void ThreadPool::Stop()
 
 void ThreadPool::ThreadsInit(size_t num_of_threads)
 {
-    // ActiveThread* thread = NULL;
     ActiveThread* thread;
     for (size_t i = 0; i < num_of_threads; ++i)
     {
@@ -146,8 +142,6 @@ void ThreadPool::ThreadsInit(size_t num_of_threads)
                   std::string("::ThreadInit():creating active thread"));
         try
         {
-            // thread = new ActiveThread(*this);
-            // ActiveThreadPtr thread(new ActiveThread(*this));
             thread = new ActiveThread(*this);
         }
         catch (...)
@@ -160,12 +154,7 @@ void ThreadPool::ThreadsInit(size_t num_of_threads)
             std::cout << " cought an error in creating an active thread "
                       << std::endl;
         }
-        // std::cout << "heap adress is " << thread.get();
-        // m_callbacks.insert(
-        //     std::make_pair(boost::this_thread::get_id(),
-        //                    boost::bind(&ActiveThread::StopRunning, thread)));
 
-        // m_threads.push_back(thread);
         thread->StartThread();
         m_threads.insert(std::make_pair(thread->GetID(), thread));
 
@@ -200,7 +189,6 @@ void ThreadPool::Start()
     {
         m_init_sem.post();
     }
-    // sleep(1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -208,7 +196,6 @@ void ThreadPool::Start()
 void ThreadPool::AddTask(TASK_PTR task, int priority)
 {
     // Add the new task to the waitable queue:
-    // m_tasks.Push(std::make_pair(task, priority));
     m_tasks.Push(PriorityAndTask(priority, task));
 }
 
@@ -226,8 +213,7 @@ void ThreadPool::KillThread()
     }
     else
     {
-        // LOG
-        std::cout << "whoops, id didn't work :(" << std::endl;
+        LOG_ERROR(__FILE__ + std::string("::KillThread() - couldn't find thread if inside map"));
     }
 }
 
@@ -240,7 +226,6 @@ void ThreadPool::SetThreadsAmount(size_t new_amount)
 
     if (0 == amount_to_change)
     {
-        ;
         LOG_DEBUG(__FILE__ +
                   std::string(
                       "::SetThreadsAmount() - no change in amout was needed"));
@@ -307,7 +292,7 @@ void ThreadPool::Pause()
     }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void ThreadPool::Resume()
 {

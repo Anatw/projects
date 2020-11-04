@@ -19,7 +19,8 @@ Version: 1
 namespace ilrd
 {
     typedef boost::uuids::uuid UID;
-    /*Master request :
+    /* (master -> minion  &&  minion -> master)
+    Master request :
     * m_uid_from: own id;
     * m_type: 'b' - broadcast;
     
@@ -38,7 +39,7 @@ namespace ilrd
         char m_type;
     }__attribute__((packed));
     
-    /* Master request to attach/detach minion:
+    /* Master request to attach/detach minion: (master -> minion)
     * m_uid_master: master id;
     * m_uid_minion: minion id ;
     * m_type: 'a' - attach/ 'd' - detach

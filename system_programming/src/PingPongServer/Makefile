@@ -1,5 +1,5 @@
 # Makefile - Version 4
-NAME:=ping_pong_server
+NAME:=udp_broadcast#ping_pong_server
 CC=gcc
 CFLAGS=-ansi -pedantic-errors -Wall -Wextra -g#gd#
 F_RELEASE:=-ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#

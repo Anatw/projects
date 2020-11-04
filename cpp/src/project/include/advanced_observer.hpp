@@ -11,7 +11,6 @@ Reviewer: Ivanna Fleisher
 #include <cassert>            // assert
 #include <iostream>           // cout
 
-// #include "advanced_observer.hpp"
 
 #define LOG_ERR(X) (std::cerr << "ERROR: " << (X) << std::endl)
 #define LOG_WRN(X) (std::cerr << "WARNING: " << (X) << std::endl)
