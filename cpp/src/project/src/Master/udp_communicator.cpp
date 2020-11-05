@@ -218,6 +218,8 @@ void UDPcommunicator::OnMinionReply(int fd)
             minion->SetStatus(true);
             m_udp_minions.insert(std::make_pair(minion->GetIp(), minion));
 
+            m_storage_manager.RegisterNewMinion(minion);
+
             break;
         }
         case ('d') : // Detach request from Minion
@@ -232,8 +234,6 @@ void UDPcommunicator::OnMinionReply(int fd)
     }
 
     // This function will check the condition of the master and decide if it needs to send ack to more Minions: When this minion arive into the master storage manager - it's status is already set - if it is in the master storage map - he knows to check it's status. if not - it should decide if he wan't to connect to it:
-    m_storage_manager.RegisterNewMinion(minion);
-    
 }
 
 //////////////////////////////////////////

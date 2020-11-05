@@ -7,8 +7,8 @@ operate
 
 Authour: Anat Wax anatwax@gmail.com
 Reviewer: 
-Datecreation: 20.09.2020
-Version: 1
+Creation date: 20.09.2020
+Version: 2 (5.11.20)
 *******************************************************************************/
 
 #include "master_storage_manager.hpp"
@@ -16,7 +16,7 @@ Version: 1
 
 using namespace ilrd;
 
-MasterStorageManager::MasterStorageManager(size_t num_of_minion, size_t num_of_blocks) : m_num_of_minions(num_of_minion), m_num_of_block(num_of_blocks), m_is_active(false)
+MasterStorageManager::MasterStorageManager(size_t num_of_minion, size_t num_of_blocks) : m_num_of_minions(num_of_minion), m_num_of_block(num_of_blocks), m_is_active(false), m_offset(0), m_num_minions_per_offset(2)
 {
     m_num_offsets_per_minion = m_num_of_block / (m_num_of_minions / 2);
 
@@ -50,7 +50,7 @@ void MasterStorageManager::ReplaceMinion()
         boost::shared_ptr<MinionInfo> backup_minion;
         int offset_counter = 0;
 
-        for (;
+        for (; // the logic of m_num_offsets_per_minion is problematic - should be replaced and deleted
              iterator != end && offset_counter < m_num_offsets_per_minion;
              ++iterator)
         {
@@ -86,6 +86,7 @@ void MasterStorageManager::ReplaceMinion()
 
 void MasterStorageManager::RegisterNewMinion(boost::shared_ptr<MinionInfo> minion)
 {
+    // I receieved a minion. I need to check if it is in my map and 
     bool add_to_map = false;
     // If more minion can be active in the system - they should be added to the list of active minion. If not - they will be added to the list of backup minions:
     if (m_minions_list.size() < m_num_of_minions)
@@ -101,23 +102,20 @@ void MasterStorageManager::RegisterNewMinion(boost::shared_ptr<MinionInfo> minio
     // look inside the m_offset_map and see to which offset need a storing minion/backup minion (meaning that the value list in that offset index has less than two minions). Add it there.
     if (add_to_map)
     {
-        std::map< offset_t, minion_list_t >::iterator iterator;
-        std::map< offset_t, minion_list_t >::iterator end = m_offset_map.end();
-        int i = 0;
-
-        for (iterator = m_offset_map.begin();
-            iterator != end && i < m_num_offsets_per_minion;
-            ++iterator, ++i)
+        for (size_t i = 0; i < m_num_of_block; ++i)
         {
-            if (iterator->second.size() < 2)
+            if (m_offset == i % (m_num_of_minions / 2))
             {
-                iterator->second.push_back(minion);
+                m_offset_map[i].push_back(minion);
             }
         }
+        
+        // set m_offset to the next offset - ready for the next Minion to register:
+        m_offset = (m_offset + 1) % (m_num_of_minions / 2);
     }
 
     // check if there is a need of replace mionion and replace
-    ReplaceMinion();
+    // ReplaceMinion();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,7 +124,6 @@ void MasterStorageManager::UnregisterMinion(boost::shared_ptr<MinionInfo> minion
 {
     std::map< offset_t, minion_list_t >::iterator iterator;
     std::map< offset_t, minion_list_t >::iterator end = m_offset_map.end();
-
 
     for (iterator = m_offset_map.begin(); iterator != end; ++iterator)
     {
@@ -155,41 +152,41 @@ Request* MasterStorageManager::BuildRequest(Request::MODE mode, uint64_t id, uin
 void MasterStorageManager::Write(size_t offset, char *data)
 {
     // Find the first minion that connected to the requested offset and insert data into it:
-    std::map< offset_t, minion_list_t >::iterator iterator = m_offset_map.find(offset);
-    minion_list_t::iterator inner_iter;
-    bool data_was_lost = true;
+    minion_list_t minion_list = m_offset_map[offset];
+    minion_list_t::iterator iterator = minion_list.begin();
+    bool data_was_lost = false;
 
-    if (iterator != m_offset_map.end())
-    { 
-        for (inner_iter = iterator->second.begin(); inner_iter != iterator->second.end(); ++inner_iter)
-        {
-            if (inner_iter->get()->GetStatus() == true)
-            {
-                Request *request = BuildRequest(Request::WRITE, iterator->second.begin()->get()->GetId(), offset);
-
-                // Insert the data into the newly created request:
-                memcpy(request->m_data, data, MSG_SIZE);
-                
-                iterator->second.begin()->get()->Send((char *)request);
-                
-                data_was_lost = false;
-
-                delete request;
-
-                break;
-            }
-        }
-    }
-    else
+    if (minion_list.size() == 0)
     {
-        LOG_ERROR(__FILE__ + std::string("::Write(): requested offset (" + offset + std::string(" has no minion connected to it")));
+        LOG_ERROR(__FILE__ + std::string("::Read(): requested offset (" + offset + std::string(" has no minion connected to it")));
 
-        throw ("No minion connected to requested offset");
+        // throw ("No minion connected to requested offset");
+    }
+
+    for (size_t i = 0; i < m_num_of_minions; ++i)
+    {
+        if (iterator->get()->GetStatus() == true) // If minion is active
+        {
+            Request *request = BuildRequest(Request::WRITE, iterator->get()->GetId(), offset);
+
+            // Insert the data into the newly created request:
+            memcpy(request->m_data, data, MSG_SIZE);
+            
+            iterator->get()->Send((char *)request);
+            
+            data_was_lost = false;
+
+            delete request;
+
+            break;
+        }
+
+        ++iterator;
     }
 
     if (data_was_lost)
     {
-        throw (std::runtime_error("no active minion found - data lost"));
+        throw (std::runtime_error("no active minion found - data cannot be read"));
     }
 }
 
@@ -198,36 +195,34 @@ void MasterStorageManager::Write(size_t offset, char *data)
 void MasterStorageManager::Read(size_t offset)
 {
     // Find the first minion that connected to the requested offset and read data into it:
-    minion_list_t::iterator inner_iter;
-    std::map< offset_t, minion_list_t >::iterator iterator = m_offset_map.find(offset);
+    minion_list_t minion_list = m_offset_map[offset];
+    minion_list_t::iterator iterator = minion_list.begin();
     bool data_was_lost = false;
 
-    if (iterator != m_offset_map.end())
-    {
-        for (inner_iter = iterator->second.begin(); inner_iter != iterator->second.end(); ++inner_iter)
-        {
-            if (inner_iter->get()->GetStatus() == true)
-            {
-                // build the request with READ
-                Request* request = BuildRequest(Request::READ, 
-                    iterator->second.begin()->get()->GetId(),
-                    offset);
-                // Call MionionInfo Send funct
-                iterator->second.begin()->get()->Send((char*)request);
-                // one was found so data is not lost
-                data_was_lost = false;
-
-                delete request;
-
-                break;
-            }
-        }
-    }
-    else
+    if (minion_list.size() == 0)
     {
         LOG_ERROR(__FILE__ + std::string("::Read(): requested offset (" + offset + std::string(" has no minion connected to it")));
 
-        throw ("No minion connected to requested offset");
+        // throw ("No minion connected to requested offset");
+    }
+
+    for (size_t i = 0; i < m_num_of_minions; ++i)
+    {
+        if (iterator->get()->GetStatus() == true) // If minion is active
+        {
+            // build the request with READ
+            Request* request = BuildRequest(Request::READ, iterator->get()      ->GetId(), offset);
+            // Call MionionInfo Send funct
+            iterator->get()->Send((char*)request);
+            // one was found so data is not lost
+            data_was_lost = false;
+
+            delete request;
+
+            break;
+        }
+
+        ++iterator;
     }
 
     if (data_was_lost)

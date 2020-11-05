@@ -64,9 +64,11 @@ namespace ilrd
 
         size_t m_num_of_minions;
         size_t m_num_of_block;
-        int m_num_offsets_per_minion;
+        int m_num_offsets_per_minion; // problematic logic. should be deleted
         bool m_is_active;
-
+        // m_offset will represent the current offset the next Minion shuold be assigned to:
+        size_t m_offset;
+        char m_num_minions_per_offset; // This will be equal to 2 - because of RAID01
 
         void InitMap();
         void ReplaceMinion();
