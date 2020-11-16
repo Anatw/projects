@@ -66,10 +66,10 @@ void FDTimer::Set(MS microseconds)
     // timespec temp_timer = {0, 0};
     // converting microseconds to nanoseconds ( 1 second = 1000000
     // microseconds)
-    temp_timer.it_value.tv_sec = microseconds.count() / 1000000;
+    temp_timer.it_value.tv_sec = microseconds.count() / 1000;
     // converting microseconds to nanoseconds ( 1 microsecond = 1000
     // nanoseconds)
-    temp_timer.it_value.tv_nsec = (microseconds.count() % 1000000) * 1000;
+    temp_timer.it_value.tv_nsec = (microseconds.count() % 1000) * 1000000;
 
     if (0 > (timerfd_settime(m_fd, 0, &temp_timer, NULL)))
     {

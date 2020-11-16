@@ -37,50 +37,53 @@ void MasterStorageManager::MasterStorageManager::InitMap()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void MasterStorageManager::ReplaceMinion()
-{
-    // Check if the system currently accomodating any backup minions:
-    if (m_bkup_minions_list.size() > 0)
-    {
+// void MasterStorageManager::ReplaceMinion()
+// {
+//     // Check if the system currently accomodating any backup minions:
+//     if (m_bkup_minions_list.size() > 0)
+//     {
+        // If there are minion's in backup list - send them an attach request:
+        
+
         // size_t fail_minion_id = 0;
         // Iterate theough the map and check if there are any minions with "false" status - meaning minions that need to be replace - if there are - replace them:
-        std::map<offset_t, minion_list_t >::iterator iterator = m_offset_map.begin();
-        std::map<offset_t, minion_list_t >::iterator end = m_offset_map.end();
-        minion_list_t::iterator inner_iter;
-        boost::shared_ptr<MinionInfo> backup_minion;
-        int offset_counter = 0;
+        // std::map<offset_t, minion_list_t >::iterator iterator = m_offset_map.begin();
+        // std::map<offset_t, minion_list_t >::iterator end = m_offset_map.end();
+        // minion_list_t::iterator inner_iter;
+        // boost::shared_ptr<MinionInfo> backup_minion;
+        // int offset_counter = 0;
 
-        for (; // the logic of m_num_offsets_per_minion is problematic - should be replaced and deleted
-             iterator != end && offset_counter < m_num_offsets_per_minion;
-             ++iterator)
-        {
-            for (inner_iter = iterator->second.begin();
-                 inner_iter != iterator->second.end();
-                 ++inner_iter)
-            {
-                if (inner_iter->get()->GetStatus() == false) // minion needs replace
-                {
-                    // This is the minion that needs replace:
-                    // fail_minion_id = inner_iter->get()->GetId();
+        // for (; // the logic of m_num_offsets_per_minion is problematic - should be replaced and deleted
+        //      iterator != end && offset_counter < m_num_offsets_per_minion;
+        //      ++iterator)
+        // {
+        //     for (inner_iter = iterator->second.begin();
+        //          inner_iter != iterator->second.end();
+        //          ++inner_iter)
+        //     {
+    //     //         if (inner_iter->get()->GetStatus() == false) // minion needs replace
+    //             {
+    //                 // This is the minion that needs replace:
+    //                 // fail_minion_id = inner_iter->get()->GetId();
 
-                    // backup_minion = m_bkup_minions_list.front();
-                    // m_bkup_minions_list.pop_front();
+    //                 // backup_minion = m_bkup_minions_list.front();
+    //                 // m_bkup_minions_list.pop_front();
                     
-                    // iterator->second.push_back(backup_minion);
+    //                 // iterator->second.push_back(backup_minion);
 
-                    // ++offset_counter;
+    //                 // ++offset_counter;
 
-                    // break;
+    //                 // break;
 
-                    // inner_iter->get() = 
-                }
+    //                 // inner_iter->get() = 
+    //             }
 
-                // Serch the map for the rest of the malfunctioning minion offsets:
+    //             // Serch the map for the rest of the malfunctioning minion offsets:
 
-            }
-        }
-    }
-}
+    //         }
+    //     }
+    // }
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -114,10 +117,24 @@ void MasterStorageManager::RegisterNewMinion(boost::shared_ptr<MinionInfo> minio
         m_offset = (m_offset + 1) % (m_num_of_minions / 2);
     }
 
-    // check if there is a need of replace mionion and replace
+    // // check if there is a need of replace mionion and replace
     // ReplaceMinion();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+bool MasterStorageManager::ShouldAddMinion()
+{
+    if (m_num_of_minions == m_minions_list.size())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+    
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 void MasterStorageManager::UnregisterMinion(boost::shared_ptr<MinionInfo> minion)
@@ -131,6 +148,11 @@ void MasterStorageManager::UnregisterMinion(boost::shared_ptr<MinionInfo> minion
     }
 
     m_minions_list.remove(minion);
+
+    m_add_new_minion = true;
+
+    // check if there is a need of replace mionion and replace
+    // ReplaceMinion();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

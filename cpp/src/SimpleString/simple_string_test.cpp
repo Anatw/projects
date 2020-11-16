@@ -1,4 +1,5 @@
 #include <iostream> /* cout, cin, cerr */
+#include <boost/noncopyable.hpp> /* cout, cin, cerr */
 
 using namespace std;
 

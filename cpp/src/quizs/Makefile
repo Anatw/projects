@@ -1,6 +1,6 @@
 # makefile - cpp
 # Makefile - Version 4
-NAME:=Anat_Wax-4.11.20#minion#master_communicator
+NAME:=Anat_Wax-8.11.20#minion#master_communicator
 CC=g++
 CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
 F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#

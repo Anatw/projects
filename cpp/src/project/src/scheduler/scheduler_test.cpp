@@ -189,12 +189,12 @@ int main()
 
     Scheduler scheduler(reactor);
 
-    scheduler.ScheduleAction(Scheduler::MS(2500000), FuncW2);
+    scheduler.ScheduleAction(Scheduler::MS(25000), FuncW2);
 
     scheduler.ScheduleAction(
         Scheduler::TimePoint(boost::chrono::system_clock::now() +
                              boost::chrono::seconds(5)),
-        FuncW(scheduler, Scheduler::MS(2000000)));
+        FuncW(scheduler, Scheduler::MS(5000)));
 
     StdinHandler stdin_handler(reactor);
 

@@ -24,7 +24,7 @@ class FDTimer : private boost::noncopyable
 public:
     // typedefs for inner types
     typedef Callback< SimpleSrc< int > >::CallbackPointer ActionFunc;
-    typedef boost::chrono::microseconds MS;
+    typedef boost::chrono::milliseconds MS;
 
     // FDTimer Constructor
     // Receives: reactor - a reference to a reactor to work with

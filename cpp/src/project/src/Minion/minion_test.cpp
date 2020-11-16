@@ -16,7 +16,9 @@ using namespace ilrd;
 
 int main()
 {
-    Minion minion(1235, 10, 4568);
+    int port = 1235;
+    int master_port = 4568;
+    Minion minion(port, 10, master_port);
 
     return (0);
 }

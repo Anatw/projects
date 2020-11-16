@@ -16,7 +16,7 @@ using namespace ilrd;
 Scheduler::Scheduler(Reactor& reactor)
 try : m_timer(reactor, boost::bind(&Scheduler::ActivateNextTask, this,
                                    _1)) //-1 is a placeholder that will pass on
-                                        // what the funtion receieves
+                                        // what the function receieves
 {
 }
 catch (...)

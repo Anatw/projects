@@ -20,11 +20,11 @@ using namespace std;
 using namespace ilrd;
 
 MasterCommunicator::MasterCommunicator(int port, int master_port, Reactor& reactor, ActionRequest ar_func)
-    : m_udpConnector(port), m_masterudpConnector(master_port), m_reactor(reactor), m_arFunc(ar_func),
+    : m_udpConnector(port), m_masterUDPConnector(master_port), m_reactor(reactor), m_arFunc(ar_func),
       m_callback_request(boost::bind(&MasterCommunicator::ReadRequest, this, _1)), m_callback_broadcast(boost::bind(&MasterCommunicator::ReadBroadcast, this, _1))
 {
     m_reactor.Add(make_pair(READ, m_udpConnector.GetFD()), &m_callback_request);
-    m_reactor.Add(make_pair(READ, m_masterudpConnector.GetFD()), &m_callback_broadcast);
+    m_reactor.Add(make_pair(READ, m_masterUDPConnector.GetFD()), &m_callback_broadcast);
 
     // nil_generator will initialize all uid struct to zero's
     boost::uuids::nil_generator uid_zero;
@@ -34,7 +34,7 @@ MasterCommunicator::MasterCommunicator(int port, int master_port, Reactor& react
     boost::uuids::random_generator uuid;
     m_minion_uid = uuid();
 
-    LOG_INFO("Finished Ctor of MasterCommunicator\n");
+    LOG_INFO(__FILE__ + std::string("Finished Ctor of MasterCommunicator\n"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +49,7 @@ MasterCommunicator::~MasterCommunicator()
 
 void MasterCommunicator::ReadRequest(int fd) const
 {
+    std::cout << "a massage has arrived!" << std::endl;
     size_t size = MAX_BLOCK_SIZE + sizeof(Request);
     char* buffer = (char*)operator new(size);
 
@@ -108,33 +109,52 @@ void MasterCommunicator::ReadBroadcast(int fd)
 
     LOG_INFO(
         __FILE__ +
-        std::string("::ReadRBroadcast(): Broadcast request read from Master (master uid variant = " + broadcast->m_uid_from.variant() + std::string("), of type ") + broadcast->m_type));
+        std::string("::ReadRBroadcast(): Broadcast request read from Master (master uid variant = " + broadcast->m_uid_from.variant() + std::string("), of type ") + (char)broadcast->m_type));
 
     // if true - this is a BroadcastFrom. if false - this is an AssigmentRequest:
-    if (broadcast->m_uid_not_relevant.is_nil()) 
+    std::cout << "inside ReadBroadcast - type (inside minion):" << broadcast->m_type << std::endl;
+    // if (broadcast->m_uid_not_relevant.is_nil()) 
+    if (broadcast->m_type == 'b')
     {
-        // Check if this Minion is connected to any Master, and if so - is it to this master. If not - do nothing, if yes - send back BroadcastFrom response
-        if (m_master_uid.is_nil() ||
-            m_master_uid == broadcast->m_uid_from)
+        // Check if this Minion is connected to any Master, and if so - if connected to this master. If not - do nothing, if yes - send back BroadcastFrom response
+        // If this broadcast was send from this Minion's Master - reply:
+        if (m_master_uid.is_nil() || m_master_uid == broadcast->m_uid_from)
         {
             broadcast->m_uid_from = m_minion_uid;
 
             Reply(*broadcast);
         }
+        // This broadcast was not send from this Minion's master - do nothing:
+        else
+        {
+            ;
+        } 
     }
     else // this is an AssigmentRequest
     {
+        std::cout << "inside minion:" << std::endl;
+        UID::iterator iterator = broadcast->m_uid_from.begin();
+        UID::iterator end = broadcast->m_uid_from.end();
+        std::cout << "inside master:" << std::endl;
+        for (; iterator != end; ++iterator)
+        {
+            std::cout << *iterator << std::endl;
+        }
+
+        std::cout << "inside ReadBroadcast - inside else - a" << std::endl;
         // Connect to this master - add it's uid to m_master_uid
         AssigmentRequest *assignment_req = (AssigmentRequest*)broadcast;
         AssigmentResponse* response = new AssigmentResponse;
 
         if (assignment_req->m_type == 'a')
         {
+            // Set this master as this Minion's Master
             m_master_uid = assignment_req->m_uid_master;
 
+            // Send back an ACK assignment response:
             response->m_uid_minion = m_minion_uid;
             response->m_type = 'a';
-            response->m_status = 0x06; // ACK            
+            response->m_status = 0x06; // ACK
         }
         else // (assignment_req->m_type == 'd')
         {
@@ -159,6 +179,7 @@ void MasterCommunicator::ReadBroadcast(int fd)
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// When Master ask to read data from Minion, this method will be called:
 void MasterCommunicator::Reply(const Response& response) const
 {
     int msg_size = 0;
@@ -180,10 +201,11 @@ void MasterCommunicator::Reply(const Response& response) const
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+// This method will be called when Minion reply to it's Master's broadcast:
 void MasterCommunicator::Reply(const BroadcastFrom& result) const
 {
     if (0 >
-        (sendto(m_masterudpConnector.GetFD(), &result, sizeof(BroadcastFrom), MSG_CONFIRM, (struct sockaddr*)&m_master_address, sizeof(m_master_address))))
+        (sendto(m_masterUDPConnector.GetFD(), &result, sizeof(BroadcastFrom), MSG_CONFIRM, (struct sockaddr*)&m_master_address, sizeof(m_master_address))))
     {
         throw runtime_error("error in master communicator (Reply())");
     }
@@ -195,10 +217,11 @@ void MasterCommunicator::Reply(const BroadcastFrom& result) const
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// This method will be called when a Master ask this Minion to connect with him:
 void MasterCommunicator::Reply(const AssigmentResponse& response) const
 {
     if (0 >
-        (sendto(m_masterudpConnector.GetFD(), &response, sizeof(AssigmentResponse), MSG_CONFIRM, (struct sockaddr*)&m_master_address, sizeof(m_master_address))))
+        (sendto(m_masterUDPConnector.GetFD(), &response, sizeof(AssigmentResponse), MSG_CONFIRM, (struct sockaddr*)&m_master_address, sizeof(m_master_address))))
     {
         throw runtime_error("error in master communicator (Reply())");
     }

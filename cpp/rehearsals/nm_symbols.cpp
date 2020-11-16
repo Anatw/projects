@@ -7,25 +7,29 @@ operate
 
 Authour: Anat Wax, anatwax@gmail.com
 Reviewer: 
-Datecreation: 4.11.2020
+Datecreation: 20.09.2020
 Version: 1
 *******************************************************************************/
 #include <iostream> // cout
 #include <limits> // interger min + max values
+#include <string.h>
 
-#include "udp_communicator.hpp"
-#include "master_storage_manager.hpp"
+int zzzzzzzzzzzz = 3;
+int zzzzzzzzzzz_un;
 
-using namespace ilrd;
-
-#define PORT (4568)
+void LOGGING_FUNC(char *str)
+{
+    char *INSIDE_FUNCTION_STRING = str;
+    int STRING_LENGTH_INSIDE_FUNC = strlen(INSIDE_FUNCTION_STRING);
+    std::cout << INSIDE_FUNCTION_STRING << std::endl;
+}
 
 int main()
 {
-    ReactorListener listener;
-    Reactor reactor(&listener);
-    MasterStorageManager master_storage_manager(2, 10);
-    UDPcommunicator udp_communicator(PORT, reactor, master_storage_manager);
+    double ssssssssssssssssssss = 5;
+    char *ststststststststst = "this is a string literal";
+
+    LOGGING_FUNC(ststststststststst);
 
     return 0;
 }

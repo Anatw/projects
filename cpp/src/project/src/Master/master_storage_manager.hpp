@@ -53,6 +53,8 @@ namespace ilrd
         //This method find the minion to read from and return the data.
         void Read(size_t offset);
 
+        bool ShouldAddMinion();
+
     private:
         // map of pairs of minions that store the related offsets (key) and minion_list_t (value). Every offset in the map contain a list of two minions (for raid1)
         std::map< offset_t, minion_list_t > m_offset_map;
@@ -69,9 +71,12 @@ namespace ilrd
         // m_offset will represent the current offset the next Minion shuold be assigned to:
         size_t m_offset;
         char m_num_minions_per_offset; // This will be equal to 2 - because of RAID01
+        // This condition will be chacked (using the ShouldAddMinion() method) every time a broadcast response from a Minion that is not inside the UDPcommunicator list of minions will arrive.
+        bool m_add_new_minion;
+
 
         void InitMap();
-        void ReplaceMinion();
+        // void ReplaceMinion();
 
         static Request *BuildRequest(Request::MODE mode, uint64_t uid, uint64_t index);
     };

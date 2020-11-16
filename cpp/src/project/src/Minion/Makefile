@@ -1,6 +1,6 @@
 # makefile - cpp
 # Makefile - Version 4
-NAME:=udp_connector#minion#master_communicator
+NAME:=minion#udp_connector#minion#master_communicator
 CC=g++
 CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
 F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#
@@ -9,7 +9,7 @@ INC_DIR:=-I ../../include
 OBJ_LIB:=#../../obj/
  
 LIB := #doubly_linked_list.o 
-OBJ :=$(NAME).cpp $(NAME)_test.cpp master_communicator.cpp ../Reactor/reactor.cpp ../Logger/logger.cpp ../derived_listener.cpp command.cpp# udp_connector.cpp 
+OBJ :=$(NAME).cpp $(NAME)_test.cpp master_communicator.cpp ../Reactor/reactor.cpp ../Logger/logger.cpp ../derived_listener.cpp command.cpp udp_connector.cpp 
  
 # $@ -> the file name of the target of the rule
 # $< -> the first item in the Dependencies list

@@ -11,14 +11,14 @@ Version: II (27.10.20)
 #define __ILRD_RD8586_MASTER_COMMUNICATOR_HPP__
 
 #include <boost/noncopyable.hpp> // boost::noncopyable
+#include <boost/uuid/uuid.hpp>            // uuid class
+#include <boost/uuid/uuid_generators.hpp> // generators
 
 #include "logger.hpp"
 #include "protocol.hpp"
 #include "../Master/master_protocol.hpp"
 #include "reactor.hpp"
 #include "udp_connector.hpp"
-#include <boost/uuid/uuid.hpp>            // uuid class
-#include <boost/uuid/uuid_generators.hpp> // generators
 
 namespace ilrd
 {
@@ -41,7 +41,8 @@ public:
 
 private:
     UDPConnector m_udpConnector;
-    UDPConnector m_masterudpConnector;
+    // m_masterudpConnector - For broadcasting communication with Master:
+    UDPConnector m_masterUDPConnector;
     Reactor& m_reactor;
     ActionRequest m_arFunc;
     Callback< SimpleSrc< int > > m_callback_request;

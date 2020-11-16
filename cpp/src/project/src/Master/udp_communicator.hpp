@@ -53,6 +53,7 @@ private:
             // Init in a new thread, Open a socket for UDP broadcast
             Broadcaster(int port, Scheduler &scheduler);
             inline int GetFd();
+            inline UID GetUID();
             ~Broadcaster();
         private:
             int m_fd;
@@ -106,6 +107,11 @@ int UDPcommunicator::UDPMinion::GetPort()
 std::string UDPcommunicator::UDPMinion::GetIp()
 {
     return m_ip;
+}
+
+UID UDPcommunicator::Broadcaster::GetUID()
+{
+    return m_master_uid;
 }
 
 #endif //ILRD_RD8586_UDP_COMMUNICATOR_HPP

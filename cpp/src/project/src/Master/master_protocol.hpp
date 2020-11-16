@@ -51,7 +51,7 @@ namespace ilrd
         char m_type;
     }__attribute__((packed));
 
-    /* Master request to attach/detach minion:
+    /* Minion response to attach/detach to a Master: (minion -> master)
     * m_uid_master: master id;
     * m_type: 'a' - attach/ 'd' - detach
     * m_status: ACK: 0x06 / NACK:0x15
