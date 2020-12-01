@@ -1,0 +1,11 @@
+#ignore:
+*
+
+#add:
+!*.c
+!*.h
+!*gitignore
+!*Makefile
+!*.cpp
+!*.hpp
+!**/
