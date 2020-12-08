@@ -28,3 +28,18 @@ anat@ubuntu:~/git/anat-wax/cpp/src/intro$ gd 2.c
 2.c:7:9: error: initializer element is not constant
  int i = e;
  */
+
+/*
+22.11.20:
+anat@ubuntu:~/anat-wax/cpp/src/intro$ gc 2.c
+2.c:5:1: error: C++ style comments are not allowed in ISO C90
+    5 | // E2 e22 = KK;
+      | ^
+2.c:5:1: note: (this will be reported only once per input file)
+2.c:6:1: error: expected identifier or ‘(’ before ‘++’ token
+    6 | ++e;
+      | ^~
+2.c:7:9: error: initializer element is not constant
+    7 | int i = e;
+      |      
+*/

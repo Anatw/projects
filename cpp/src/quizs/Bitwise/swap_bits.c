@@ -26,7 +26,7 @@ void PrintBits(char c)
     printf("\n");
 }
 
-void SwapBits(char c, int first, int second)
+/*void SwapBits(char c, int first, int second)
 {
     char inner_c = 0;
     char first_mask = 1;
@@ -48,8 +48,8 @@ void SwapBits(char c, int first, int second)
     c = c ^ second_mask;
 
     printf("after: ");
-    PrintBits(c);
-}
+    PvoidrintBits(c);
+}*/
 
 /*char FlipBit(char c, int location)
 {
@@ -61,15 +61,55 @@ char SetBit(char c, int location, char status)
 {
     return (c ^= (-status ^ c) & (1UL << location));
 }
+/*
+(-status ^ c)
+Is like writing:
+if (status == 1) 
+{
+    11111111
+    11100110
+^
+    00011001
+    00000010
+    &
+    00000000
+
+    ~c;
+
+    c = ~c;
+}
+else
+{
+    ;
+}
+*/
+
+void SwapBits(char c, int first, int second)
+{
+    printf("before - the letter %c: \nfirst = %d\nsecond = %d\n", c, first, second);
+    PrintBits(c);
+
+    char first_status = 1;
+    char second_status = 1;
+
+    first_status = (first_status << first) & first;
+    second_status = (second_status << second) & second;
+
+    c ^= (-first_status ^ c) & (1 << second);
+    c ^= (-second_status ^ c) & (1 << first);
+
+    PrintBits(c);
+    printf("12345678\n");
+
+}
 
 int main()
 {
     char c = 'g';
-    /*SwapBits(c, 1, 5);*/
+    SwapBits(c, 1, 6);
     
-    
-    PrintBits(c);
-    PrintBits(SetBit(c, 1, 1));
+    /*PrintBits(c);
+    PrintBits(SetBit(c, 1, 1));*/
     /*PrintBits(FlipBit(c, 6));*/
     return 0;
 }

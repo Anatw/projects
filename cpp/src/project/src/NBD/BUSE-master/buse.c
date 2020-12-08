@@ -146,7 +146,7 @@ static int serve_nbd(int sk, const struct buse_operations * aop, void * userdata
       chunk = malloc(len);
       if (aop->read) {
         reply.error = aop->read(chunk, len, from, userdata);
-      } else {
+      } else{
         /* If user not specified read operation, return EPERM error */
         reply.error = htonl(EPERM);
       }
