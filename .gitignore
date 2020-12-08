@@ -9,3 +9,15 @@
 !*.cpp
 !*.hpp
 !**/
+!.py
+!.sqlite3
+!.pyc
+!.pyo
+
+# Django stuff:
+!*.log
+!*.pt
+
+# Byte-compiled / optimized / DLL files
+!__pycache__/
+!*.py[cod]
