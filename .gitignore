@@ -9,10 +9,10 @@
 !*.cpp
 !*.hpp
 !**/
-!.py
-!.sqlite3
-!.pyc
-!.pyo
+!*.py
+!*.sqlite3
+!*.pyc
+!*.pyo
 
 # Django stuff:
 !*.log
