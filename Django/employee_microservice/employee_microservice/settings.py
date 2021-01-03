@@ -74,13 +74,24 @@ WSGI_APPLICATION = 'employee_microservice.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'srhrgein',
+#         'HOST': 'kandula.db.elephantsql.com', # host=server
+#         'USER': 'srhrgein',
+#         'PASSWORD': 'eA5I_CPPuETGkwOFM9FeClU-4XV8UR2y',
+#         'PORT': '5432'
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'srhrgein',
-        'HOST': 'kandula.db.elephantsql.com', # host=server
-        'USER': 'srhrgein',
-        'PASSWORD': 'eA5I_CPPuETGkwOFM9FeClU-4XV8UR2y',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'Employees',
+        'HOST': 'localhost', # host=server
+        'USER': 'anat',
+        'PASSWORD': 'anat',
         'PORT': '5432'
     }
 }

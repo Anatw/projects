@@ -4,18 +4,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
-
-int main()
-{
-    std::cout << "Hello world!" << std::endl;
-    return (0);
-}
-
-
-#include <iostream>
 #include <vector>
 
-bool FindK(std::vector<int>list, int num)
+bool FindK(std::vector<int> list, int num)
 {
     int i = 0;
     int j = 1;
@@ -38,7 +29,11 @@ bool FindK(std::vector<int>list, int num)
 int main()
 {
   
-  std::vector<int> list = {10, 15, 3, 7};
+  std::vector<int> list;
+  list.push_back(10);
+  list.push_back(15);
+  list.push_back(3);
+  list.push_back(7);
    int num = 25;
    bool status = false;
    

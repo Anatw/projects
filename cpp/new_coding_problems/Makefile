@@ -1,6 +1,6 @@
 # makefile - cpp
 # Makefile - Version 4
-NAME:=num_add_to_k#minion#master_communicator
+NAME:=value_up_to#num_add_to_k
 CC=g++
 CFLAGS=-std=c++98 -pedantic-errors -Wall -Wextra -g#pd#
 F_RELEASE:=-std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3#pc#
@@ -8,7 +8,7 @@ DEPS=#hash_table.h
 INC_DIR:=#-I ../../include
 OBJ_LIB:=#../../obj/
 
-LIB :=-lboost_system -lboost_chrono -lpthread -lboost_thread
+LIB :=#-lboost_system -lboost_chrono -lpthread -lboost_thread
 OBJ :=$(NAME).cpp #$(NAME)_test.cpp master_communicator.cpp ../Reactor/reactor.
 #cpp 
 
