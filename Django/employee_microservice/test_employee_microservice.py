@@ -21,7 +21,7 @@ def test_setup():
 
 
 def test_insert_new_employee(test_setup):
-    driver.find_element_by_id("id_fullname").send_keys("selenium")
+    driver.find_element_by_id("id_fullname").send_keys("seleniuma")
     driver.find_element_by_id("id_country").send_keys("Test")
     driver.find_element_by_id("id_city").send_keys("LLL")
     driver.find_element_by_id("id_salary").send_keys("12345678")
@@ -30,7 +30,10 @@ def test_insert_new_employee(test_setup):
 def test_check_new_insertion_to_database(postgresql):
     conn = psycopg2.connect(host="localhost", port=5432, database="Employees", user="anat", password="anat")
     cur = conn.cursor()
-    cur.execute("""SELECT * FROM employee_register_employee""")
+    counter = cur.execute("""SELECT *
+                    FROM employee_register_employee AS emp
+                    WHERE fullname='anat wax'""")
+    print(counter)
 
 
 

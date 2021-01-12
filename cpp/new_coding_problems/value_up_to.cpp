@@ -85,7 +85,7 @@ int main()
     num_list.push_back(2);
     num_list.push_back(0);
     num_list.push_back(4);
-    num_list.push_back(0);
+    num_list.push_back(5);
 
     std::vector<size_t> result = ProductOfOtherElements(num_list);
 
