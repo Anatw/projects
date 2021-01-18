@@ -1,6 +1,6 @@
 # makefile - c
 # Makefile - Version 4
-NAME:=wave_array
+NAME:=Multiplication_table#wave_array
 CC=gcc
 CFLAGS=-ansi -pedantic-errors -Wall -Wextra -g#gd#
 F_RELEASE:=-ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3#gc#
