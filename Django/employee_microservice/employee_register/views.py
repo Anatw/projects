@@ -17,7 +17,7 @@ def employee_form(request, id=0):
             employee = Employee.objects.get(pk=id)
             form = EmployeeForm(instance=employee)
         return render(request, "employee_register/employee_form.html", {'form': form})
-    else: # This ia POST request - save the data
+    else: # This is a POST request - save the data
         if id == 0: # This is an insert operation
             form = EmployeeForm(request.POST)
         else: # This is an update operation
