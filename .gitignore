@@ -1,5 +1,6 @@
 #ignore:
 *
+/Private-not-for-git/
 
 #add:
 !*.c
@@ -21,4 +22,3 @@
 # Byte-compiled / optimized / DLL files
 !__pycache__/
 !*.py[cod]
-Private-not-for-git/
