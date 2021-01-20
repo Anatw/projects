@@ -1,6 +1,6 @@
 #ignore:
 *
-/Private-not-for-git/
+not-for-git/
 
 #add:
 !*.c
