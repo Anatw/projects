@@ -1,6 +1,7 @@
 #ignore:
 *
 not-for-git/
+not-for-git/anat-wax/
 
 #add:
 !*.c
