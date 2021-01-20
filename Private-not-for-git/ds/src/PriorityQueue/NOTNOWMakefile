@@ -1,0 +1,31 @@
+gc = gcc -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3 
+gd = gcc -ansi -pedantic-errors -Wall -Wextra -g
+
+# -I tells the preprocessor to search at this path for the header files included in the c file
+INCLUDES = -I ../../include
+
+NAME = a.out
+PRODUCTION = priority_queue.o ../../obj/%.o
+REMOTE_PRODUCTION = ../../obj/sorted_linked_list.o ../../obj/doubly_linked_list.o
+
+OBJECTS = priority_queue.o priority_queue_test.o
+
+
+DEPS = priority_queue_list.h
+
+test: $(OBJECTS)
+	@$(gd) $(OBJECTS) $(REMOTE_PRODUCTION) -o $(NAME)$@
+
+#bit_array_test.o
+production: $(PRODUCTION)
+	@$(gc) -c $(PRODUCTION) $(REMOTE_PRODUCTION) -o $(NAME)$@
+
+%.o: %.c $(DEPS)
+	@$(gd) $(INCLUDES) -c -o $@ $<
+
+# Room Service
+.PHONY: clean
+clean:
+	rm -rf *.o *.out $(NAME) $(NAME)test
+
+# the costumer will receive the h files and the o files (in an archive)
