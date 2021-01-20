@@ -37,16 +37,12 @@ def employee_delete(request, id):
 def convert_currency(request, id):
     employee = Employee.objects.get(pk=id)
     salary = employee.salary
-    # I'll pass here the name of the template inside the folder that is inside the 'template' folder
-    url = 'https://free.currconv.com/api/v7/convert?q={}&compact=ultra&apiKey=2a9e7d70c502f09bfb6a'
+
+    url = 'https://free.currconv.com/api/v7/convert?q={}&compact=ultra&apiKey=####'
     currency = 'USD_ILS,ILS_USD'
 
     res = requests.get(url.format(currency))
 
-    # current_currency = {
-    #     'USDtoILS': res.json()['USD_ILS'],
-    #     # 'ILStoUSD': res.json()['ILS_USD'],
-    # }
     current_currency = float(res.json()['USD_ILS']) * salary
     context = {'current_currency': current_currency}
     return render(request, 'employee_register/convert_currency.html', context)
