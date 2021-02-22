@@ -65,9 +65,7 @@ private:
     void PrintMessageIntoLogfile();
 
     WaitableQueue< PriorityQueue< Message, std::vector< Message >,
-                                  std::greater< Message > >,
-                   Message >
-        m_wqueue;
+                                  std::greater< Message > >, Message > m_wqueue;
     char* m_filename;
     std::fstream m_pFile;
     boost::thread m_log_thread;

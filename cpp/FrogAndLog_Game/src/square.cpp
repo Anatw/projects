@@ -4,6 +4,8 @@
                              June 7th-, 2020
                         Reviewer: Laura Bedah
 *******************************************************************************/
+#include <string>
+
 #include "square.hpp"
 #include "glut_utils.h"
 

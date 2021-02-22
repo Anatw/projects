@@ -37,15 +37,15 @@ class SimpleDrawText
 {
 public:
 #ifndef SIMPLE_DRAW_TEXT_NO_TIMING
-  void addText(const std::string& text, const int duration = std::numeric_limits<int>::max())
-  {
-    addText(text, m_textColorR, m_textColorG, m_textColorB, duration);
-  }
+  // void addText(const std::string& text, const int duration = std::numeric_limits<int>::max())
+  // {
+  //   addText(text, m_textColorR, m_textColorG, m_textColorB, duration);
+  // }
 
-  void addText(const std::string& text, const float r, const float g, const float b, const int duration = std::numeric_limits<int>::max())
-  {
-    m_lines.push_back({ text, r, g, b, duration, false, std::chrono::steady_clock::now() });
-  }
+  // void addText(const std::string& text, const float r, const float g, const float b, const int duration = std::numeric_limits<int>::max())
+  // {
+  //   m_lines.push_back({ text, r, g, b, duration, false, std::chrono::steady_clock::now() });
+  // }
 
   void render()
   {

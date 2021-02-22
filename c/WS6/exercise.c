@@ -130,6 +130,24 @@ unsigned int ReverseBitsA(unsigned int number)
 	return rev_number;
 }
 
+unsigned int ShorterReverseBitsA(unsigned int number)
+{
+	unsigned int rev_number = 0;
+	int counter = sizeof(number) * 8 - 1;
+	
+	while(number)
+	{
+		rev_number |= number & 1;
+		rev_number <<= 1;
+		number >>= 1;
+		--counter;
+	}
+
+	rev_number <<= counter;	
+	
+	return rev_number;
+}
+
 
 /*** 7. byte_mirror NO loop */
 /* function without loop: */
@@ -205,10 +223,11 @@ unsigned int DivisbleBy16(unsigned int number)
 	
 	while((number % 16) != 0)
 	{
-		if (number & one)
-		{
-			number ^= one;
-		}
+		// if (number & one)
+		// {
+		// 	number ^= one;
+		// }
+		number = number & (number - 1);
 		one <<= 1;
 	}
 	

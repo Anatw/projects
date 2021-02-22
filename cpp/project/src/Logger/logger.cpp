@@ -34,7 +34,7 @@ Logger::Logger()
     else
     {
         throw std::runtime_error(
-            "file name as environment variable was not defined\n");
+            "file name as environment variable was not defined - define it under 'export' in the \".bashrc\" file\n");
     }
 
     try
