@@ -24,7 +24,7 @@ class TestClass:
     def test_empty_file(self) -> None:
         """ test an empty file - result should be None"""
         global string
-        assert SearchInFile.SearchString("emptyFile.txt", string) == None
+        assert SearchInFile.SearchString("empty_file.txt", string) == None
 
 
     #test a non-existing file

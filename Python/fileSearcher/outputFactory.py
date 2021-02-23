@@ -16,51 +16,9 @@ class BasicOutput(OutputFormat):
         self.list_of_matches = list_of_matches
         self.counter = counter
 
-    # @staticmethod
-    # def search_string(file_name: str, string_to_search: str) -> list:
-    #     """ Search the file for the given string and return the line in
-    #     which the string appears """
-    #
-    #     # list_of_matches = [tuple()]
-    #     list_of_matches = [{
-    #                            "file name": file_name,
-    #                            "line number": int,
-    #                            "start position": int}]
-    #
-    #     try:
-    #         with open(file_name, 'r') as fd:
-    #             contents = fd.read()
-    #             pattern = re.compile(r'{}'.format(string_to_search))
-    #             for count, line in enumerate(open(file_name, 'r')):
-    #                 for match in re.finditer(pattern, line):
-    #                     list_of_matches.append(
-    #                         ({
-    #                             "file name": file_name,
-    #                             "line number": count,
-    #                             "start position": match.start()}))
-    #                     break
-    #
-    #     except FileNotFoundError:
-    #         print(f"the file \"{file_name}\" cannot be found in current "
-    #               f"directory")
-    #
-    #     return list_of_matches
-
     def print(self):
-        # for match in self.list_of_matches:
-        #     print(match)
-        matches = [sub["line"] for sub in self.list_of_matches]
-        for i in range(len(matches))[1:]:
-            print("file name: " + self.list_of_matches[i]["file name"]
-                  + ", line number: " + str(self.list_of_matches[i]
-                                        ["line number"])
-                  + ", start position: " + str(self.list_of_matches[i]
-                                        ["start position"])
-                  + ", line: " + self.list_of_matches[i]["line"], end='')
+        print("Must enter output specification")
 
-        if self.counter:
-            print("\nTotal matches: " + str(len(self.list_of_matches) -
-                                                  1))
 
 
 class ColorOutput(OutputFormat):
@@ -97,19 +55,31 @@ class MachineOutput(OutputFormat):
         self.counter = counter
 
     def print(self):
-        print("machine print")
+        matches = [sub["line"] for sub in self.list_of_matches]
+        file_name = self.list_of_matches[0]["file name"]
+        for i in range(len(matches))[1:]:
+            print(f"file name: {file_name}, line number: " + str(
+                self.list_of_matches[i]
+                ["line number"])
+                  + ", start position: " + str(self.list_of_matches[i]
+                                               ["start position"])
+                  + ", line: " + self.list_of_matches[i]["line"], end='')
+
+        if self.counter:
+            print(f"\nTotal matches for the file '{file_name}': " + str(len(
+                self.list_of_matches) - 1))
 
 
-# class OutputFactory():
-#     @staticmethod
-#     def get_output(outputtype, list_of_matches: list):
-#         try:
-#             if outputtype == "BasicOutput":
-#                 return BasicOutput(list_of_matches)
-#             if outputtype == "ColorOutput":
-#                 return ColorOutput(list_of_matches)
-#             if outputtype == "MachineOutput":
-#                 return MachineOutput(list_of_matches)
-#             raise AssertionError("output not found")
-#         except AssertionError as _e:
-#             print(_e)
+class OutputFactory():
+    @staticmethod
+    def get_output(args, list_of_matches: list, counter):
+        try:
+            if args.color:
+                return ColorOutput(list_of_matches, counter)
+            if args.machine:
+                return MachineOutput(list_of_matches, counter)
+            else:
+                return BasicOutput(list_of_matches, counter)
+            raise AssertionError("output not found")
+        except AssertionError as _e:
+            print(_e)
