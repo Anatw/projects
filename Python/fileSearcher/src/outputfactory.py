@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-import re # for using regular expressions (regex)
 
 
 # An abstract base class for printing file data. different printing options
@@ -20,7 +19,6 @@ class BasicOutput(OutputFormat):
         print("Must enter output specification")
 
 
-
 class ColorOutput(OutputFormat):
     # list_of_matches: list self.list_of_mathces = list_of_matches
     def __init__(self, list_of_matches: list, counter: bool):
@@ -33,9 +31,9 @@ class ColorOutput(OutputFormat):
             print("file name: " + self.list_of_matches[i]["file name"]
                   + ", "
                   + "line number: " + str(self.list_of_matches[i]
-                                        ["line number"]) + ", "
+                                          ["line number"]) + ", "
                   + "start position: " + str(self.list_of_matches[i]
-                                        ["start position"]))
+                                             ["start position"]))
             for count, character in enumerate(self.list_of_matches[i][
                                                   "line"]):
                 if self.list_of_matches[i]["start position"] <= count < \
@@ -46,7 +44,7 @@ class ColorOutput(OutputFormat):
 
         if self.counter:
             print("\nTotal matches: " + str(len(self.list_of_matches) -
-                                                  1))
+                                            1))
 
 
 class MachineOutput(OutputFormat):
@@ -70,7 +68,7 @@ class MachineOutput(OutputFormat):
                 self.list_of_matches) - 1))
 
 
-class OutputFactory():
+class OutputFactory:
     @staticmethod
     def get_output(args, list_of_matches: list, counter):
         try:

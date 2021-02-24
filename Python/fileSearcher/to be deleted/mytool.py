@@ -1,7 +1,7 @@
 # Function that receive a file and a string to search and
 import re  # for using regular expressions (regex)
 import argparse  # for parsing the argv
-import outputFactory  # containing the different output forms for the tool
+import output_factory  # containing the different output forms for the tool
 
 
 class SearchInFile:
@@ -33,17 +33,17 @@ class SearchInFile:
                 if args.color:
                     list_of_matches = SearchInFile.search_string(file,
                                                                  args.string)
-                    output = outputFactory.ColorOutput(list_of_matches, counter)
+                    output = output_factory.ColorOutput(list_of_matches, counter)
                 elif args.machine:
                     list_of_matches = SearchInFile.search_string(file,
                                                                  args.string)
-                    output = outputFactory.MachineOutput(list_of_matches, counter)
+                    output = output_factory.MachineOutput(list_of_matches, counter)
                 else:
                     # print("Must enter output specification")
                     # return
                     list_of_matches = SearchInFile.search_string(file,
                                                                  args.string)
-                    output = outputFactory.BasicOutput(list_of_matches, counter)
+                    output = output_factory.BasicOutput(list_of_matches, counter)
                 # output = outputFactory.OutputFactory.get_output(args.__class__,
                 #             SearchInFile.SearchString(args.file, args.string))
 

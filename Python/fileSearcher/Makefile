@@ -16,12 +16,14 @@
 build:
     # Remove all cached pyc files, they don't play nice with the containers
 	find . -name "*.pyc" -delete
+	# create a volume to mount the tests into
+	docker volume create tests
 	# Build the docker image
-	docker build -t redhatenv:1.0  .
+	docker build --rm -t redhatenv:1.0  .
 
 run:
-	# Run the docker image
-	docker run -t redhatenv:1.0
+	# Run the docker image in interactive mode, connected to the test volume
+	docker run -v source=tests,destination=/tests -it redhatenv:1.0
 
 
 .PHONY: clean

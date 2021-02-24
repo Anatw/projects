@@ -19,7 +19,7 @@ def create_file(num_lines: int) -> str:
     # file according to the num_lines provided:
     assert (num_lines % 500) == 0
 
-    base_file = "../Tests/big_data_UK_500.txt"
+    base_file = "../tests/big_data_uk_500.txt"
     new_file = f"file_containing_{num_lines}_lines.txt"
     try:
         open(new_file, 'r')
@@ -42,9 +42,9 @@ def test_very_long_file_5000_lines_s1(capsys) -> None:
     num_lines = 5000
     file_to_test = create_file(num_lines)
     print("new file name: " + file_to_test)
-    testargs = ["mytool.py", str("-f" + file_to_test), r"-s\d{5}-\d{6}", "-n"]
-    with patch.object(sys, 'argv', testargs):
-        mytool.SearchInFile.parse_arguments(testargs)
+    args = ["mytool.py", str("-f" + file_to_test), r"-s\d{5}-\d{6}", "-n"]
+    with patch.object(sys, 'argv', args):
+        mytool.SearchInFile.parse_arguments(args)
         captured = capsys.readouterr()
         print("6: " + str(captured))
         assert captured.out[len(captured.out) -6:] == "10000\n"

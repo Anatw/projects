@@ -1,12 +1,19 @@
 # Function that receive a file and a string to search and
 import re  # for using regular expressions (regex)
 import argparse  # for parsing the argv
-import outputFactory  # containing the different output forms for the tool
+
+import outputfactory  # containing the different output forms for the tool
 
 
 class SearchInFile:
+
     @staticmethod
-    def parse_arguments(arguments_vector):
+    def run():
+        args = SearchInFile.parse_arguments()
+        SearchInFile.create_output_prints(args)
+
+    @staticmethod
+    def parse_arguments():
         parser = argparse.ArgumentParser(
             description='Define search result processing.')
         group = parser.add_mutually_exclusive_group()
@@ -14,45 +21,33 @@ class SearchInFile:
                            help='generate machine-readable output')
         group.add_argument('-c', '--color', action="store_true",
                            help='highlight matching text')
-        parser.add_argument('-n', '--counter', action="store_true",
+        parser.add_argument('-n', '--nmatches', action="store_true",
                             help='return number of matches')
-        parser.add_argument('-f', '--file', type=str, required=True, nargs='+',
+        parser.add_argument('-f', '--file', required=True, nargs='+',
                             action='append',
-                            help='file to search inside for a string')
+                            help='<Required> file to search inside for a string')
         parser.add_argument('-s', '--string', type=str, required=True,
-                            help='string to search for inside file/s')
+                            help='<Required> string to search for inside file/s')
 
         args = parser.parse_args()
-        if args.counter:
+
+        return args
+
+    @staticmethod
+    def create_output_prints(args):
+        if args.nmatches:
             counter = True
             total_matches = 0
         else:
             counter = False
-        # for argument in arguments_vector:
         for file_list in args.file:
             for file in file_list:
                 if not file.lower().endswith('.txt'):
                     raise Exception("the search tool is meant to be used with "
                                     "text file ('.txt' extension') only.")
-                # if args.color:
-                #     output = outputFactory.ColorOutput(list_of_matches,
-                #     counter)
-                # elif args.machine:
-                #     output = outputFactory.MachineOutput(list_of_matches,
-                #     counter)
-                # else:
-                #     # print("Must enter output specification")
-                #     # return
-                #     list_of_matches = SearchInFile.search_string(file,
-                #                                                  args.string)
-                #     output = outputFactory.BasicOutput(list_of_matches,
-                #     counter)
-                #     if counter:
-                #         total_matches = total_matches + (len(list_of_matches)
-                #                                          - 1)
                 list_of_matches = SearchInFile.search_string(file,
                                                              args.string)
-                output = outputFactory.OutputFactory.get_output(
+                output = outputfactory.OutputFactory.get_output(
                     args, list_of_matches, counter)
                 if counter:
                     total_matches = total_matches + (len(list_of_matches)
