@@ -14,16 +14,16 @@
 
 # run the tests inside the container
 build:
-    # Remove all cached pyc files, they don't play nice with the containers
+ 	# Remove all cached pyc files, they don't play nice with the containers
 	find . -name "*.pyc" -delete
-	# create a volume to mount the tests into
-	docker volume create tests
+	# create a volume to mount the source code into
+	docker volume create src
 	# Build the docker image
 	docker build --rm -t redhatenv:1.0  .
 
 run:
-	# Run the docker image in interactive mode, connected to the test volume
-	docker run -v source=tests,destination=/tests -it redhatenv:1.0
+	# Run the docker image in interactive mode, connected to the source volume
+	docker run -v /home/anat/anat-wax/Python/fileSearcher/src:/tests/src -it redhatenv:1.0
 
 
 .PHONY: clean

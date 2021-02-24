@@ -12,7 +12,7 @@ class TestClass:
         """ test an empty file - result should be None"""
         global string
         anticipated_string = "Hello this is a sample file"
-        line = SearchInFile.SearchString("test.txt", string)
+        line = SearchInFile.SearchString("../tests/test.txt", string)
         for char_result in line:
             for char_test in anticipated_string:
                 if char_result != char_test:
@@ -24,7 +24,7 @@ class TestClass:
     def test_empty_file(self) -> None:
         """ test an empty file - result should be None"""
         global string
-        assert SearchInFile.SearchString("empty_file.txt", string) == None
+        assert SearchInFile.SearchString("../tests/empty_file.txt", string) == None
 
 
     #test a non-existing file
@@ -39,7 +39,7 @@ class TestClass:
         """ Testing a file containing only the part of the string  - should
         return None """
         begining_str = "this if"
-        assert SearchInFile.SearchString("test.txt", begining_str) == None
+        assert SearchInFile.SearchString("../tests/test.txt", begining_str) == None
 
 
     #test with a an empty string
@@ -47,7 +47,7 @@ class TestClass:
         """ Testing a file for an empty string  - should return the first raw in
         the file """
         empty_str = ""
-        line =  SearchInFile.SearchString("test.txt", empty_str)
+        line =  SearchInFile.SearchString("../tests/test.txt", empty_str)
         anticipated_string = "Hello this is a sample file"
         for char_result in line:
             for char_test in anticipated_string:
@@ -61,7 +61,7 @@ class TestClass:
     def test_file_containing_multiple_string(self) -> None:
         """ Testing a file for an empty string  - should return None """
         mult_appear_str = "Line"
-        line =  SearchInFile.SearchString("test.txt", mult_appear_str)
+        line =  SearchInFile.SearchString("../tests/test.txt", mult_appear_str)
         anticipated_string = "Dummy Line A"
         for char_result in line:
             for char_test in anticipated_string:

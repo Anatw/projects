@@ -2,7 +2,8 @@
 import re  # for using regular expressions (regex)
 import argparse  # for parsing the argv
 
-import outputfactory  # containing the different output forms for the tool
+from src import outputfactory  # containing the different output forms for the
+# tool
 
 
 class SearchInFile:
@@ -44,7 +45,7 @@ class SearchInFile:
             for file in file_list:
                 if not file.lower().endswith('.txt'):
                     raise Exception("the search tool is meant to be used with "
-                                    "text file ('.txt' extension') only.")
+                                    "text file ('.txt' extension) only.")
                 list_of_matches = SearchInFile.search_string(file,
                                                              args.string)
                 output = outputfactory.OutputFactory.get_output(

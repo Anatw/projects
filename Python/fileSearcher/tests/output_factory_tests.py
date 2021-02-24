@@ -111,55 +111,52 @@ def test_nonexisting_file(capsys) -> None:
         captured = capsys.readouterr()
         print(captured)
         assert captured.out == "the file \"non_existing_file.txt\" cannot be " \
-                               "found in " \
-                               "current directory\n"
+                               "found in current directory\n"
 
 
 def test_non_valid_file(capsys) -> None:
-    """ Testing a non existing file - result should be None """
+    """ Testing a non valid file - should raise an exception """
     with pytest.raises(Exception) as e:
         args = ["mytool.py", "-fimage.png", "-sline"]
         with patch.object(sys, 'argv', args):
             mytool.SearchInFile.run()
-            captured = capsys.readouterr()
-            # assert e.value == "the search tool is meant to be used with
-            # text" \
-            #                        " file ('.txt' extension') only.\n"
-            print(e.value)
-            # assert captured.out == "the search tool is meant to be used
-            # with text" \
-            #                        " file ('.txt' extension') only.\n"
+    assert str(e.value) == "the search tool is meant to be used with text " \
+                           "file ('.txt' extension) only."
+
 
 
 def test_using_empty_string(capsys) -> None:
+    """ Running the tool without specifying a string to search """
     with pytest.raises(SystemExit) as e:
         args = ["-ftest.txt", "-s", "-m"]
-        pytest.raises(ValueError, mytool.SearchInFile.run, args)
-        assert e.value.code == 2
+        with patch.object(sys, 'argv', args):
+            mytool.SearchInFile.run()
+            assert e.value.code == 2
+            print(e.value.args)
     captured = capsys.readouterr()
-    print(captured)
-    assert captured.err != ''
-    assert captured.err == 'usage: pytest [-h] [-m | -c] [-n] -f FILE ' \
-                           '[FILE ...] -s STRING\npytest: error: argument ' \
-                           '-s/--string: expected one argument\n'
+    assert captured.err == 'usage: -ftest.txt [-h] [-m | -c] [-n] -f FILE ' \
+                           '[FILE ...] -s STRING\n-ftest.txt: error: argument' \
+                           ' -s/--string: expected one argument\n'
 
 
 def test_using_no_file(capsys) -> None:
+    """ Running the tool without specifying a file """
     with pytest.raises(SystemExit) as e:
-        pytest.raises(ValueError, mytool.SearchInFile.run,
-                      "-sLine")
-        assert e.value.code == 2
+        # pytest.raises(ValueError, mytool.SearchInFile.run)
+        args = ["mytool.py", "-f", r"-s\d{5}-\d{6}", "-nm"]
+        with patch.object(sys, 'argv', args):
+            mytool.SearchInFile.run()
+            assert e.value.code == 2
+            print(e.value.args)
     captured = capsys.readouterr()
-    print(captured)
-    assert captured.err != ''
-    assert captured.err == 'usage: pytest [-h] [-m | -c] [-n] -f FILE ' \
-                           '[FILE ...] -s STRING\npytest: error: the' \
-                           ' following arguments are required: -f/--file,' \
-                           ' -s/--string\n'
+    assert captured.err == 'usage: mytool.py [-h] [-m | -c] [-n] -f FILE [' \
+                           'FILE ...] -s STRING\nmytool.py: error: ' \
+                           'argument -f/--file: expected at least one ' \
+                           'argument\n'
 
 
 def test_very_long_file_500_lines(capsys) -> None:
-    """ Testing a very ling file which include a match in several places -
+    """ Testing a very long file which include a match in several places -
     including first and last lines. Testing only that the total sum of
     matches is correct. 500 lines = 1000 matches """
     args = ["mytool.py", "-fbig_data_uk_500.txt", r"-s\d{5}-\d{6}", "-nm"]
