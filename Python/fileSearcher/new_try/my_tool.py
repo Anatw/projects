@@ -2,8 +2,10 @@
 import re  # for using regular expressions (regex)
 import argparse  # for parsing the argv
 
-from src import outputfactory  # containing the different output forms for the
-# tool
+try:
+    from src import op_factory
+except ModuleNotFoundError:
+    import op_factory
 
 
 class SearchInFile:
@@ -48,7 +50,7 @@ class SearchInFile:
                                     "text file ('.txt' extension) only.")
                 list_of_matches = SearchInFile.search_string(file,
                                                              args.string)
-                output = outputfactory.OutputFactory.get_output(
+                output = op_factory.OutputFactory.get_output(
                     args, list_of_matches, counter)
                 if counter:
                     total_matches = total_matches + (len(list_of_matches)
@@ -65,15 +67,12 @@ class SearchInFile:
         which the string appears """
 
         # list_of_matches = [tuple()]
-        list_of_matches = [{
-                               "file name": file_name,
-                               "line number": int,
-                               "start position": int,
-                               "end position": int,
-                               "line": str}]
-        # The next code excerpt allow only a single match per line (the first
-        # match
-        # in a line):
+        list_of_matches = [{"file name": file_name,
+                            "line number": int,
+                            "start position": int,
+                            "end position": int,
+                            "line": str}]
+
         try:
             pattern = re.compile(r'{}'.format(string_to_search))
             for count, line in enumerate(open(file_name, 'r')):
@@ -81,7 +80,7 @@ class SearchInFile:
                     list_of_matches.append(
                         ({
                             "file name": file_name,
-                            "line number": count,
+                            "line number": count+1,
                             "start position": match.start(),
                             "end position": match.end(),
                             "line": line}))

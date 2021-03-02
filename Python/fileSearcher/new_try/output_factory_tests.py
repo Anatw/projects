@@ -3,7 +3,7 @@ import sys
 import pytest
 from unittest.mock import patch
 
-from src import my_tool
+import my_tool
 
 
 def test_basic_usage(capsys) -> None:

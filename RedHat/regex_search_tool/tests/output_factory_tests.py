@@ -1,9 +1,9 @@
-""" test suit for the search tool """
+""" Test suite for the regex search tool """
 import sys
 import pytest
 from unittest.mock import patch
 
-from src import my_tool
+import my_tool
 
 
 def test_basic_usage(capsys) -> None:
@@ -54,6 +54,7 @@ def test_two_strings(capsys) -> None:
                "test.txt:5:6:Dummy Line C\n\n" \
                "Total matches for the file 'test.txt': 4\n" \
                "total matches for all files searched: 4\n"
+
 
 def test_nmatches_print(capsys) -> None:
     """ Basic test for the nmatches (-n) option. Small file and a string
@@ -156,7 +157,6 @@ def test_using_no_file(capsys) -> None:
     so this test also send the -n option - to check that as well """
 
     with pytest.raises(SystemExit) as e:
-        # pytest.raises(ValueError, mytool.SearchInFile.run)
         args = ["my_tool.py", "-f", r"-s\d{5}-\d{6}", "-nm"]
         with patch.object(sys, 'argv', args):
             my_tool.SearchInFile.run()
